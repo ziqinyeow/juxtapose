@@ -1,2 +1,2 @@
 clean:
-	find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf
+	find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
