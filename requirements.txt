@@ -1,0 +1,11 @@
+packaging==23.1
+onnx==1.14.0
+onnxruntime==1.15.1
+mmengine==0.8.2
+mmcv==2.0.1
+mmdet==3.1.0
+mmpose==1.1.0
+aenum==3.1.15
+torch==2.0.1
+tqdm==4.65.0
+pydantic==2.1.1
