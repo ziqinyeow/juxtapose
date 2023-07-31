@@ -37,7 +37,7 @@ model("data")
 # Inference with image
 model("data/football.jpeg", verbose=False)
 
-# Inference with image
+# Inference with video
 model("data/bike.mp4")
 
 # Inference with the YouTube Source
