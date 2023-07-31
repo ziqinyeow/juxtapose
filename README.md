@@ -4,14 +4,15 @@
 
 Code mostly adopted from four repos -> [ultralytics](https://github.com/ultralytics/ultralytics), [mmdeploy](https://github.com/open-mmlab/mmdeploy), [mmdetection](https://github.com/open-mmlab/mmdetection), [mmpose](https://github.com/open-mmlab/mmpose).
 
-Supported Detectors: [rtmdet-s](./rtm/model/rtmdet-s/), [rtmdet-m](./rtm/model/rtmdet-m/), [rtmdet-l](./rtm/model/rtmdet-l/)
-Supported Pose Estimators: [rtmpose-s](./rtm/model/rtmpose-s/), [rtmpose-m](./rtm/model/rtmpose-m/), [rtmpose-l](./rtm/model/rtmpose-l/)
+Supported Detectors: [rtmdet-s](./rtm/model/rtmdet-s/), [rtmdet-m](./rtm/model/rtmdet-m/), [rtmdet-l](./rtm/model/rtmdet-l/) \
+Supported Pose Estimators: [rtmpose-s](./rtm/model/rtmpose-s/), [rtmpose-m](./rtm/model/rtmpose-m/), [rtmpose-l](./rtm/model/rtmpose-l/) \
 Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm/trackers/bot_sort.py)
 
 ## 👉 Getting Started
 
 ```bash
-git clone https://github.com/ziqinyeow/rtm && cd rtm
+git clone https://github.com/ziqinyeow/rtm
+cd rtm
 pip install -r requirements.txt
 ```
 
