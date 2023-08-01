@@ -60,7 +60,7 @@ rtmpose = RTMPose("l", device=device)
 annotator = Annotator()
 
 
-bboxes = rtmdet(frame)  # [[x1, y1, x2, y2], ...]
+bboxes, scores, labels = rtmdet(frame)  # [[x1, y1, x2, y2], ...], [], []
 kpts = rtmpose(frame, bboxes=bboxes)  # shape: (number of human, 17, 2)
 
 annotator.draw_bboxes(frame, bboxes, labels=[f"person_{i}" for i in range(len(bboxes))])
