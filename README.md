@@ -31,11 +31,11 @@ model = RTM(
     device="cpu" | "cuda",  # choose 1
 )
 
-# Inference with directory
+# Inference with directory (all the images and videos in the dir will get inference)
 model("data")
 
 # Inference with image
-model("data/football.jpeg", verbose=False)
+model("data/football.jpeg", verbose=False) # verbose -> disable terminal printing
 
 # Inference with video
 model("data/bike.mp4")
