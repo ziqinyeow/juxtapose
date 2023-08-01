@@ -1,0 +1,48 @@
+{
+    "version": "1.2.0",
+    "codebase": {
+        "task": "PoseDetection",
+        "codebase": "mmpose",
+        "version": "1.0.0",
+        "pth": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/rtmpose-m_simcc-aic-coco_pt-aic-coco_420e-256x192-63eb25f7_20230126.pth",
+        "config": "../mmpose/projects/rtmpose/rtmpose/body_2d_keypoint/rtmpose-m_8xb256-420e_coco-256x192.py"
+    },
+    "codebase_config": {
+        "type": "mmpose",
+        "task": "PoseDetection"
+    },
+    "onnx_config": {
+        "type": "onnx",
+        "export_params": true,
+        "keep_initializers_as_inputs": false,
+        "opset_version": 11,
+        "save_file": "end2end.onnx",
+        "input_names": [
+            "input"
+        ],
+        "output_names": [
+            "simcc_x",
+            "simcc_y"
+        ],
+        "input_shape": [
+            192,
+            256
+        ],
+        "optimize": true,
+        "dynamic_axes": {
+            "input": {
+                "0": "batch"
+            },
+            "simcc_x": {
+                "0": "batch"
+            },
+            "simcc_y": {
+                "0": "batch"
+            }
+        }
+    },
+    "backend_config": {
+        "type": "onnxruntime"
+    },
+    "calib_config": {}
+}

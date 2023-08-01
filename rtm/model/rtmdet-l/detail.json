@@ -1,0 +1,44 @@
+{
+    "version": "1.2.0",
+    "codebase": {
+        "task": "ObjectDetection",
+        "codebase": "mmdet",
+        "version": "3.0.0",
+        "pth": "https://download.openmmlab.com/mmdetection/v3.0/rtmdet/rtmdet_l_8xb32-300e_coco/rtmdet_l_8xb32-300e_coco_20220719_112030-5a0be7c4.pth",
+        "config": "../../pose/model/rtmpose/conf/rtmdet_l_8xb32-300e_coco.py"
+    },
+    "codebase_config": {
+        "type": "mmdet",
+        "task": "ObjectDetection",
+        "model_type": "end2end",
+        "post_processing": {
+            "score_threshold": 0.05,
+            "confidence_threshold": 0.005,
+            "iou_threshold": 0.5,
+            "max_output_boxes_per_class": 200,
+            "pre_top_k": 5000,
+            "keep_top_k": 100,
+            "background_label_id": -1
+        }
+    },
+    "onnx_config": {
+        "type": "onnx",
+        "export_params": true,
+        "keep_initializers_as_inputs": false,
+        "opset_version": 11,
+        "save_file": "end2end.onnx",
+        "input_names": [
+            "input"
+        ],
+        "output_names": [
+            "dets",
+            "labels"
+        ],
+        "input_shape": null,
+        "optimize": true
+    },
+    "backend_config": {
+        "type": "onnxruntime"
+    },
+    "calib_config": {}
+}
