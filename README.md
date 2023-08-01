@@ -54,6 +54,7 @@ from rtm import RTM, Annotator
 model = RTM()
 annotator = Annotator(thickness=3, font_color=(128, 128, 128)) # see rtm.utils.plotting
 
+# set show to true -> cv2.imshow the frame (you can use cv2 to plot anything in the frame)
 # set plot to false -> if you want to ignore default plot -> see rtm.rtm (line `if plot:`)
 for result in model("data/football.jpeg", show=True, plot=False, stream=True):
     # do what ever you want with the data
