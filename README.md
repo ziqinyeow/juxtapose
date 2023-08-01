@@ -106,18 +106,18 @@ cv2.destroyAllWindows()
 
 Adopted from ultralytics repository -> see [https://docs.ultralytics.com/modes/predict/](https://docs.ultralytics.com/modes/predict/)
 
-| Source       | Argument                                 | Type                              | Notes                                                                     |
-| ------------ | ---------------------------------------- | --------------------------------- | ------------------------------------------------------------------------- |
-| image        | 'image.jpg'                              | str or Path                       | Single image file.                                                        |
-| URL          | 'https://ultralytics.com/images/bus.jpg' | str                               | URL to an image.                                                          |
-| screenshot   | 'screen'                                 | str                               | Capture a screenshot.                                                     |
-| PIL          | Image.open('im.jpg')                     | PIL.Image                         | HWC format with RGB channels.                                             |
-| OpenCV       | cv2.imread('im.jpg')                     | np.ndarray of uint8 (0-255)       | HWC format with BGR channels.                                             |
-| numpy        | np.zeros((640,1280,3))                   | np.ndarray of uint8 (0-255)       | HWC format with BGR channels.                                             |
-| torch        | torch.zeros(16,3,320,640)                | torch.Tensor of float32 (0.0-1.0) | BCHW format with RGB channels.                                            |
-| CSV          | 'sources.csv'                            | str or Path                       | CSV file containing paths to images, videos, or directories.              |
-| video ✅     | 'video.mp4'                              | str or Path                       | Video file in formats like MP4, AVI, etc.                                 |
-| directory ✅ | 'path/'                                  | str or Path                       | Path to a directory containing images or videos.                          |
-| glob ✅      | 'path/\*.jpg'                            | str                               | Glob pattern to match multiple files. Use the \* character as a wildcard. |
-| YouTube ✅   | 'https://youtu.be/Zgi9g1ksQHc'           | str                               | URL to a YouTube video.                                                   |
-| stream ✅    | 'rtsp://example.com/media.mp4'           | str                               | URL for streaming protocols such as RTSP, RTMP, or an IP address.         |
+| Source     | Argument                                 | Type                              | Notes                                                                     |
+| ---------- | ---------------------------------------- | --------------------------------- | ------------------------------------------------------------------------- |
+| image      | 'image.jpg'                              | str or Path                       | Single image file.                                                        |
+| URL        | 'https://ultralytics.com/images/bus.jpg' | str                               | URL to an image.                                                          |
+| screenshot | 'screen'                                 | str                               | Capture a screenshot.                                                     |
+| PIL        | Image.open('im.jpg')                     | PIL.Image                         | HWC format with RGB channels.                                             |
+| OpenCV     | cv2.imread('im.jpg')                     | np.ndarray of uint8 (0-255)       | HWC format with BGR channels.                                             |
+| numpy      | np.zeros((640,1280,3))                   | np.ndarray of uint8 (0-255)       | HWC format with BGR channels.                                             |
+| torch      | torch.zeros(16,3,320,640)                | torch.Tensor of float32 (0.0-1.0) | BCHW format with RGB channels.                                            |
+| CSV        | 'sources.csv'                            | str or Path                       | CSV file containing paths to images, videos, or directories.              |
+| video      | 'video.mp4'                              | str or Path                       | Video file in formats like MP4, AVI, etc.                                 |
+| directory  | 'path/'                                  | str or Path                       | Path to a directory containing images or videos.                          |
+| glob       | 'path/\*.jpg'                            | str                               | Glob pattern to match multiple files. Use the \* character as a wildcard. |
+| YouTube    | 'https://youtu.be/Zgi9g1ksQHc'           | str                               | URL to a YouTube video.                                                   |
+| stream     | 'rtsp://example.com/media.mp4'           | str                               | URL for streaming protocols such as RTSP, RTMP, or an IP address.         |
