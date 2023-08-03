@@ -2,6 +2,9 @@
 
 import numpy as np
 
+from pathlib import Path
+
+from rtm.utils.downloads import safe_download
 from rtm.mmdeploy.apis.utils import build_task_processor
 from rtm.mmdeploy.utils import get_input_shape, load_config
 from mmpose.structures import merge_data_samples
@@ -15,7 +18,14 @@ class RTMPose:
 
     def __init__(self, type: str = "m", device: str = "cpu") -> None:
         model_cfg = f"{base}/conf/rtmpose-{type}.py"
-        onnx_file = f"{base}/model/rtmpose-{type}/end2end.onnx"
+        onnx_file = Path(f"{base}/model/rtmpose-{type}.onnx")
+        if not onnx_file.exists():
+            safe_download(
+                f"https://huggingface.co/ziq/rtm/resolve/main/rtmpose-{type}.onnx",
+                file=f"rtmpose-{type}",
+                dir=Path(f"{base}/model/"),
+            )
+
         deploy_cfg = (
             "rtm/mmdeploy/configs/mmpose/pose-detection_simcc_onnxruntime_dynamic.py"
         )

@@ -3,6 +3,8 @@
 
 from rtm.mmdeploy.apis.utils import build_task_processor
 from rtm.mmdeploy.utils import get_input_shape, load_config
+from rtm.utils.downloads import safe_download
+from pathlib import Path
 
 base = "rtm"
 
@@ -12,7 +14,14 @@ class RTMDet:
 
     def __init__(self, type: str = "m", device: str = "cpu", conf_thres: float = 0.3):
         model_cfg = f"{base}/conf/rtmdet-{type}.py"
-        onnx_file = f"{base}/model/rtmdet-{type}/end2end.onnx"
+        onnx_file = Path(f"{base}/model/rtmdet-{type}.onnx")
+        if not onnx_file.exists():
+            safe_download(
+                f"https://huggingface.co/ziq/rtm/resolve/main/rtmdet-{type}.onnx",
+                file=f"rtmdet-{type}",
+                dir=Path(f"{base}/model/"),
+            )
+
         deploy_cfg = "rtm/mmdeploy/configs/mmdet/detection_onnxruntime_static.py"
 
         deploy_cfg, model_cfg = load_config(deploy_cfg, model_cfg)
