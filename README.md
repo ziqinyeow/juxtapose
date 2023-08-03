@@ -15,7 +15,8 @@ Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm
 ```bash
 git clone https://github.com/ziqinyeow/rtm
 cd rtm
-pip install -r requirements/mac.txt
+pip install -r requirements.txt
+
 ```
 
 ### Windows (CPU & CUDA)
@@ -23,7 +24,10 @@ pip install -r requirements/mac.txt
 ```bash
 git clone https://github.com/ziqinyeow/rtm
 cd rtm
-pip install -r requirements/windows.txt
+pip install -r requirements.txt
+pip3 install torch --index-url https://download.pytorch.org/whl/cu118
+pip install mmcv==2.0.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html
+
 ```
 
 ## 🤩 Feel The Magic
