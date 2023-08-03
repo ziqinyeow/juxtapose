@@ -24,9 +24,9 @@ pip install -r requirements.txt
 ```bash
 git clone https://github.com/ziqinyeow/rtm
 cd rtm
-pip install -r requirements.txt
 pip3 install torch --index-url https://download.pytorch.org/whl/cu118
 pip install mmcv==2.0.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html
+pip install -r requirements.txt
 
 ```
 
