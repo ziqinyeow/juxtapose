@@ -10,10 +10,20 @@ Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm
 
 ## 👉 Getting Started
 
+### Mac (CPU only)
+
 ```bash
 git clone https://github.com/ziqinyeow/rtm
 cd rtm
-pip install -r requirements.txt
+pip install -r requirements/mac.txt
+```
+
+### Windows (CPU & CUDA)
+
+```bash
+git clone https://github.com/ziqinyeow/rtm
+cd rtm
+pip install -r requirements/windows.txt
 ```
 
 ## 🤩 Feel The Magic
