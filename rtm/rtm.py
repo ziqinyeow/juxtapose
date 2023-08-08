@@ -1,6 +1,7 @@
 """Main class to perform inference using RTMDet and RTMPose (ONNX)"""
 
 import cv2
+import csv
 from pathlib import Path
 import numpy as np
 
@@ -21,7 +22,7 @@ from rtm.utils import (
     ops,
     get_time,
 )
-from rtm.trackers import Tracker
+from rtm.trackers import Tracker, TRACKER_MAP
 
 from pydantic import BaseModel
 
@@ -43,13 +44,22 @@ class RTM:
     """"""
 
     def __init__(
-        self, rtmdet="m", rtmpose="m", tracker="bytetrack", device="cpu"
+        self,
+        rtmdet="m",
+        rtmpose="m",
+        tracker="bytetrack",
+        device="cpu",
+        annotator=Annotator(),
     ) -> None:
         self.rtmdet = RTMDet(rtmdet, device)
         self.rtmpose = RTMPose(rtmpose, device)
-        self.annotator = Annotator()
+        self.annotator = annotator
 
         self.tracker_type = tracker
+
+        if tracker not in TRACKER_MAP.keys():
+            self.tracker_type = None
+
         self.dataset = None
         self.vid_path, self.vid_writer = None, None
 
@@ -91,9 +101,21 @@ class RTM:
                 )
             self.vid_writer[idx].write(im0)
 
+    def save_csv(self, path, data):
+        with open(path, "a") as f:
+            writer = csv.writer(f)
+            writer.writerow(data)
+
     @smart_inference_mode
     def stream_inference(
-        self, source, show=True, plot=True, save=False, save_dirs="", verbose=True
+        self,
+        source,
+        show=True,
+        plot=True,
+        plot_bboxes=True,
+        save=False,
+        save_dirs="",
+        verbose=True,
     ) -> Result:
         if show:
             check_imshow(warn=True)
@@ -104,9 +126,11 @@ class RTM:
 
         profilers = (ops.Profile(), ops.Profile(), ops.Profile())  # count the time
         self.setup_source(source)
-        self.setup_tracker()
 
-        current_source = None
+        if self.tracker_type:
+            self.setup_tracker()
+
+        current_source, index = None, 0
 
         for _, batch in enumerate(self.dataset):
             path, im0s, vid_cap, s = batch
@@ -114,12 +138,16 @@ class RTM:
 
             p, im = Path(path[0]), im0s[0]
 
+            index += 1
+
             # reset tracker when source changed
             if current_source is None:
-                current_source = path
-            elif current_source is not path:
-                self.setup_tracker()
-                current_source = path
+                current_source = p
+            elif current_source != p:
+                if self.tracker_type:
+                    self.setup_tracker()
+                current_source = p
+                index = 1
 
             # multi object detection (detect only person)
             with profilers[0]:
@@ -127,15 +155,19 @@ class RTM:
 
             # multi object tracking (adjust bounding boxes)
             with profilers[1]:
-                bboxes, ids = self.tracker.update(bboxes, scores, labels)
+                if self.tracker_type:
+                    bboxes, ids = self.tracker.update(bboxes, scores, labels)
+                else:
+                    ids = [""] * len(bboxes)
 
             # pose estimation (detect 17 keypoints based on the bounding boxes)
             with profilers[2]:
                 kpts = self.rtmpose(im, bboxes)
 
             if plot:
-                self.annotator.draw_bboxes(im, bboxes, labels=ids, thickness=4)
-                self.annotator.draw_kpts(im, kpts, thickness=4)
+                if plot_bboxes:
+                    self.annotator.draw_bboxes(im, bboxes, labels=ids)
+                self.annotator.draw_kpts(im, kpts)
                 self.annotator.draw_skeletons(im, kpts)
 
             result = Result(
@@ -144,7 +176,8 @@ class RTM:
                 bboxes=bboxes,
                 speed={
                     "bboxes": profilers[0].dt * 1e3 / 1,
-                    "kpts": profilers[1].dt * 1e3 / 1,
+                    "track": profilers[1].dt * 1e3 / 1,
+                    "kpts": profilers[2].dt * 1e3 / 1,
                 },
                 save_dirs=str(save_dirs) if save else "",
                 name=p.name,
@@ -172,6 +205,10 @@ class RTM:
 
             if save:
                 self.save_preds(im, vid_cap, 0, str(save_dirs / p.name))
+                self.save_csv(
+                    str(save_dirs / p.with_suffix(".csv").name),
+                    [str(index), str([{i: kpt} for i, kpt in zip(ids, kpts)])],
+                )
 
         if isinstance(self.vid_writer[-1], cv2.VideoWriter):
             self.vid_writer[-1].release()
@@ -184,6 +221,7 @@ class RTM:
         stream=False,
         show=True,
         plot=True,
+        plot_bboxes=True,
         save=False,
         save_dirs="",
         verbose=True,
@@ -193,6 +231,7 @@ class RTM:
                 source,
                 show=show,
                 plot=plot,
+                plot_bboxes=plot_bboxes,
                 save=save,
                 save_dirs=save_dirs,
                 verbose=verbose,
@@ -203,6 +242,7 @@ class RTM:
                     source,
                     show=show,
                     plot=plot,
+                    plot_bboxes=plot_bboxes,
                     save=save,
                     save_dirs=save_dirs,
                     verbose=verbose,

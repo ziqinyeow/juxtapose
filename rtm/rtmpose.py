@@ -18,12 +18,12 @@ class RTMPose:
 
     def __init__(self, type: str = "m", device: str = "cpu") -> None:
         model_cfg = f"{base}/conf/rtmpose-{type}.py"
-        onnx_file = Path(f"{base}/model/rtmpose-{type}.onnx")
+        onnx_file = Path(f"model/rtmpose-{type}.onnx")
         if not onnx_file.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/rtmpose-{type}.onnx",
                 file=f"rtmpose-{type}",
-                dir=Path(f"{base}/model/"),
+                dir=Path(f"model/"),
             )
 
         deploy_cfg = (
@@ -58,6 +58,6 @@ class RTMPose:
         model_inputs = self.create_input(im, bboxes)
         result = self.model.test_step(model_inputs)
         result = merge_data_samples(result)
-        kpts = result.pred_instances.keypoints
+        kpts = result.pred_instances.keypoints.tolist()
 
         return kpts

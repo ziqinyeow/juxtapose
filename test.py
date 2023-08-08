@@ -1,16 +1,15 @@
-from rtm import RTM
+from rtm import RTM, Annotator
 
 # Init a rtm model (including rtmdet, rtmpose, tracker)
 # model = RTM(
 #     rtmdet="s" | "m" | "l",  # choose 1
 #     rtmpose="s" | "m" | "l",  # choose 1
-#     tracker="bytetrack" | "botsort",  # choose 1
+#     tracker="bytetrack" | "botsort" | "none",  # choose 1
 #     device="cpu" | "cuda",  # choose 1
 # )
 model = RTM()
 # Inference with directory
-model("data")
-exit()
+model("data", save=True)
 
 # Inference with image
 model("data/football.jpeg", verbose=False)
