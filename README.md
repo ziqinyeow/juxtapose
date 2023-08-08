@@ -1,4 +1,4 @@
-# RTM Inference Toolbox 🚀 with RTMDet & RTMPose & Tracker (ONNXRuntime)
+# RTM Inference Toolbox 🚀 with ONNX
 
 ## 🫰 Overview
 
