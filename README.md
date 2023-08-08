@@ -41,11 +41,11 @@ from rtm import RTM
 model = RTM(
     rtmdet="s" | "m" | "l",  # choose 1
     rtmpose="s" | "m" | "l",  # choose 1
-    tracker="bytetrack" | "botsort",  # choose 1
+    tracker="bytetrack" | "botsort", | "none",  # choose 1
     device="cpu" | "cuda",  # choose 1
 )
 
-# Inference with directory (all the images and videos in the dir will get inference)
+# Inference with directory (all the images and videos in the dir will get inference sequentially)
 model("data")
 
 # Inference with image
