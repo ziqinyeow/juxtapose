@@ -319,10 +319,7 @@ class BYTETracker:
         return np.asarray(
             [x.tlbr.tolist() for x in self.tracked_stracks if x.is_activated],
             dtype=np.float32,
-        ), np.asarray(
-            [x.track_id for x in self.tracked_stracks if x.is_activated],
-            dtype=np.float32,
-        )
+        ), [x.track_id for x in self.tracked_stracks if x.is_activated]
 
     def get_kalmanfilter(self):
         """Returns a Kalman filter object for tracking bounding boxes."""

@@ -15,12 +15,12 @@ class RTMDet:
 
     def __init__(self, type: str = "m", device: str = "cpu", conf_thres: float = 0.3):
         model_cfg = f"{base}/conf/rtmdet-{type}.py"
-        onnx_file = Path(f"{base}/model/rtmdet-{type}.onnx")
+        onnx_file = Path(f"model/rtmdet-{type}.onnx")
         if not onnx_file.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/rtmdet-{type}.onnx",
                 file=f"rtmdet-{type}",
-                dir=Path(f"{base}/model/"),
+                dir=Path(f"model/"),
             )
 
         deploy_cfg = "rtm/mmdeploy/configs/mmdet/detection_onnxruntime_static.py"

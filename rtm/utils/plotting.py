@@ -33,12 +33,14 @@ class Annotator:
 
     def __init__(
         self,
-        thickness: int = 2,
+        thickness: int = 1,
+        kpts_thickness: int = 4,
         font=cv2.FONT_HERSHEY_DUPLEX,
         font_scale: int = 0.7,
         font_color=(255, 255, 255),
     ) -> None:
         self.thickness = thickness
+        self.kpts_thickness = kpts_thickness
         self.font = font
         self.font_scale = font_scale
         self.font_color = font_color
@@ -76,7 +78,7 @@ class Annotator:
                 cv2.circle(
                     frame,
                     (int(k[0]), int(k[1])),
-                    thickness if thickness else self.thickness,
+                    thickness if thickness else self.kpts_thickness,
                     colors[i],
                     -1,
                 )
