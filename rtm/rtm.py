@@ -45,6 +45,7 @@ class RTM:
     def __init__(
         self, rtmdet="m", rtmpose="m", tracker="bytetrack", device="cpu"
     ) -> None:
+        self.device = device
         self.rtmdet = RTMDet(rtmdet, device)
         self.rtmpose = RTMPose(rtmpose, device)
         self.annotator = Annotator()
@@ -63,7 +64,7 @@ class RTM:
         ] * self.dataset.bs
 
     def setup_tracker(self) -> None:
-        self.tracker = Tracker(self.tracker_type).tracker
+        self.tracker = Tracker(self.tracker_type, self.device).tracker
 
     def save_preds(self, im0, vid_cap, idx, save_path) -> None:
         """Save video predictions as mp4 at specified path."""
@@ -99,7 +100,9 @@ class RTM:
             check_imshow(warn=True)
 
         if save:
-            save_dirs = Path(get_time() if not save_dirs else save_dirs)
+            save_folder = Path("runs") if not save_dirs else Path(save_dirs)
+            save_folder.mkdir(exist_ok=True)
+            save_dirs = save_folder / get_time()
             save_dirs.mkdir(exist_ok=True)
 
         profilers = (ops.Profile(), ops.Profile(), ops.Profile())  # count the time
@@ -123,12 +126,19 @@ class RTM:
 
             # multi object detection (detect only person)
             with profilers[0]:
-                bboxes, scores, labels = self.rtmdet(im)
+                bboxes, scores, labels, dets = self.rtmdet(im)
 
             # multi object tracking (adjust bounding boxes)
             with profilers[1]:
-                bboxes, ids = self.tracker.update(bboxes, scores, labels)
-
+                if self.tracker_type in ["strongsort", "deepocsort", "ocsort"]:
+                    outputs = self.tracker.update(
+                        np.asarray(dets), im
+                    )  # dets -> [[x1, y1, x2, y2, ids, conf, cls], ...]
+                    ids = []
+                    if len(outputs) > 0:
+                        bboxes, ids = outputs[:, :4], outputs[:, 4]
+                else:
+                    bboxes, ids = self.tracker.update(bboxes, scores, labels)
             # pose estimation (detect 17 keypoints based on the bounding boxes)
             with profilers[2]:
                 kpts = self.rtmpose(im, bboxes)

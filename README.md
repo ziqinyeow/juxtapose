@@ -26,9 +26,13 @@ git clone https://github.com/ziqinyeow/rtm
 cd rtm
 pip3 install torch --index-url https://download.pytorch.org/whl/cu118
 pip install mmcv==2.0.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html
-pip install -r requirements.txt
+pip install -r requirements.txt  --no-cache
+pip uninstall onnxruntime-gpu
+pip install onnxruntime-gpu
 
 ```
+
+**OCSORT, StrongSORT, DeepOCSORT is  currently using third party library and yet to be ported natively**
 
 ## 🤩 Feel The Magic
 
@@ -41,7 +45,7 @@ from rtm import RTM
 model = RTM(
     rtmdet="s" | "m" | "l",  # choose 1
     rtmpose="s" | "m" | "l",  # choose 1
-    tracker="bytetrack" | "botsort",  # choose 1
+    tracker="bytetrack" | "botsort", "ocsort", "strongsort", "deepocsort",  # choose 1
     device="cpu" | "cuda",  # choose 1
 )
 

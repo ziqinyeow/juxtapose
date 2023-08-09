@@ -1,6 +1,7 @@
 # https://github.com/open-mmlab/mmdeploy/blob/main/docs/en/04-supported-codebases/mmdet.md
 
 
+from charset_normalizer import detect
 from rtm.mmdeploy.apis.utils import build_task_processor
 from rtm.mmdeploy.utils import get_input_shape, load_config
 from rtm.utils.downloads import safe_download
@@ -55,4 +56,13 @@ class RTMDet:
         scores = pred_instances.scores
         labels = pred_instances.labels
 
-        return bboxes, scores, labels
+        detections = []
+        for bbox, score, label in zip(bboxes, scores, labels):
+            x1, y1, x2, y2 = bbox
+            detections.append([x1, y1, x2, y2, score, label])
+        return (
+            bboxes,
+            scores,
+            labels,
+            detections,
+        )

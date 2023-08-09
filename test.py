@@ -4,7 +4,7 @@ from rtm import RTM
 # model = RTM(
 #     rtmdet="s" | "m" | "l",  # choose 1
 #     rtmpose="s" | "m" | "l",  # choose 1
-#     tracker="bytetrack" | "botsort",  # choose 1
+#     tracker="bytetrack" | "botsort", "ocsort", "strongsort", "deepocsort",  # choose 1
 #     device="cpu" | "cuda",  # choose 1
 # )
 model = RTM()
