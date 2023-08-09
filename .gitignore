@@ -53,7 +53,7 @@ docs/_build/
 *.DS_Store
 rtm/model
 model/
-data/track.mp4
+data/track.*
 
 
 # ignore generated inference folder -> {date}-{time}

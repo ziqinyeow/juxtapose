@@ -102,7 +102,7 @@ class RTM:
             self.vid_writer[idx].write(im0)
 
     def save_csv(self, path, data):
-        with open(path, "a") as f:
+        with open(path, "a", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(data)
 
