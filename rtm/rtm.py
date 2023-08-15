@@ -4,11 +4,12 @@ import cv2
 import csv
 from pathlib import Path
 import numpy as np
+import supervision as sv
 
 from typing import List, Union, Generator
 
 from rtm.data import load_inference_source
-from rtm.rtmdet import RTMDet
+from rtm.detectors import get_detector, RTMDet, GroundingDino, YOLOv8
 from rtm.rtmpose import RTMPose
 
 from rtm.utils.plotting import Annotator
@@ -45,15 +46,19 @@ class RTM:
 
     def __init__(
         self,
-        rtmdet="m",
+        det="rtmdet-m",
         rtmpose="m",
         tracker="bytetrack",
         device="cpu",
         annotator=Annotator(),
     ) -> None:
-        self.rtmdet = RTMDet(rtmdet, device)
+        self.det = get_detector(
+            det,
+            device=device,
+        )
         self.rtmpose = RTMPose(rtmpose, device)
         self.annotator = annotator
+        self.box_annotator = sv.BoxAnnotator()
 
         self.tracker_type = tracker
 
@@ -151,7 +156,12 @@ class RTM:
 
             # multi object detection (detect only person)
             with profilers[0]:
-                bboxes, scores, labels = self.rtmdet(im)
+                detections: sv.Detections = self.det(im)
+                bboxes, scores, labels = (
+                    detections.xyxy,
+                    detections.confidence,
+                    detections.labels,
+                )
 
             # multi object tracking (adjust bounding boxes)
             with profilers[1]:
@@ -165,8 +175,12 @@ class RTM:
                 kpts = self.rtmpose(im, bboxes)
 
             if plot:
+                labels = [
+                    f"{label} {id} {score:.2f}"
+                    for label, id, score in zip(labels, ids, scores)
+                ]
                 if plot_bboxes:
-                    self.annotator.draw_bboxes(im, bboxes, labels=ids)
+                    self.box_annotator.annotate(im, detections, labels=labels)
                 self.annotator.draw_kpts(im, kpts)
                 self.annotator.draw_skeletons(im, kpts)
 

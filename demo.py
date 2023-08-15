@@ -1,4 +1,4 @@
 from rtm import RTM
 
-model = RTM(rtmdet="l", rtmpose="l", tracker="botsort", device="cuda")
-model("data", show=False, save=True)
+model = RTM(det="groundingdino", rtmpose="l", tracker="n")
+model("data/track_2.png", show=True, save=False)

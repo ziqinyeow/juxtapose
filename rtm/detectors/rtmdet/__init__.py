@@ -5,6 +5,8 @@ from rtm.mmdeploy.apis.utils import build_task_processor
 from rtm.mmdeploy.utils import get_input_shape, load_config
 from rtm.utils.downloads import safe_download
 from pathlib import Path
+import numpy as np
+import supervision as sv
 
 base = "rtm"
 
@@ -51,8 +53,11 @@ class RTMDet:
 
         # get only class 0 (person)
         pred_instances = pred_instances[pred_instances.labels == 0].cpu().numpy()
-        bboxes = pred_instances.bboxes
-        scores = pred_instances.scores
-        labels = pred_instances.labels
 
-        return bboxes, scores, labels
+        result = sv.Detections(
+            xyxy=pred_instances.bboxes,
+            confidence=pred_instances.scores,
+        )
+        result.labels = pred_instances.labels
+
+        return result
