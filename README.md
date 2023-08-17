@@ -39,7 +39,7 @@ from rtm import RTM
 
 # Init a rtm model (including rtmdet, rtmpose, tracker)
 model = RTM(
-    rtmdet="s" | "m" | "l",  # choose 1
+    det="rtmdet-s" | "rtmdet-m" | "rtmdet-l" | "groundingdino" | "yolov8s" | "yolov8m" | "yolov8l" # choose 1
     rtmpose="s" | "m" | "l",  # choose 1
     tracker="bytetrack" | "botsort", | "none",  # choose 1
     device="cpu" | "cuda",  # choose 1
