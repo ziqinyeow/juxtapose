@@ -28,11 +28,11 @@ class YOLOv8:
         return -> [[x, y, x, y], [x, y, x, y], ...] -> two persons detected
         """
         result = self.model(im, verbose=False, conf=self.conf_thres)[0].boxes
-        result = result[result.cls == 0]
+        result = result[result.cls == 0].cpu().numpy()
         result = sv.Detections(
             xyxy=result.xyxy,
             confidence=result.conf,
         )
-        result.labels = result.cls
+        result.labels = [0 for _ in range(len(result.xyxy))]
 
         return result
