@@ -1,8 +1,12 @@
+import supervision as sv
 import numpy as np
+
 
 from .basetrack import BaseTrack, TrackState
 from .utils import matching
 from .utils.kalman_filter import KalmanFilterXYAH
+
+from rtm.utils.core import Detections
 
 
 class STrack(BaseTrack):
@@ -183,7 +187,7 @@ class BYTETracker:
         self.kalman_filter = self.get_kalmanfilter()
         self.reset_id()
 
-    def update(self, bboxes, scores, cls, img=None):
+    def update(self, bboxes, confidence, labels, img=None):
         """Updates object tracker with new detections and returns tracked object bounding boxes."""
         self.frame_id += 1
         activated_stracks = []
@@ -199,17 +203,17 @@ class BYTETracker:
         )
         # cls = results.cls
 
-        remain_inds = scores > self.args["track_high_thresh"]
-        inds_low = scores > self.args["track_low_thresh"]
-        inds_high = scores < self.args["track_high_thresh"]
+        remain_inds = confidence > self.args["track_high_thresh"]
+        inds_low = confidence > self.args["track_low_thresh"]
+        inds_high = confidence < self.args["track_high_thresh"]
 
         inds_second = np.logical_and(inds_low, inds_high)
         dets_second = bboxes[inds_second]
         dets = bboxes[remain_inds]
-        scores_keep = scores[remain_inds]
-        scores_second = scores[inds_second]
-        cls_keep = cls[remain_inds]
-        cls_second = cls[inds_second]
+        scores_keep = confidence[remain_inds]
+        scores_second = confidence[inds_second]
+        cls_keep = labels[remain_inds]
+        cls_second = labels[inds_second]
 
         detections = self.init_track(dets, scores_keep, cls_keep, img)
         # Add newly detected tracklets to tracked_stracks
@@ -316,10 +320,23 @@ class BYTETracker:
                 -999:
             ]  # clip remove stracks to 1000 maximum
         # [x.track_id, x.score, x.cls, x.idx]
-        return np.asarray(
-            [x.tlbr.tolist() for x in self.tracked_stracks if x.is_activated],
-            dtype=np.float32,
-        ), [x.track_id for x in self.tracked_stracks if x.is_activated]
+        # return np.asarray(
+        #     [x.tlbr.tolist() for x in self.tracked_stracks if x.is_activated],
+        #     dtype=np.float32,
+        # ), [x.track_id for x in self.tracked_stracks if x.is_activated]
+        activated = [x for x in self.tracked_stracks if x.is_activated]
+
+        result = Detections(
+            xyxy=np.array(
+                [x.tlbr.tolist() for x in activated],
+                dtype=np.float32,
+            ),
+            confidence=np.array([x.score for x in activated]),
+            tracker_id=np.array([x.track_id for x in activated]),
+            labels=[x.cls for x in activated],
+        )
+
+        return result
 
     def get_kalmanfilter(self):
         """Returns a Kalman filter object for tracking bounding boxes."""

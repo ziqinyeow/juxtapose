@@ -6,13 +6,15 @@ from pathlib import Path
 import numpy as np
 import supervision as sv
 
-from typing import List, Union, Generator
+from typing import List, Union, Generator, Literal, Optional
 
 from rtm.data import load_inference_source
 from rtm.detectors import get_detector, RTMDet, GroundingDino, YOLOv8
 from rtm.rtmpose import RTMPose
 
+from rtm.utils.core import Detections
 from rtm.utils.plotting import Annotator
+from rtm.utils.roi import select_roi
 from rtm.utils.checks import check_imshow
 from rtm.utils.torch_utils import smart_inference_mode
 from rtm.utils import (
@@ -47,16 +49,13 @@ class RTM:
     def __init__(
         self,
         det="rtmdet-m",
-        rtmpose="m",
+        pose="rtmpose-m",
         tracker="bytetrack",
         device="cpu",
         annotator=Annotator(),
     ) -> None:
-        self.det = get_detector(
-            det,
-            device=device,
-        )
-        self.rtmpose = RTMPose(rtmpose, device)
+        self.det = self.setup_detector(det, device)
+        self.rtmpose = RTMPose(pose.split("-")[1], device=device)
         self.annotator = annotator
         self.box_annotator = sv.BoxAnnotator()
 
@@ -79,6 +78,12 @@ class RTM:
 
     def setup_tracker(self) -> None:
         self.tracker = Tracker(self.tracker_type).tracker
+
+    def setup_detector(self, det, device):
+        return get_detector(
+            det,
+            device=device,
+        )
 
     def save_preds(self, im0, vid_cap, idx, save_path) -> None:
         """Save video predictions as mp4 at specified path."""
@@ -111,10 +116,28 @@ class RTM:
             writer = csv.writer(f)
             writer.writerow(data)
 
+    def get_labels(self, detections: Detections):
+        mp = {0: "person"}
+        return [
+            f"{mp[label]} {id} {score:.2f}"
+            for label, id, score in zip(
+                detections.labels, detections.tracker_id, detections.confidence
+            )
+        ]
+
+    def setup_roi(self, im, win: str = "roi", type: Literal["rect"] = "rect") -> List:
+        roi_bboxes, color = select_roi(im, win, type=type)
+        return roi_bboxes, color
+
     @smart_inference_mode
     def stream_inference(
         self,
         source,
+        # interest point
+        timer: List = [],
+        poi: Literal["point", "box", "text", ""] = "",
+        roi: Literal["rect", ""] = "",
+        # panels
         show=True,
         plot=True,
         plot_bboxes=True,
@@ -141,14 +164,18 @@ class RTM:
             path, im0s, vid_cap, s = batch
             is_image = s.startswith("image")
 
-            p, im = Path(path[0]), im0s[0]
+            p, im, im0 = Path(path[0]), im0s[0], im0s[0].copy()
 
             index += 1
 
             # reset tracker when source changed
             if current_source is None:
                 current_source = p
+                if roi:
+                    roi_bboxes, roi_bboxes_color = self.setup_roi(im)
             elif current_source != p:
+                if roi:
+                    roi_bboxes, roi_bboxes_color = self.setup_roi(im)
                 if self.tracker_type:
                     self.setup_tracker()
                 current_source = p
@@ -156,29 +183,36 @@ class RTM:
 
             # multi object detection (detect only person)
             with profilers[0]:
-                detections: sv.Detections = self.det(im)
-                bboxes, scores, labels = (
-                    detections.xyxy,
-                    detections.confidence,
-                    detections.labels,
-                )
+                detections: Detections = self.det(im)
 
             # multi object tracking (adjust bounding boxes)
             with profilers[1]:
                 if self.tracker_type:
-                    bboxes, ids = self.tracker.update(bboxes, scores, labels)
+                    detections: Detections = self.tracker.update(
+                        bboxes=detections.xyxy,
+                        confidence=detections.confidence,
+                        labels=detections.labels,
+                    )
                 else:
-                    ids = [""] * len(bboxes)
+                    detections.tracker_id = [""] * len(detections.xyxy)
+
+            # update roi bboxes
+            if roi:
+                pass
 
             # pose estimation (detect 17 keypoints based on the bounding boxes)
             with profilers[2]:
-                kpts = self.rtmpose(im, bboxes)
+                kpts = self.rtmpose(im, bboxes=detections.xyxy)
 
             if plot:
-                labels = [
-                    f"{label} {id} {score:.2f}"
-                    for label, id, score in zip(labels, ids, scores)
-                ]
+                labels = self.get_labels(detections)
+
+                if roi and roi_bboxes:
+                    for i, r in enumerate(roi_bboxes):
+                        cv2.rectangle(
+                            im, (r[0], r[1]), (r[2], r[3]), roi_bboxes_color[i], 2
+                        )
+
                 if plot_bboxes:
                     self.box_annotator.annotate(im, detections, labels=labels)
                 self.annotator.draw_kpts(im, kpts)
@@ -187,7 +221,7 @@ class RTM:
             result = Result(
                 im=im,
                 kpts=kpts,
-                bboxes=bboxes,
+                bboxes=detections.xyxy,  # detections.xyxy,
                 speed={
                     "bboxes": profilers[0].dt * 1e3 / 1,
                     "track": profilers[1].dt * 1e3 / 1,
@@ -211,17 +245,22 @@ class RTM:
                     key = cv2.waitKey(1) & 0xFF
                     if key == ord("q"):
                         break
+                    elif key == 32:
+                        roi_bboxes, roi_bboxes_color = self.setup_roi(im0)
 
             if verbose:
                 LOGGER.info(
-                    f"{s}Detected {len(bboxes)} person(s) ({colorstr('green', f'{profilers[0].dt * 1E3:.1f}ms')} | {colorstr('green', f'{profilers[1].dt * 1E3:.1f}ms')} | {colorstr('green', f'{profilers[2].dt * 1E3:.1f}ms')})"
+                    f"{s}Detected {len(detections.xyxy)} person(s) ({colorstr('green', f'{profilers[0].dt * 1E3:.1f}ms')} | {colorstr('green', f'{profilers[1].dt * 1E3:.1f}ms')} | {colorstr('green', f'{profilers[2].dt * 1E3:.1f}ms')})"
                 )
 
             if save:
                 self.save_preds(im, vid_cap, 0, str(save_dirs / p.name))
                 self.save_csv(
                     str(save_dirs / p.with_suffix(".csv").name),
-                    [str(index), str([{i: kpt} for i, kpt in zip(ids, kpts)])],
+                    [
+                        str(index),
+                        str([{i: kpt} for i, kpt in zip(detections.tracker_id, kpts)]),
+                    ],
                 )
 
         if isinstance(self.vid_writer[-1], cv2.VideoWriter):
@@ -233,6 +272,11 @@ class RTM:
         self,
         source,
         stream=False,
+        # interest point
+        timer: List = [],
+        poi: Literal["point", "box", "text", ""] = "",
+        roi: Literal["rect", ""] = "",
+        # panels
         show=True,
         plot=True,
         plot_bboxes=True,
@@ -243,6 +287,9 @@ class RTM:
         if stream:
             return self.stream_inference(
                 source,
+                timer=timer,
+                poi=poi,
+                roi=roi,
                 show=show,
                 plot=plot,
                 plot_bboxes=plot_bboxes,
@@ -254,6 +301,9 @@ class RTM:
             return list(
                 self.stream_inference(
                     source,
+                    timer=timer,
+                    poi=poi,
+                    roi=roi,
                     show=show,
                     plot=plot,
                     plot_bboxes=plot_bboxes,

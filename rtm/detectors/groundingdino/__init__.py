@@ -3,7 +3,7 @@ import torch
 import bisect
 import numpy as np
 from pathlib import Path
-import supervision as sv
+from rtm.utils.core import Detections
 
 
 from rtm.utils.downloads import safe_download
@@ -112,9 +112,9 @@ class GroundingDino:
         bboxes = bboxes * torch.Tensor([w, h, w, h])
         xyxy = box_convert(boxes=bboxes, in_fmt="cxcywh", out_fmt="xyxy").numpy()
 
-        result = sv.Detections(
+        result = Detections(
             xyxy=xyxy,
             confidence=conf.numpy(),
+            labels=np.array([0 if label == "person" else -1 for label in labels]),
         )
-        result.labels = np.array([0 if label == "person" else -1 for label in labels])
         return result

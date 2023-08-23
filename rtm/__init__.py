@@ -10,6 +10,7 @@ __all__ = (
     "RTM",
     "RTMDet",
     "RTMPose",
+    "Detections",
     "Annotator",
     "GroundingDino",
     "YOLOv8",
