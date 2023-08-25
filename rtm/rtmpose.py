@@ -58,6 +58,6 @@ class RTMPose:
         model_inputs = self.create_input(im, bboxes)
         result = self.model.test_step(model_inputs)
         result = merge_data_samples(result)
-        kpts = result.pred_instances.keypoints.tolist()
+        kpts = result.pred_instances.keypoints
 
         return kpts

@@ -66,6 +66,7 @@ class Detections:
     class_id: Optional[np.ndarray] = None
     labels: Optional[np.ndarray] = None
     tracker_id: Optional[np.ndarray] = None
+    track_id: Optional[np.ndarray] = None
 
     def __post_init__(self):
         n = len(self.xyxy)

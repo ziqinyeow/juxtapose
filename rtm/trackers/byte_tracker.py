@@ -332,7 +332,7 @@ class BYTETracker:
                 dtype=np.float32,
             ),
             confidence=np.array([x.score for x in activated]),
-            tracker_id=np.array([x.track_id for x in activated]),
+            track_id=np.array([x.track_id for x in activated]),
             labels=[x.cls for x in activated],
         )
 

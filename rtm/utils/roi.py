@@ -21,18 +21,18 @@ def select_roi(
             x0, y0 = x, y
         elif event == cv2.EVENT_MOUSEMOVE and flags == cv2.EVENT_FLAG_LBUTTON:
             img4show = img.copy()
-            col = color.by_idx(len(bboxes)).as_bgr()
-            cv2.rectangle(img4show, (x0, y0), (x, y), col, 2)
+            col = color.by_idx(len(bboxes))
+            cv2.rectangle(img4show, (x0, y0), (x, y), col.as_bgr(), 2)
         elif event == cv2.EVENT_LBUTTONUP:
             img = img4show
-            bboxes.append((x0, y0, x, y))
+            bboxes.append([x0, y0, x, y])
             bboxes_color.append(col)
 
     def POINT(event, x, y, flags, param):
         nonlocal x0, y0, img4show, img
         if event == cv2.EVENT_LBUTTONDOWN:
             x0, y0 = x, y
-            points.append((x0, y0))
+            points.append([x0, y0])
         elif event == cv2.EVENT_LBUTTONUP:
             cv2.circle(img4show, (x0, y0), 4, color.by_idx(len(points)).as_bgr(), 6)
             img = img4show
@@ -58,7 +58,8 @@ def select_roi(
             points = []
             bboxes = []
         elif k == 113 or k == 81 or k == 27:  # return none with 'q' or 'Q' or 'ESC'
-            return [], []
+            # return [], []
+            break
         elif k == 32 or k == 13:  # DONE with 'SPACE' or 'ENTER'
             break
         elif k != 255:
@@ -71,4 +72,8 @@ Press q/Q/ESC         to quit
             )
 
     cv2.destroyWindow(win)
-    return bboxes, bboxes_color if type == "rect" else points
+
+    if type == "rect":
+        return bboxes, bboxes_color
+    else:
+        return points, [i + 1 for i in range(len(points))]

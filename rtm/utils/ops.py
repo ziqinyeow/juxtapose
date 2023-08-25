@@ -3,6 +3,7 @@ import time
 import re
 
 import torch
+import numpy as np
 
 
 class Profile(contextlib.ContextDecorator):
@@ -55,3 +56,22 @@ def clean_str(s):
       (str): a string with special characters replaced by an underscore _
     """
     return re.sub(pattern="[|@#!¡·$€%&()=?¿^*;:,¨´><+]", repl="_", string=s)
+
+
+def xyxy2xyxyxyxy(xyxy):
+    """
+    xyxy: [(x1, y1, x2, y2), ...]
+    """
+    xyxyxyxy = []
+    for _xyxy in xyxy:
+        x1, y1, x2, y2 = _xyxy
+
+        x_min = min(x1, x2)
+        y_min = min(y1, y2)
+        x_max = max(x1, x2)
+        y_max = max(y1, y2)
+
+        xyxyxyxy.append(
+            np.array([(x_min, y_min), (x_min, y_max), (x_max, y_max), (x_max, y_min)])
+        )
+    return xyxyxyxy

@@ -49,22 +49,9 @@ class RTM:
 
     def __init__(
         self,
-        det="rtmdet-m",
-        pose="rtmpose-m",
-        tracker="bytetrack",
         device="cpu",
         annotator=Annotator(),
     ) -> None:
-        self.det = self.setup_detector(det, device)
-        self.rtmpose = RTMPose(pose.split("-")[1], device=device)
-        self.annotator = annotator
-        self.box_annotator = sv.BoxAnnotator()
-
-        self.tracker_type = tracker
-
-        if tracker not in TRACKER_MAP.keys():
-            self.tracker_type = None
-
         self.dataset = None
         self.vid_path, self.vid_writer = None, None
 
@@ -76,15 +63,6 @@ class RTM:
         self.vid_path, self.vid_writer = [None] * self.dataset.bs, [
             None
         ] * self.dataset.bs
-
-    def setup_tracker(self) -> None:
-        self.tracker = Tracker(self.tracker_type).tracker
-
-    def setup_detector(self, det, device):
-        return get_detector(
-            det,
-            device=device,
-        )
 
     def save_preds(self, im0, vid_cap, idx, save_path) -> None:
         """Save video predictions as mp4 at specified path."""
@@ -127,23 +105,6 @@ class RTM:
                 )
             ]
         )
-
-    def setup_roi(self, im, win: str = "roi", type: Literal["rect"] = "rect") -> List:
-        w, h, _ = im.shape
-        roi_zones, roi_zones_color = select_roi(im, win, type=type)
-        roi_zones = xyxy2xyxyxyxy(roi_zones)
-        zones = [
-            (
-                sv.PolygonZone(
-                    polygon=zone,
-                    frame_resolution_wh=(w, h),
-                    triggering_position=sv.Position.CENTER,
-                ),
-                roi_zones_color[idx],
-            )
-            for idx, zone in enumerate(roi_zones)
-        ]
-        return zones
 
     @smart_inference_mode
     def stream_inference(
@@ -201,61 +162,16 @@ class RTM:
             with profilers[0]:
                 detections: Detections = self.det(im)
 
-            # multi object tracking (adjust bounding boxes)
-            with profilers[1]:
-                if self.tracker_type:
-                    detections: Detections = self.tracker.update(
-                        bboxes=detections.xyxy,
-                        confidence=detections.confidence,
-                        labels=detections.labels,
-                    )
-                    track_id = detections.track_id
-                else:
-                    track_id = np.array([""] * len(detections.xyxy))
-                    detections.track_id = track_id
-
-            # filter bboxes based on roi
-            if roi and zones and detections:
-                masks = set()
-                for zone, color in zones:
-                    mask = zone.trigger(detections=detections)
-                    masks.update(np.where(mask)[0].tolist())
-                masks = np.array(
-                    [True if i in masks else False for i in range(len(detections.xyxy))]
-                )
-
-            # pose estimation (detect 17 keypoints based on the bounding boxes)
-            with profilers[2]:
-                if detections:
-                    kpts = self.rtmpose(im, bboxes=detections.xyxy)
-
             if plot:
                 labels = self.get_labels(detections)
 
-                if roi and zones:
-                    for zone, color in zones:
-                        im = sv.draw_polygon(im, zone.polygon, color)
-
-                    xyxy, labels, track_id, kpts = (
-                        detections.xyxy[masks],
-                        labels[masks],
-                        track_id[masks],
-                        kpts[masks],
-                    )
-                    detections = Detections(xyxy=xyxy, labels=labels, track_id=track_id)
-                    if plot_bboxes:
-                        self.box_annotator.annotate(im, detections, labels=labels)
-                    self.annotator.draw_kpts(im, kpts)
-                    self.annotator.draw_skeletons(im, kpts)
-                else:
-                    if plot_bboxes:
-                        self.box_annotator.annotate(im, detections, labels=labels)
-                    self.annotator.draw_kpts(im, kpts)
-                    self.annotator.draw_skeletons(im, kpts)
+                if plot_bboxes:
+                    self.box_annotator.annotate(im, detections, labels=labels)
+                # self.annotator.draw_kpts(im, kpts)
+                # self.annotator.draw_skeletons(im, kpts)
 
             result = Result(
                 im=im,
-                kpts=kpts,
                 bboxes=detections.xyxy,  # detections.xyxy,
                 speed={
                     "bboxes": profilers[0].dt * 1e3 / 1,
@@ -294,7 +210,7 @@ class RTM:
                     str(save_dirs / p.with_suffix(".csv").name),
                     [
                         str(index),
-                        str([{i: kpt} for i, kpt in zip(detections.track_id, kpts)]),
+                        # str([{i: kpt} for i, kpt in zip(detections.track_id, kpts)]),
                     ],
                 )
 

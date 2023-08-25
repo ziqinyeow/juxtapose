@@ -10,7 +10,7 @@ ARGS_MAP = {
         tracker_type="bytetrack",  # tracker type, ['botsort', 'bytetrack']
         track_high_thresh=0.5,  # threshold for the first association
         track_low_thresh=0.1,  # threshold for the second association
-        new_track_thresh=0.6,  # threshold for init new track if the detection does not match any tracks
+        new_track_thresh=0.2,  # threshold for init new track if the detection does not match any tracks
         track_buffer=30,  # buffer to calculate the time when to remove tracks
         match_thresh=0.8,  # threshold for matching tracks
     ),
