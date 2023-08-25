@@ -8,7 +8,7 @@ Supported Detectors: [rtmdet-s](./rtm/model/rtmdet-s/), [rtmdet-m](./rtm/model/r
 Supported Pose Estimators: [rtmpose-s](./rtm/model/rtmpose-s/), [rtmpose-m](./rtm/model/rtmpose-m/), [rtmpose-l](./rtm/model/rtmpose-l/) \
 Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm/trackers/bot_sort.py)
 
-## 🍱 Updates
+## 🥒 Updates
 
 - **`2023/08/25`** Added custom [region of interests (ROI) drawing tools](rtm/utils/roi.py) that enables multi ROIs filtering while performing pose estimation/tracking.
 - **`2023/08/15`** Added [GroundingDino](https://github.com/IDEA-Research/GroundingDINO) & [YOLOv8](https://github.com/ultralytics/ultralytics) object detector.
