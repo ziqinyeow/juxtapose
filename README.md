@@ -1,12 +1,20 @@
 # RTM Inference Toolbox 🚀 with ONNX
 
-## 🫰 Overview
+## 🍄 Overview
 
 Code mostly adopted from four repos -> [ultralytics](https://github.com/ultralytics/ultralytics), [mmdeploy](https://github.com/open-mmlab/mmdeploy), [mmdetection](https://github.com/open-mmlab/mmdetection), [mmpose](https://github.com/open-mmlab/mmpose).
 
 Supported Detectors: [rtmdet-s](./rtm/model/rtmdet-s/), [rtmdet-m](./rtm/model/rtmdet-m/), [rtmdet-l](./rtm/model/rtmdet-l/), [groundingdino](https://github.com/ziqinyeow/rtm/blob/a2913b880d4294f902e46c64a8ab4cec517754fc/rtm/detectors/groundingdino/__init__.py#L19C10-L19C10), [yolov8](https://github.com/ziqinyeow/rtm/blob/a2913b880d4294f902e46c64a8ab4cec517754fc/rtm/detectors/yolov8/__init__.py#L10) \
 Supported Pose Estimators: [rtmpose-s](./rtm/model/rtmpose-s/), [rtmpose-m](./rtm/model/rtmpose-m/), [rtmpose-l](./rtm/model/rtmpose-l/) \
 Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm/trackers/bot_sort.py)
+
+## 🍱 Updates
+
+- **`2023/08/25`** Added custom [region of interests (ROI) drawing tools](rtm/utils/roi.py) that enables multi ROIs filtering while performing pose estimation/tracking.
+- **`2023/08/15`** Added [GroundingDino](https://github.com/IDEA-Research/GroundingDINO) & [YOLOv8](https://github.com/ultralytics/ultralytics) object detector.
+- **`2023/08/09`** Added keypoints streaming to csv file using csv module.
+- **`2023/07/31`** Converted [RTMDET (s/m/l)](rtm/detectors/rtmdet/__init__.py) and [RTMPOSE (s/m/l)](rtm/rtmpose.py) to ONNX using [MMDeploy](https://github.com/open-mmlab/mmdeploy).
+  Completed engineering effort for top down inferences in any sources.
 
 ## 👉 Getting Started
 
@@ -39,10 +47,10 @@ from rtm import RTM
 
 # Init a rtm model (including rtmdet, rtmpose, tracker)
 model = RTM(
-    det="rtmdet-s" | "rtmdet-m" | "rtmdet-l" | "groundingdino" | "yolov8s" | "yolov8m" | "yolov8l" # choose 1
-    rtmpose="s" | "m" | "l",  # choose 1
-    tracker="bytetrack" | "botsort", | "none",  # choose 1
-    device="cpu" | "cuda",  # choose 1
+    det="rtmdet-m", # see type hinting
+    pose="rtmpose-m", # see type hinting
+    tracker="bytetrack", # see type hinting
+    device="cpu",  # see type hinting
 )
 
 # Inference with directory (all the images and videos in the dir will get inference sequentially)
@@ -56,6 +64,25 @@ model("data/bike.mp4")
 
 # Inference with the YouTube Source
 model("https://www.youtube.com/watch?v=1vYvTbDJuFs&ab_channel=PeterGrant", save=True)
+```
+
+### Select Region of Interests (ROIs)
+
+It will first prompt the user to draw the ROIs, press `r` to remove the existing ROI drawn.
+After drawing, press `SPACE` or `ENTER` or `q` to accept the ROI drawn. The model will filter
+out the bounding boxes based on the ROIs.
+
+😁 Note: Press `SPACE` again to redraw the bounding boxes. See custom implementation with `cv2` [here](rtm/utils/roi.py).
+
+```python
+from rtm import RTM
+
+model = RTM(det="groundingdino", pose="rtmpose-l", tracker="none")
+model("data/bike.mp4", roi="rect") # rectangle roi
+
+# 1. Draw ROI first
+# 2. Press r or R to reset ROI
+# 3. Press SPACE or Enter or q or Q to continue with the ROI
 ```
 
 ### Accessing result for each frame: More Flexibility

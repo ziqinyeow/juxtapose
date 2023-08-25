@@ -6,11 +6,13 @@ from pathlib import Path
 import numpy as np
 import supervision as sv
 
-from typing import List, Union, Generator, Literal, Optional
+from typing import List, Union, Generator, Literal
 
 from rtm.data import load_inference_source
-from rtm.detectors import get_detector, RTMDet, GroundingDino, YOLOv8
+from rtm.detectors import get_detector
 from rtm.rtmpose import RTMPose
+from rtm.trackers import Tracker, TRACKER_MAP
+from rtm.types import DETECTOR_TYPES, POSE_ESTIMATOR_TYPES, TRACKER_TYPES, DEVICE_TYPES
 
 from rtm.utils.core import Detections
 from rtm.utils.plotting import Annotator
@@ -26,7 +28,6 @@ from rtm.utils import (
     ops,
     get_time,
 )
-from rtm.trackers import Tracker, TRACKER_MAP
 
 from pydantic import BaseModel
 
@@ -49,10 +50,10 @@ class RTM:
 
     def __init__(
         self,
-        det="rtmdet-m",
-        pose="rtmpose-m",
-        tracker="bytetrack",
-        device="cpu",
+        det: DETECTOR_TYPES = "rtmdet-m",
+        pose: POSE_ESTIMATOR_TYPES = "rtmpose-m",
+        tracker: TRACKER_TYPES = "bytetrack",
+        device: DEVICE_TYPES = "cpu",
         annotator=Annotator(),
     ) -> None:
         self.det = self.setup_detector(det, device)
