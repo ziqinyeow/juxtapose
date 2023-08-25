@@ -40,7 +40,7 @@ pip install -r requirements.txt
 
 ## 🤩 Feel The Magic
 
-### Basic Usage
+### 🌄 Basic Usage
 
 ```python
 from rtm import RTM
@@ -66,7 +66,7 @@ model("data/bike.mp4")
 model("https://www.youtube.com/watch?v=1vYvTbDJuFs&ab_channel=PeterGrant", save=True)
 ```
 
-### Select Region of Interests (ROIs)
+### 🎨 Select Region of Interests (ROIs)
 
 It will first prompt the user to draw the ROIs, press `r` to remove the existing ROI drawn.
 After drawing, press `SPACE` or `ENTER` or `q` to accept the ROI drawn. The model will filter
@@ -85,7 +85,7 @@ model("data/bike.mp4", roi="rect") # rectangle roi
 # 3. Press SPACE or Enter or q or Q to continue with the ROI
 ```
 
-### Accessing result for each frame: More Flexibility
+### 🚴‍♂️ Accessing result for each frame: More Flexibility
 
 ```python
 # Adding custom plot
@@ -97,7 +97,7 @@ annotator = Annotator(thickness=3, font_color=(128, 128, 128)) # see rtm.utils.p
 
 # set show to true -> cv2.imshow the frame (you can use cv2 to plot anything in the frame)
 # set plot to false -> if you want to ignore default plot -> see rtm.rtm (line `if plot:`)
-for result in model("data/football.jpeg", show=True, plot=False, stream=True):
+for result in model("data/bike.mp4", show=True, plot=False, stream=True):
     # do what ever you want with the data
     im, bboxes, kpts = result.im, result.bboxes, result.kpts
 
@@ -114,7 +114,7 @@ for result in model("data/football.jpeg", show=True, plot=False, stream=True):
     annotator.draw_skeletons(im, kpts)
 ```
 
-### Custom Forward Pass: Full Flexibility
+### ⚽️ Custom Forward Pass: Full Flexibility
 
 ```python
 # Custom model forward pass
