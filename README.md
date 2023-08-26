@@ -14,7 +14,7 @@ Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm
 - **`2023/08/15`** Added [GroundingDino](https://github.com/IDEA-Research/GroundingDINO) & [YOLOv8](https://github.com/ultralytics/ultralytics) object detector.
 - **`2023/08/09`** Added keypoints streaming to csv file using csv module.
 - **`2023/07/31`** Converted [RTMDET (s/m/l)](rtm/detectors/rtmdet/__init__.py) and [RTMPOSE (s/m/l)](rtm/rtmpose.py) to ONNX using [MMDeploy](https://github.com/open-mmlab/mmdeploy).
-  Completed engineering effort for top down inferences in any sources.
+  Completed engineering effort for top down inferences in any sources. See [supported sources below](#supported-sources).
 
 ## 👉 Getting Started
 
