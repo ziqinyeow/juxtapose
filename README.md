@@ -4,8 +4,8 @@
 
 Code mostly adopted from four repos -> [ultralytics](https://github.com/ultralytics/ultralytics), [mmdeploy](https://github.com/open-mmlab/mmdeploy), [mmdetection](https://github.com/open-mmlab/mmdetection), [mmpose](https://github.com/open-mmlab/mmpose).
 
-Supported Detectors: [rtmdet-s](./rtm/model/rtmdet-s/), [rtmdet-m](./rtm/model/rtmdet-m/), [rtmdet-l](./rtm/model/rtmdet-l/), [groundingdino](https://github.com/ziqinyeow/rtm/blob/a2913b880d4294f902e46c64a8ab4cec517754fc/rtm/detectors/groundingdino/__init__.py#L19C10-L19C10), [yolov8](https://github.com/ziqinyeow/rtm/blob/a2913b880d4294f902e46c64a8ab4cec517754fc/rtm/detectors/yolov8/__init__.py#L10) \
-Supported Pose Estimators: [rtmpose-s](./rtm/model/rtmpose-s/), [rtmpose-m](./rtm/model/rtmpose-m/), [rtmpose-l](./rtm/model/rtmpose-l/) \
+Supported Detectors: [rtmdet-s](./rtm/detectors/rtmdet/), [rtmdet-m](./rtm/detectors/rtmdet/), [rtmdet-l](./rtm/detectors/rtmdet/), [groundingdino](./rtm/detectors/groundingdino/__init__.py), [yolov8](./rtm/detectors/yolov8/__init__.py) \
+Supported Pose Estimators: [rtmpose-s](./rtm/rtmpose.py), [rtmpose-m](./rtm/rtmpose.py), [rtmpose-l](./rtm/rtmpose.py) \
 Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm/trackers/bot_sort.py)
 
 ## 🥒 Updates
