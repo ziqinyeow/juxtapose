@@ -1,7 +1,8 @@
 import torch
-
+from pathlib import Path
 from .bot_sort import BOTSORT
 from .byte_tracker import BYTETracker
+from .boxmot import StrongSORT, DeepOCSORT
 
 from typing import Union
 
@@ -33,10 +34,20 @@ ARGS_MAP = {
 }
 
 TRACKER_MAP = {"bytetrack": BYTETracker, "botsort": BOTSORT}
+BOXMOT_TRACKER_MAP = {"strongsort": StrongSORT, "deepocsort": DeepOCSORT}
 
 
 class Tracker:
-    def __init__(self, type: str = "bytetrack") -> None:
-        self.tracker: Union[BYTETracker, BOTSORT] = TRACKER_MAP[type](
-            args=ARGS_MAP[type], frame_rate=30
-        )
+    def __init__(self, type: str = "bytetrack", device: str = "cpu") -> None:
+        if type in BOXMOT_TRACKER_MAP.keys():
+            self.tracker = BOXMOT_TRACKER_MAP[type](
+                model_weights=Path("osnet_x0_25_msmt17.pt"),
+                device=device,
+                fp16=torch.cuda.is_available() and device == "cuda",
+            )
+            if hasattr(self.tracker, "model"):
+                self.tracker.model.warmup()
+        elif type in TRACKER_MAP.keys():
+            self.tracker: Union[BYTETracker, BOTSORT] = TRACKER_MAP[type](
+                args=ARGS_MAP[type], frame_rate=30
+            )

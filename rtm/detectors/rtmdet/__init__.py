@@ -54,6 +54,12 @@ class RTMDet:
         # get only class 0 (person)
         pred_instances = pred_instances[pred_instances.labels == 0].cpu().numpy()
 
+        #clamp xyxy to 0 and im.shape
+        pred_instances.bboxes[:, 0] = np.clip(pred_instances.bboxes[:, 0], 0, im.shape[1])
+        pred_instances.bboxes[:, 1] = np.clip(pred_instances.bboxes[:, 1], 0, im.shape[0])
+        pred_instances.bboxes[:, 2] = np.clip(pred_instances.bboxes[:, 2], 0, im.shape[1])
+        pred_instances.bboxes[:, 3] = np.clip(pred_instances.bboxes[:, 3], 0, im.shape[0])
+
         result = Detections(
             xyxy=pred_instances.bboxes,
             confidence=pred_instances.scores,

@@ -2,11 +2,11 @@
 
 ## 🍄 Overview
 
-Code mostly adopted from four repos -> [ultralytics](https://github.com/ultralytics/ultralytics), [mmdeploy](https://github.com/open-mmlab/mmdeploy), [mmdetection](https://github.com/open-mmlab/mmdetection), [mmpose](https://github.com/open-mmlab/mmpose).
+Code mostly adopted from four repos -> [ultralytics](https://github.com/ultralytics/ultralytics), [mmdeploy](https://github.com/open-mmlab/mmdeploy), [mmdetection](https://github.com/open-mmlab/mmdetection), [mmpose](https://github.com/open-mmlab/mmpose), [yolo_tracking](https://github.com/mikel-brostrom/yolo_tracking)
 
 Supported Detectors: [rtmdet-s](./rtm/detectors/rtmdet/), [rtmdet-m](./rtm/detectors/rtmdet/), [rtmdet-l](./rtm/detectors/rtmdet/), [groundingdino](./rtm/detectors/groundingdino/__init__.py), [yolov8](./rtm/detectors/yolov8/__init__.py) \
 Supported Pose Estimators: [rtmpose-s](./rtm/rtmpose.py), [rtmpose-m](./rtm/rtmpose.py), [rtmpose-l](./rtm/rtmpose.py) \
-Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm/trackers/bot_sort.py)
+Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm/trackers/bot_sort.py), [strongsort](./rtm/trackers/boxmot/trackers/strongsort/strong_sort.py)
 
 ## 🥒 Updates
 
@@ -32,7 +32,7 @@ pip install -r requirements.txt
 ```bash
 git clone https://github.com/ziqinyeow/rtm
 cd rtm
-pip3 install torch --index-url https://download.pytorch.org/whl/cu118
+pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu118
 pip install mmcv==2.0.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html
 pip install -r requirements.txt
 
