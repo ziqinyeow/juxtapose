@@ -319,4 +319,5 @@ class ReIDDetectMultiBackend(nn.Module):
             features = self.forward(crops)
         else:
             features = np.array([])
+        features = features / np.linalg.norm(features)
         return features

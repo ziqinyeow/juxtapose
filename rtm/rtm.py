@@ -63,7 +63,10 @@ class RTM:
         self.device = device
         self.tracker_type = tracker
 
-        if tracker not in TRACKER_MAP.keys() and tracker not in BOXMOT_TRACKER_MAP.keys():
+        if (
+            tracker not in TRACKER_MAP.keys()
+            and tracker not in BOXMOT_TRACKER_MAP.keys()
+        ):
             self.tracker_type = None
 
         self.dataset = None
@@ -79,7 +82,7 @@ class RTM:
         ] * self.dataset.bs
 
     def setup_tracker(self) -> None:
-        self.tracker = Tracker(self.tracker_type, self.device).tracker
+        self.tracker = Tracker(self.tracker_type, self.device)
 
     def setup_detector(self, det, device):
         return get_detector(
@@ -205,18 +208,7 @@ class RTM:
             # multi object tracking (adjust bounding boxes)
             with profilers[1]:
                 if self.tracker_type:
-                    temp_detections: Detections = self.tracker.update(
-                        bboxes=detections.xyxy,
-                        confidence=detections.confidence,
-                        labels=detections.labels,
-                        img=im,
-                    )
-                    if len(temp_detections.xyxy) > 0:
-                        detections = temp_detections
-                        track_id = detections.track_id
-                    else:
-                        track_id = np.array([""] * len(detections.xyxy))
-                        detections.track_id = track_id
+                    detections = self.tracker.update(detections, im)
                 else:
                     track_id = np.array([""] * len(detections.xyxy))
                     detections.track_id = track_id

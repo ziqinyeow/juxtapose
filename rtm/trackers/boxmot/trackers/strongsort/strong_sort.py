@@ -11,7 +11,6 @@ from rtm.trackers.boxmot.utils.ops import xyxy2tlwh
 from rtm.trackers.boxmot.utils.convert_rtm_boxmot import convert_boxmot_tracker_to_rtm
 
 
-
 class StrongSORT(object):
     def __init__(
         self,
@@ -39,42 +38,41 @@ class StrongSORT(object):
         )
         self.cmc = get_cmc_method("ecc")()
 
-    # def update(self, dets, img):
-    def update(self, bboxes, confidence, labels, img):
-        # assert isinstance(
-        #     dets, np.ndarray
-        # ), f"Unsupported 'dets' input format '{type(dets)}', valid format is np.ndarray"
-        # assert isinstance(
-        #     img, np.ndarray
-        # ), f"Unsupported 'img' input format '{type(img)}', valid format is np.ndarray"
-        # assert (
-        #     len(dets.shape) == 2
-        # ), "Unsupported 'dets' dimensions, valid number of dimensions is two"
-        # assert (
-        #     dets.shape[1] == 6
-        # ), "Unsupported 'dets' 2nd dimension lenght, valid lenghts is 6"
-        
-        # dets = np.hstack([dets, np.arange(len(dets)).reshape(-1, 1)])
-        # xyxy = dets[:, 0:4]
-        # confs = dets[:, 4]
-        # clss = dets[:, 5]
-        # det_ind = dets[:, 6]
-
+    def update(self, dets, img):
+        # def update(self, bboxes, confidence, labels, img):
         assert isinstance(
-            bboxes, np.ndarray
-        ), f"Unsupported 'dets' input format '{type(bboxes)}', valid format is np.ndarray"
+            dets, np.ndarray
+        ), f"Unsupported 'dets' input format '{type(dets)}', valid format is np.ndarray"
         assert isinstance(
             img, np.ndarray
         ), f"Unsupported 'img' input format '{type(img)}', valid format is np.ndarray"
         assert (
-            len(bboxes) == len(confidence) == len(labels)
-        ), "bboxes and confidence and labels should have same dimensions"
+            len(dets.shape) == 2
+        ), "Unsupported 'dets' dimensions, valid number of dimensions is two"
+        assert (
+            dets.shape[1] == 6
+        ), "Unsupported 'dets' 2nd dimension lenght, valid lenghts is 6"
 
-        xyxy=bboxes
-        confs=confidence
-        clss=labels
-        det_ind = np.arange(len(bboxes))
+        dets = np.hstack([dets, np.arange(len(dets)).reshape(-1, 1)])
+        xyxy = dets[:, 0:4]
+        confs = dets[:, 4]
+        clss = dets[:, 5]
+        det_ind = dets[:, 6]
 
+        # assert isinstance(
+        #     bboxes, np.ndarray
+        # ), f"Unsupported 'dets' input format '{type(bboxes)}', valid format is np.ndarray"
+        # assert isinstance(
+        #     img, np.ndarray
+        # ), f"Unsupported 'img' input format '{type(img)}', valid format is np.ndarray"
+        # assert (
+        #     len(bboxes) == len(confidence) == len(labels)
+        # ), "bboxes and confidence and labels should have same dimensions"
+
+        # xyxy = bboxes
+        # confs = confidence
+        # clss = labels
+        # det_ind = np.arange(len(bboxes))
 
         if len(self.tracker.tracks) >= 1:
             warp_matrix = self.cmc.apply(img, xyxy)
@@ -114,9 +112,9 @@ class StrongSORT(object):
                     ([x1, y1, x2, y2], [id], [conf], [cls], [det_ind])
                 ).reshape(1, -1)
             )
-        # if len(outputs) > 0:
-        #     return np.concatenate(outputs)
-        # return np.array([])
         if len(outputs) > 0:
-            outputs = np.concatenate(outputs)
-        return convert_boxmot_tracker_to_rtm(outputs)
+            return np.concatenate(outputs)
+        return np.array([])
+        # if len(outputs) > 0:
+        #     outputs = np.concatenate(outputs)
+        # return convert_boxmot_tracker_to_rtm(outputs)

@@ -1,7 +1,8 @@
 import numpy as np
 from rtm.utils.core import Detections
 
-def convert_boxmot_tracker_to_rtm(outputs):
+
+def convert_boxmot_tracker_to_rtm(outputs, detections) -> Detections:
     if len(outputs) > 0:
         return Detections(
             xyxy=outputs[:, :4],
@@ -11,9 +12,5 @@ def convert_boxmot_tracker_to_rtm(outputs):
         )
     else:
         # return empty Detections object
-        return Detections(
-            xyxy=np.array([]),
-            track_id=np.array([]),
-            confidence=np.array([]),
-            labels=np.array([]),
-        )
+        detections.track_id = np.array([""] * len(detections.xyxy))
+        return detections

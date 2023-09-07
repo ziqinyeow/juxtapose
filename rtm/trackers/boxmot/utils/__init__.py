@@ -26,7 +26,6 @@ class PerClassDecorator:
     def __get__(self, instance, owner):
         def wrapper(*args, **kwargs):
             modified_args = list(args)
-            print(modified_args)
             dets = modified_args[0]
             im = modified_args[1]
 

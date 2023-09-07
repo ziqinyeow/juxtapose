@@ -14,6 +14,7 @@ from rtm.trackers.boxmot.utils.association import associate, linear_assignment
 from rtm.trackers.boxmot.utils.iou import get_asso_func
 from rtm.trackers.boxmot.utils.convert_rtm_boxmot import convert_boxmot_tracker_to_rtm
 
+
 def k_previous_obs(observations, cur_age, k):
     if len(observations) == 0:
         return [-1, -1, -1, -1, -1]
@@ -373,8 +374,8 @@ class DeepOCSort(object):
         self.new_kf_off = new_kf_off
 
     @PerClassDecorator
-    # def update(self, dets, img):
-    def update(self, bboxes, confidence, labels, img):    
+    def update(self, dets, img):
+        # def update(self, bboxes, confidence, labels, img):
         """
         Params:
           dets - a numpy array of detections in the format [[x1,y1,x2,y2,score],[x1,y1,x2,y2,score],...]
@@ -383,30 +384,30 @@ class DeepOCSort(object):
         Returns the a similar array, where the last column is the object ID.
         NOTE: The number of objects returned may differ from the number of detections provided.
         """
-        # assert isinstance(
-        #     dets, np.ndarray
-        # ), f"Unsupported 'dets' input type '{type(dets)}', valid format is np.ndarray"
-        # assert isinstance(
-        #     img, np.ndarray
-        # ), f"Unsupported 'img' input type '{type(img)}', valid format is np.ndarray"
-        # assert (
-        #     len(dets.shape) == 2
-        # ), "Unsupported 'dets' dimensions, valid number of dimensions is two"
-        # assert (
-        #     dets.shape[1] == 6
-        # ), "Unsupported 'dets' 2nd dimension lenght, valid lenghts is 6"
         assert isinstance(
-            bboxes, np.ndarray
-        ), f"Unsupported 'dets' input format '{type(bboxes)}', valid format is np.ndarray"
+            dets, np.ndarray
+        ), f"Unsupported 'dets' input type '{type(dets)}', valid format is np.ndarray"
         assert isinstance(
             img, np.ndarray
-        ), f"Unsupported 'img' input format '{type(img)}', valid format is np.ndarray"
+        ), f"Unsupported 'img' input type '{type(img)}', valid format is np.ndarray"
         assert (
-            len(bboxes) == len(confidence) == len(labels)
-        ), "bboxes and confidence and labels should have same dimensions"
+            len(dets.shape) == 2
+        ), "Unsupported 'dets' dimensions, valid number of dimensions is two"
+        assert (
+            dets.shape[1] == 6
+        ), "Unsupported 'dets' 2nd dimension lenght, valid lenghts is 6"
+        # assert isinstance(
+        #     bboxes, np.ndarray
+        # ), f"Unsupported 'dets' input format '{type(bboxes)}', valid format is np.ndarray"
+        # assert isinstance(
+        #     img, np.ndarray
+        # ), f"Unsupported 'img' input format '{type(img)}', valid format is np.ndarray"
+        # assert (
+        #     len(bboxes) == len(confidence) == len(labels)
+        # ), "bboxes and confidence and labels should have same dimensions"
 
-        # Restructure dets from bboxes, confidence, labels to [x1, y1, x2, y2, conf, cls]
-        dets = np.hstack([bboxes, confidence.reshape(-1, 1), labels.reshape(-1, 1)])
+        # # Restructure dets from bboxes, confidence, labels to [x1, y1, x2, y2, conf, cls]
+        # dets = np.hstack([bboxes, confidence.reshape(-1, 1), labels.reshape(-1, 1)])
 
         self.frame_count += 1
         self.height, self.width = img.shape[:2]
@@ -422,8 +423,7 @@ class DeepOCSort(object):
             dets_embs = np.ones((dets.shape[0], 1))
         else:
             # (Ndets x X) [512, 1024, 2048]
-            # dets_embs = self.embedder.compute_embedding(img, dets[:, :4], tag)
-            dets_embs = self.model.get_features(dets[:, :4], img)
+            dets_embs = self.model.get_features(dets[:, 0:4], img)
 
         # CMC
         if not self.cmc_off:
@@ -505,7 +505,6 @@ class DeepOCSort(object):
             left_trks = last_boxes[unmatched_trks]
             left_trks_embs = trk_embs[unmatched_trks]
 
-            print("left_dets.shape, left_trks.shape", left_dets.shape, left_trks.shape)
             iou_left = self.asso_func(left_dets, left_trks)
             # TODO: is better without this
             emb_cost_left = left_dets_embs @ left_trks_embs.T
@@ -574,11 +573,10 @@ class DeepOCSort(object):
             # remove dead tracklet
             if trk.time_since_update > self.max_age:
                 self.trackers.pop(i)
-        # if len(ret) > 0:
-        #     return np.concatenate(ret)
-        # return np.array([])
-
-        print('check deepocsort:', len(ret))
         if len(ret) > 0:
-            ret = np.concatenate(ret)
-        return convert_boxmot_tracker_to_rtm(ret)
+            return np.concatenate(ret)
+        return np.array([])
+
+        # if len(ret) > 0:
+        #     ret = np.concatenate(ret)
+        # return convert_boxmot_tracker_to_rtm(ret)
