@@ -5,7 +5,7 @@ import csv
 from pathlib import Path
 import numpy as np
 import supervision as sv
-
+import json
 from typing import List, Union, Generator, Literal
 
 from rtm.data import load_inference_source
@@ -37,7 +37,7 @@ class Result(BaseModel):
     kpts: List  # shape -> (number of humans, 17, 2)
     bboxes: List  # shape -> (number of humans, 4)
     speed: dict  # {'bboxes': ... ms, 'kpts': ... ms} -> used to record the milliseconds of the inference time
-
+    track_id: List  # shape -> (number of humans)
     save_dirs: str  # save directory
     name: str  # file name
 
@@ -256,6 +256,7 @@ class RTM:
                 im=im,
                 kpts=kpts,
                 bboxes=detections.xyxy,  # detections.xyxy,
+                track_id=detections.track_id,
                 speed={
                     "bboxes": profilers[0].dt * 1e3 / 1,
                     "track": profilers[1].dt * 1e3 / 1,
@@ -292,8 +293,15 @@ class RTM:
                 self.save_csv(
                     str(save_dirs / p.with_suffix(".csv").name),
                     [
-                        str(index),
-                        str([{i: kpt} for i, kpt in zip(detections.track_id, kpts)]),
+                        index,
+                        json.dumps(
+                            {
+                                i: kpt
+                                for i, kpt in zip(
+                                    detections.track_id.tolist(), kpts.tolist()
+                                )
+                            }
+                        ),
                     ],
                 )
 

@@ -6,7 +6,7 @@ def convert_boxmot_tracker_to_rtm(outputs, detections) -> Detections:
     if len(outputs) > 0:
         return Detections(
             xyxy=outputs[:, :4],
-            track_id=outputs[:, 4],
+            track_id=outputs[:, 4].astype("float").astype("int"),
             confidence=outputs[:, 5],
             labels=outputs[:, 6],
         )
