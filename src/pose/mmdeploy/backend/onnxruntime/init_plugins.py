@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import os
 
-from rtm.mmdeploy.utils import get_file_path
+from pose.mmdeploy.utils import get_file_path
 
 
 def get_ops_path() -> str:

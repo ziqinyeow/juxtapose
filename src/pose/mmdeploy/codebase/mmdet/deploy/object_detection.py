@@ -9,9 +9,9 @@ from mmengine.dataset import pseudo_collate
 from mmengine.model import BaseDataPreprocessor
 from mmengine.registry import Registry
 
-from rtm.mmdeploy.codebase.base import CODEBASE, BaseTask, MMCodebase
-from rtm.mmdeploy.utils import Backend, Codebase, Task
-from rtm.mmdeploy.utils.config_utils import (
+from pose.mmdeploy.codebase.base import CODEBASE, BaseTask, MMCodebase
+from pose.mmdeploy.utils import Backend, Codebase, Task
+from pose.mmdeploy.utils.config_utils import (
     get_backend,
     get_input_shape,
     is_dynamic_shape,
@@ -29,9 +29,9 @@ class MMDetection(MMCodebase):
     @classmethod
     def register_deploy_modules(cls):
         """register all rewriters for mmdet."""
-        import rtm.mmdeploy.codebase.mmdet.models  # noqa: F401
-        import rtm.mmdeploy.codebase.mmdet.ops
-        import rtm.mmdeploy.codebase.mmdet.structures  # noqa: F401
+        import pose.mmdeploy.codebase.mmdet.models  # noqa: F401
+        import pose.mmdeploy.codebase.mmdet.ops
+        import pose.mmdeploy.codebase.mmdet.structures  # noqa: F401
 
     @classmethod
     def register_all_modules(cls):

@@ -4,8 +4,8 @@ from typing import List
 import torch
 from torch import Tensor
 
-from rtm.mmdeploy.core import SYMBOLIC_REWRITER
-from rtm.mmdeploy.utils import Backend, get_backend, get_ir_config
+from pose.mmdeploy.core import SYMBOLIC_REWRITER
+from pose.mmdeploy.utils import Backend, get_backend, get_ir_config
 
 
 # Here using mmcv.ops.roi_align.__self__ to find

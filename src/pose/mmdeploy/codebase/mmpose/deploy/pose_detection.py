@@ -12,8 +12,8 @@ import torch
 from mmengine.model import BaseDataPreprocessor
 from mmengine.registry import Registry
 
-from rtm.mmdeploy.codebase.base import CODEBASE, BaseTask, MMCodebase
-from rtm.mmdeploy.utils import Codebase, Task, get_input_shape, get_root_logger
+from pose.mmdeploy.codebase.base import CODEBASE, BaseTask, MMCodebase
+from pose.mmdeploy.utils import Codebase, Task, get_input_shape, get_root_logger
 
 
 def process_model_config(
@@ -129,10 +129,10 @@ class MMPose(MMCodebase):
     @classmethod
     def register_deploy_modules(cls):
         """register rewritings."""
-        import rtm.mmdeploy.codebase.mmdet.models
-        import rtm.mmdeploy.codebase.mmdet.ops
-        import rtm.mmdeploy.codebase.mmdet.structures
-        import rtm.mmdeploy.codebase.mmpose.models  # noqa: F401
+        import pose.mmdeploy.codebase.mmdet.models
+        import pose.mmdeploy.codebase.mmdet.ops
+        import pose.mmdeploy.codebase.mmdet.structures
+        import pose.mmdeploy.codebase.mmpose.models  # noqa: F401
 
     @classmethod
     def register_all_modules(cls):

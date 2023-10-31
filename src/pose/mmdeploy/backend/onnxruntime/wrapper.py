@@ -6,8 +6,8 @@ import numpy as np
 import onnxruntime as ort
 import torch
 
-from rtm.mmdeploy.utils import Backend, get_root_logger, parse_device_id
-from rtm.mmdeploy.utils.timer import TimeCounter
+from pose.mmdeploy.utils import Backend, get_root_logger, parse_device_id
+from pose.mmdeploy.utils.timer import TimeCounter
 from ..base import BACKEND_WRAPPER, BaseWrapper
 from .init_plugins import get_ops_path
 
@@ -24,7 +24,7 @@ class ORTWrapper(BaseWrapper):
            model.
 
     Examples:
-        >>> from rtm.mmdeploy.backend.onnxruntime import ORTWrapper
+        >>> from pose.mmdeploy.backend.onnxruntime import ORTWrapper
         >>> import torch
         >>>
         >>> onnx_file = 'model.onnx'

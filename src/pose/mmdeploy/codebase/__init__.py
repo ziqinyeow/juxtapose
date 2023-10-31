@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from typing import List
 
-from rtm.mmdeploy.utils import Codebase
+from pose.mmdeploy.utils import Codebase
 from .base import BaseTask, MMCodebase, get_codebase_class
 
 extra_dependent_library = {Codebase.MMOCR: ["mmdet"], Codebase.MMROTATE: ["mmdet"]}

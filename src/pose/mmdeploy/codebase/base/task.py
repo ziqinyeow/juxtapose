@@ -11,17 +11,17 @@ from mmengine import Config
 from mmengine.model import BaseDataPreprocessor
 from torch.utils.data import DataLoader, Dataset
 
-from rtm.mmdeploy.utils import (
+from pose.mmdeploy.utils import (
     get_backend_config,
     get_codebase,
     get_codebase_config,
     get_root_logger,
 )
-from rtm.mmdeploy.utils.config_utils import (
+from pose.mmdeploy.utils.config_utils import (
     get_codebase_external_module,
     get_rknn_quantization,
 )
-from rtm.mmdeploy.utils.dataset import is_can_sort_dataset, sort_dataset
+from pose.mmdeploy.utils.dataset import is_can_sort_dataset, sort_dataset
 
 
 class BaseTask(metaclass=ABCMeta):
@@ -159,7 +159,7 @@ class BaseTask(metaclass=ABCMeta):
             Dataset: The built dataset.
         """
         backend_cfg = get_backend_config(self.deploy_cfg)
-        from rtm.mmdeploy.utils import load_config
+        from pose.mmdeploy.utils import load_config
 
         dataset_cfg = load_config(dataset_cfg)[0]
         if "pipeline" in backend_cfg:

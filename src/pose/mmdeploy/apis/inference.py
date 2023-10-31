@@ -15,7 +15,7 @@ def inference_model(
     """Run inference with PyTorch or backend model and show results.
 
     Examples:
-        >>> from rtm.mmdeploy.apis import inference_model
+        >>> from pose.mmdeploy.apis import inference_model
         >>> model_cfg = ('mmdetection/configs/fcos/'
                          'fcos_r50_caffe_fpn_gn-head_1x_coco.py')
         >>> deploy_cfg = ('configs/mmdet/detection/'
@@ -39,11 +39,11 @@ def inference_model(
     """
     import torch
 
-    from rtm.mmdeploy.utils import get_input_shape, load_config
+    from pose.mmdeploy.utils import get_input_shape, load_config
 
     deploy_cfg, model_cfg = load_config(deploy_cfg, model_cfg)
 
-    from rtm.mmdeploy.apis.utils import build_task_processor
+    from pose.mmdeploy.apis.utils import build_task_processor
 
     task_processor = build_task_processor(model_cfg, deploy_cfg, device)
 

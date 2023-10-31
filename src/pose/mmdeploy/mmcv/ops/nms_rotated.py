@@ -2,8 +2,8 @@
 import torch
 from torch import Tensor
 
-import rtm.mmdeploy
-from rtm.mmdeploy.core import FUNCTION_REWRITER, mark
+import pose.mmdeploy
+from pose.mmdeploy.core import FUNCTION_REWRITER, mark
 
 
 class ONNXNMSRotatedOp(torch.autograd.Function):
@@ -346,7 +346,7 @@ def multiclass_nms_rotated(
     keep_top_k: int = -1,
 ):
     """Wrapper function for `_multiclass_nms`."""
-    return rtm.mmdeploy.mmcv.ops.nms_rotated._multiclass_nms_rotated(
+    return pose.mmdeploy.mmcv.ops.nms_rotated._multiclass_nms_rotated(
         boxes,
         scores,
         max_output_boxes_per_class=max_output_boxes_per_class,

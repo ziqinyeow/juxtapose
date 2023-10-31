@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(
@@ -63,7 +63,7 @@ def tblr2bboxes(
     ymax = prior_centers[..., 1].unsqueeze(-1) + bottom
 
     if clip_border and max_shape is not None:
-        from rtm.mmdeploy.codebase.mmdet.deploy import clip_bboxes
+        from pose.mmdeploy.codebase.mmdet.deploy import clip_bboxes
 
         xmin, ymin, xmax, ymax = clip_bboxes(xmin, ymin, xmax, ymax, max_shape)
     bboxes = torch.cat([xmin, ymin, xmax, ymax], dim=-1).view(priors.size())

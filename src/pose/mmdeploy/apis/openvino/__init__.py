@@ -1,11 +1,11 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from rtm.mmdeploy.backend.openvino import is_available
+from pose.mmdeploy.backend.openvino import is_available
 
 __all__ = ["is_available"]
 
 if is_available():
-    from rtm.mmdeploy.backend.openvino.onnx2openvino import from_onnx as _from_onnx
-    from rtm.mmdeploy.backend.openvino.onnx2openvino import get_output_model_file
+    from pose.mmdeploy.backend.openvino.onnx2openvino import from_onnx as _from_onnx
+    from pose.mmdeploy.backend.openvino.onnx2openvino import get_output_model_file
     from ..core import PIPELINE_MANAGER
 
     from_onnx = PIPELINE_MANAGER.register_pipeline()(_from_onnx)

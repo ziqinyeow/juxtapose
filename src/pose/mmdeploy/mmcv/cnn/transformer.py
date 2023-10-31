@@ -3,8 +3,8 @@
 import torch
 from torch import Tensor
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.utils import Backend
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.utils import Backend
 
 
 class MultiHeadAttentionop(torch.autograd.Function):
@@ -90,7 +90,7 @@ def multiheadattention__forward__ncnn(
     key_pos=None,
     attn_mask=None,
     key_padding_mask=None,
-    **kwargs
+    **kwargs,
 ):
     """Rewrite `forward` of MultiheadAttention used in vision_transformer for
     ncnn backend.

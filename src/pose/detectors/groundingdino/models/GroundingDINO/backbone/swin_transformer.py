@@ -18,7 +18,7 @@ import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 
-from rtm.detectors.groundingdino.util.misc import NestedTensor
+from pose.detectors.groundingdino.util.misc import NestedTensor
 
 
 class Mlp(nn.Module):

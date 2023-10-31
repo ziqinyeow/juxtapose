@@ -3,8 +3,8 @@
 # https://github.com/pytorch/pytorch/blob/9ade03959392e5a90b74261012de1d806cab2253/torch/onnx/symbolic_opset9.py
 from torch.onnx.symbolic_helper import parse_args
 
-from rtm.mmdeploy.core import SYMBOLIC_REWRITER
-from rtm.mmdeploy.utils import Backend
+from pose.mmdeploy.core import SYMBOLIC_REWRITER
+from pose.mmdeploy.utils import Backend
 
 
 @parse_args("v", "v", "f", "f", "i", "i")

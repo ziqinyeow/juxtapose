@@ -6,10 +6,10 @@ import torch
 from mmdet.utils import OptConfigType
 from torch import Tensor
 
-from rtm.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
-from rtm.mmdeploy.core import FUNCTION_REWRITER, mark
-from rtm.mmdeploy.mmcv.ops import multiclass_nms
-from rtm.mmdeploy.utils import Backend, is_dynamic_shape
+from pose.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
+from pose.mmdeploy.core import FUNCTION_REWRITER, mark
+from pose.mmdeploy.mmcv.ops import multiclass_nms
+from pose.mmdeploy.utils import Backend, is_dynamic_shape
 
 
 @FUNCTION_REWRITER.register_rewriter(
@@ -21,7 +21,7 @@ def yolov3_head__predict_by_feat(
     cfg: OptConfigType = None,
     rescale: bool = False,
     with_nms: bool = True,
-    **kwargs
+    **kwargs,
 ):
     """Rewrite `predict_by_feat` of `YOLOV3Head` for default backend.
 
@@ -238,7 +238,7 @@ def yolov3_head__predict_by_feat__ncnn(
                     biases_f=args[-3],
                     mask_f=args[-2],
                     anchors_scale_f=anchors_scale,
-                    outputs=1
+                    outputs=1,
                 )
 
         return Yolov3DetectionOutputOp.apply(
@@ -249,7 +249,7 @@ def yolov3_head__predict_by_feat__ncnn(
             iou_threshold,
             anchor_biases,
             bias_masks,
-            self.featmap_strides
+            self.featmap_strides,
         )
 
     output = _create_yolov3_detection_output()

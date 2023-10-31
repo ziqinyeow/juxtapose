@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from mmengine import Registry
 
-from rtm.mmdeploy.utils.config_utils import Backend
+from pose.mmdeploy.utils.config_utils import Backend
 
 
 def __build_backend_wrapper_class(backend: Backend, registry: Registry):

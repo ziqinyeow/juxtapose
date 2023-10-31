@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 
-from rtm.mmdeploy.codebase.mmdet.deploy import clip_bboxes
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.codebase.mmdet.deploy import clip_bboxes
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(

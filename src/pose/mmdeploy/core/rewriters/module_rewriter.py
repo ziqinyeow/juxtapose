@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Union
 import mmengine
 from torch import nn
 
-from rtm.mmdeploy.utils.constants import IR, Backend
+from pose.mmdeploy.utils.constants import IR, Backend
 from .rewriter_utils import Checker, RewriterRegistry, collect_env, eval_with_import
 
 
@@ -33,7 +33,7 @@ class ModuleRewriter:
         backend: str = Backend.DEFAULT.value,
         ir: IR = IR.DEFAULT,
         extra_checkers: Optional[Union[Checker, List[Checker]]] = None,
-        **kwargs
+        **kwargs,
     ):
         """The interface of module rewriter decorator.
 
@@ -58,7 +58,7 @@ class ModuleRewriter:
         backend: str = Backend.DEFAULT.value,
         ir: IR = IR.DEFAULT,
         recursive: bool = True,
-        **kwargs
+        **kwargs,
     ) -> nn.Module:
         """Replace the models that was registered.
 
@@ -73,7 +73,7 @@ class ModuleRewriter:
             nn.Module: THe patched model.
 
         Examples:
-            >>> from rtm.mmdeploy.core import patch_model
+            >>> from pose.mmdeploy.core import patch_model
             >>> patched_model = patch_model(model, cfg=deploy_cfg,
             >>>                             backend=backend)
         """

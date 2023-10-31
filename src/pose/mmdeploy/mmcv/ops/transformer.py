@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.utils import Backend
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.utils import Backend
 
 
 @FUNCTION_REWRITER.register_rewriter(

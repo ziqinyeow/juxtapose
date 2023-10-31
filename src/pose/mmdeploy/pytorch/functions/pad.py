@@ -3,7 +3,7 @@ import torch
 import torch.onnx.symbolic_helper as sym_help
 from packaging.version import parse as version_parse
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 # modified from

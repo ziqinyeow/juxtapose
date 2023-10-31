@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from rtm.mmdeploy.backend.snpe import from_onnx as _from_onnx
-from rtm.mmdeploy.backend.snpe import is_available
+from pose.mmdeploy.backend.snpe import from_onnx as _from_onnx
+from pose.mmdeploy.backend.snpe import is_available
 from ..core import PIPELINE_MANAGER
 
 from_onnx = PIPELINE_MANAGER.register_pipeline()(_from_onnx)
@@ -9,7 +9,7 @@ __all__ = ["is_available", "from_onnx"]
 
 if is_available():
     try:
-        from rtm.mmdeploy.backend.snpe.onnx2dlc import (
+        from pose.mmdeploy.backend.snpe.onnx2dlc import (
             get_env_key,
             get_output_model_file,
         )

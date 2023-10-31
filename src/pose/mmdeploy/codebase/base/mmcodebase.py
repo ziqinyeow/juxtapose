@@ -4,7 +4,7 @@ from abc import ABCMeta
 from mmengine import Config
 from mmengine.registry import Registry
 
-from rtm.mmdeploy.utils import Codebase, Task, get_task_type
+from pose.mmdeploy.utils import Codebase, Task, get_task_type
 from .task import BaseTask
 
 
@@ -78,13 +78,13 @@ def get_codebase_class(codebase: Codebase) -> MMCodebase:
     import importlib
 
     try:
-        importlib.import_module(f"rtm.mmdeploy.codebase.{codebase.value}.deploy")
+        importlib.import_module(f"pose.mmdeploy.codebase.{codebase.value}.deploy")
     except ImportError as e:
-        from rtm.mmdeploy.utils import get_root_logger
+        from pose.mmdeploy.utils import get_root_logger
 
         logger = get_root_logger()
         logger.warn(
-            f"Import rtm.mmdeploy.codebase.{codebase.value}.deploy failed"
+            f"Import pose.mmdeploy.codebase.{codebase.value}.deploy failed"
             "Please check whether the module is the custom module."
             f"{e}"
         )

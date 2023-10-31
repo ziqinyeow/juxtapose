@@ -4,9 +4,14 @@ from typing import Any, Optional, Sequence
 
 import mmengine
 
-from rtm.mmdeploy.codebase import BaseTask, get_codebase_class, import_codebase
-from rtm.mmdeploy.utils import get_backend, get_codebase, get_task_type, parse_device_id
-from rtm.mmdeploy.utils.config_utils import get_codebase_external_module
+from pose.mmdeploy.codebase import BaseTask, get_codebase_class, import_codebase
+from pose.mmdeploy.utils import (
+    get_backend,
+    get_codebase,
+    get_task_type,
+    parse_device_id,
+)
+from pose.mmdeploy.utils.config_utils import get_codebase_external_module
 from ..core import PIPELINE_MANAGER
 
 
@@ -94,7 +99,7 @@ def to_backend(
     Returns:
         Sequence[str]: Backend files.
     """
-    from rtm.mmdeploy.backend.base import get_backend_manager
+    from pose.mmdeploy.backend.base import get_backend_manager
 
     backend_mgr = get_backend_manager(backend_name)
     return backend_mgr.to_backend(

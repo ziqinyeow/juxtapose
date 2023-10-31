@@ -120,7 +120,7 @@ class BackendManagerRegistry:
             enum_name (Optional[str], optional): enum name of the backend.
                 if not given, the upper case of name would be used.
         """
-        from rtm.mmdeploy.utils import get_root_logger
+        from pose.mmdeploy.utils import get_root_logger
 
         logger = get_root_logger()
 
@@ -128,7 +128,7 @@ class BackendManagerRegistry:
             enum_name = name.upper()
 
         def wrap_manager(cls):
-            from rtm.mmdeploy.utils import Backend
+            from pose.mmdeploy.utils import Backend
 
             if not hasattr(Backend, enum_name):
                 from aenum import extend_enum
@@ -157,7 +157,7 @@ class BackendManagerRegistry:
         """
         # try import backend if backend is in `mmdeploy.backend`
         try:
-            importlib.import_module("rtm.mmdeploy.backend." + name)
+            importlib.import_module("pose.mmdeploy.backend." + name)
         except Exception:
             pass
         return self._module_dict.get(name, None)

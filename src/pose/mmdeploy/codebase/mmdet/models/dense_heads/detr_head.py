@@ -5,7 +5,7 @@ import torch
 from torch import Tensor
 from torch.nn import functional as F
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(
@@ -63,7 +63,7 @@ def detrhead__predict_by_feat__default(
     det_bboxes = det_bboxes * shape_scale
     # dynamically clip bboxes
     x1, y1, x2, y2 = det_bboxes.split((1, 1, 1, 1), dim=-1)
-    from rtm.mmdeploy.codebase.mmdet.deploy import clip_bboxes
+    from pose.mmdeploy.codebase.mmdet.deploy import clip_bboxes
 
     x1, y1, x2, y2 = clip_bboxes(x1, y1, x2, y2, img_shape)
     det_bboxes = torch.cat([x1, y1, x2, y2], dim=-1)

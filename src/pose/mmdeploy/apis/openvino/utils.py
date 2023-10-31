@@ -3,9 +3,9 @@ from typing import Dict, List
 
 import mmengine
 
-from rtm.mmdeploy.backend.openvino import ModelOptimizerOptions
-from rtm.mmdeploy.utils import get_model_inputs
-from rtm.mmdeploy.utils.config_utils import get_backend_config, get_ir_config
+from pose.mmdeploy.backend.openvino import ModelOptimizerOptions
+from pose.mmdeploy.utils import get_model_inputs
+from pose.mmdeploy.utils.config_utils import get_backend_config, get_ir_config
 
 
 def update_input_names(

@@ -11,7 +11,7 @@ from torch.onnx.symbolic_helper import (
     parse_args,
 )
 
-from rtm.mmdeploy.core import SYMBOLIC_REWRITER
+from pose.mmdeploy.core import SYMBOLIC_REWRITER
 
 
 @parse_args("v", "i", "v", "v", "f", "i")

@@ -6,10 +6,10 @@ from mmengine.config import ConfigDict
 from mmengine.structures import InstanceData
 from torch import Tensor
 
-from rtm.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
-from rtm.mmdeploy.core import FUNCTION_REWRITER, mark
-from rtm.mmdeploy.mmcv.ops import multiclass_nms
-from rtm.mmdeploy.utils import Backend
+from pose.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
+from pose.mmdeploy.core import FUNCTION_REWRITER, mark
+from pose.mmdeploy.mmcv.ops import multiclass_nms
+from pose.mmdeploy.utils import Backend
 
 
 @FUNCTION_REWRITER.register_rewriter(
@@ -172,9 +172,9 @@ def yolox_head__predict_by_feat__ncnn(
         output__ncnn (Tensor): outputs, shape is [N, num_det, 6].
     """
     ctx = FUNCTION_REWRITER.get_context()
-    from rtm.mmdeploy.codebase.mmdet.ops import ncnn_detection_output_forward
-    from rtm.mmdeploy.utils import get_root_logger
-    from rtm.mmdeploy.utils.config_utils import is_dynamic_shape
+    from pose.mmdeploy.codebase.mmdet.ops import ncnn_detection_output_forward
+    from pose.mmdeploy.utils import get_root_logger
+    from pose.mmdeploy.utils.config_utils import is_dynamic_shape
 
     dynamic_flag = is_dynamic_shape(ctx.cfg)
     if dynamic_flag:

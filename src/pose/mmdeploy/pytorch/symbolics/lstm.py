@@ -8,7 +8,7 @@ import torch.onnx.symbolic_helper as sym_help
 from torch.onnx.symbolic_helper import _unimplemented
 from torch.onnx.symbolic_opset9 import unused
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(
@@ -191,7 +191,7 @@ def generic_rnn__ncnn(
                 outputs=2,
                 hidden_size_i=hidden_size,
                 activations_s=activation,
-                **extra_kwargs
+                **extra_kwargs,
             )
         elif variant == "GRU":
             prev_output, h_out = g.op(
@@ -200,7 +200,7 @@ def generic_rnn__ncnn(
                 outputs=2,
                 hidden_size_i=hidden_size,
                 linear_before_reset_i=1,
-                **extra_kwargs
+                **extra_kwargs,
             )
         elif variant == "LSTM":
             # g.op will add some node to h0 and c0,
@@ -210,7 +210,7 @@ def generic_rnn__ncnn(
                 *inputs,
                 outputs=3,
                 hidden_size_i=hidden_size,
-                **extra_kwargs
+                **extra_kwargs,
             )
         if bidirectional:
             # The ONNX RNN/GRU/LSTM produce an output of dimensions

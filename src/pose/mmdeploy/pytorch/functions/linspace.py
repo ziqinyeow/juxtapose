@@ -3,7 +3,7 @@
 import torch
 from torch.types import Number
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(func_name="torch.linspace")

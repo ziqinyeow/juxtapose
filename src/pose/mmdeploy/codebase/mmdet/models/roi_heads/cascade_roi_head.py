@@ -6,7 +6,7 @@ from mmdet.structures.bbox import get_box_tensor
 from mmdet.utils import ConfigType
 from torch import Tensor
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(

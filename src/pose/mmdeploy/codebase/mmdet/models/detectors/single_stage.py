@@ -6,8 +6,8 @@ from mmdet.models.detectors.base import ForwardResults
 from mmdet.structures import DetDataSample
 from mmdet.structures.det_data_sample import OptSampleList
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER, mark
-from rtm.mmdeploy.utils import is_dynamic_shape
+from pose.mmdeploy.core import FUNCTION_REWRITER, mark
+from pose.mmdeploy.utils import is_dynamic_shape
 
 
 @mark("detector_forward", inputs=["input"], outputs=["dets", "labels", "masks"])
@@ -52,7 +52,7 @@ def single_stage_detector__forward(
     batch_inputs: torch.Tensor,
     data_samples: OptSampleList = None,
     mode: str = "tensor",
-    **kwargs
+    **kwargs,
 ) -> ForwardResults:
     """Rewrite `forward` for default backend.
 

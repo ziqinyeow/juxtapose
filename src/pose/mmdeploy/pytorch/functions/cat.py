@@ -4,8 +4,8 @@ from typing import Sequence
 import torch
 from torch import Tensor
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.utils import get_dynamic_axes
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.utils import get_dynamic_axes
 
 
 @FUNCTION_REWRITER.register_rewriter(func_name="torch.cat", backend="tensorrt")

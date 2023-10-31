@@ -3,7 +3,7 @@ from typing import List
 
 from torch import Tensor
 
-from rtm.mmdeploy.core import SYMBOLIC_REWRITER
+from pose.mmdeploy.core import SYMBOLIC_REWRITER
 
 
 # Here using mmcv.ops.roi_align_rotated.__self__ to find

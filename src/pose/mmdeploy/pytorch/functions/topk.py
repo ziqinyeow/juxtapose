@@ -3,8 +3,8 @@ from typing import Optional
 
 import torch
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.utils import get_root_logger
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.utils import get_root_logger
 
 
 @FUNCTION_REWRITER.register_rewriter(func_name="torch.topk", backend="default")
@@ -51,7 +51,7 @@ def topk__tensorrt(
     """
     ctx = FUNCTION_REWRITER.get_context()
     # https://docs.nvidia.com/deeplearning/tensorrt/developer-guide/index.html#topKsetup
-    from rtm.mmdeploy.utils.constants import TENSORRT_MAX_TOPK
+    from pose.mmdeploy.utils.constants import TENSORRT_MAX_TOPK
 
     if dim is None:
         dim = int(input.ndim - 1)

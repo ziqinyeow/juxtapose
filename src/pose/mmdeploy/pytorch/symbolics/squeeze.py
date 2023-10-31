@@ -2,8 +2,8 @@
 import torch
 import torch.onnx.symbolic_helper as sym_help
 
-from rtm.mmdeploy.core import SYMBOLIC_REWRITER
-from rtm.mmdeploy.utils import get_ir_config
+from pose.mmdeploy.core import SYMBOLIC_REWRITER
+from pose.mmdeploy.utils import get_ir_config
 
 
 @SYMBOLIC_REWRITER.register_symbolic("squeeze", is_pytorch=True)

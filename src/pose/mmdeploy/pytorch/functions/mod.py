@@ -4,8 +4,8 @@ from typing import Union
 import torch
 from packaging import version
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.utils.constants import Backend
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.utils.constants import Backend
 
 
 # TODO add version control when MOD is supported by TensorRT

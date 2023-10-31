@@ -4,7 +4,7 @@ from typing import Callable, Dict, Iterable, Optional
 import onnx
 from onnx.helper import get_attribute_value
 
-from rtm.mmdeploy.utils import get_root_logger
+from pose.mmdeploy.utils import get_root_logger
 
 
 def attribute_to_dict(attr: onnx.AttributeProto) -> Dict:

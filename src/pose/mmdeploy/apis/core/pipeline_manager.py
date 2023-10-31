@@ -5,7 +5,7 @@ import logging
 from functools import wraps
 from typing import Any, Callable, Dict, List, Optional, Sequence, Union
 
-from rtm.mmdeploy.utils import get_root_logger
+from pose.mmdeploy.utils import get_root_logger
 
 try:
     import torch.multiprocessing as mp

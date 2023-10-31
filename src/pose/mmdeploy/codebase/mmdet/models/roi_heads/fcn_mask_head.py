@@ -6,9 +6,9 @@ import torch.nn.functional as F
 from mmengine import ConfigDict
 from torch import Tensor
 
-from rtm.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.utils import Backend, get_backend
+from pose.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.utils import Backend, get_backend
 
 
 @FUNCTION_REWRITER.register_rewriter(

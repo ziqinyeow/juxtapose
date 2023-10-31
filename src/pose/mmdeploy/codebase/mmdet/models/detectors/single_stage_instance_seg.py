@@ -3,8 +3,8 @@ import torch
 from mmdet.models.detectors.base import ForwardResults
 from mmdet.structures.det_data_sample import OptSampleList
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER, mark
-from rtm.mmdeploy.utils import is_dynamic_shape
+from pose.mmdeploy.core import FUNCTION_REWRITER, mark
+from pose.mmdeploy.utils import is_dynamic_shape
 from .single_stage import _set_metainfo
 
 
@@ -32,7 +32,7 @@ def single_stage_instance_segmentor__forward(
     batch_inputs: torch.Tensor,
     data_samples: OptSampleList = None,
     mode: str = "tensor",
-    **kwargs
+    **kwargs,
 ) -> ForwardResults:
     """Rewrite `forward` for default backend.
     Support configured dynamic/static shape for model input and return

@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # Modified from:
 # https://github.com/pytorch/pytorch/blob/9ade03959392e5a90b74261012de1d806cab2253/torch/onnx/symbolic_opset9.py
-from rtm.mmdeploy.core import SYMBOLIC_REWRITER
+from pose.mmdeploy.core import SYMBOLIC_REWRITER
 
 
 @SYMBOLIC_REWRITER.register_symbolic(

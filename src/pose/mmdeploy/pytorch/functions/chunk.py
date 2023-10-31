@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.utils import IR
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.utils import IR
 
 
 @FUNCTION_REWRITER.register_rewriter(func_name="torch.Tensor.chunk", backend="ncnn")

@@ -10,8 +10,8 @@ from mmengine.model import BaseDataPreprocessor
 from mmengine.registry import Registry
 from mmengine.structures import BaseDataElement, InstanceData
 
-from rtm.mmdeploy.codebase.base import BaseBackendModel
-from rtm.mmdeploy.utils import Backend, get_backend, get_codebase_config, load_config
+from pose.mmdeploy.codebase.base import BaseBackendModel
+from pose.mmdeploy.utils import Backend, get_backend, get_codebase_config, load_config
 
 __BACKEND_MODEL = Registry("backend_segmentors")
 

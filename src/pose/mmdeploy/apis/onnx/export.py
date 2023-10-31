@@ -5,9 +5,9 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 import torch
 
-from rtm.mmdeploy.apis.core import PIPELINE_MANAGER
-from rtm.mmdeploy.core import RewriterContext, patch_model
-from rtm.mmdeploy.utils import IR, Backend, get_ir_config, get_root_logger
+from pose.mmdeploy.apis.core import PIPELINE_MANAGER
+from pose.mmdeploy.core import RewriterContext, patch_model
+from pose.mmdeploy.utils import IR, Backend, get_ir_config, get_root_logger
 from .optimizer import *  # noqa
 from .passes import optimize_onnx
 
@@ -32,7 +32,7 @@ def export(
     `torch.onnx.export` with some enhancement.
 
     Examples:
-        >>> from rtm.mmdeploy.apis.onnx import export
+        >>> from pose.mmdeploy.apis.onnx import export
         >>>
         >>> model = create_model()
         >>> args = get_input_tensor()

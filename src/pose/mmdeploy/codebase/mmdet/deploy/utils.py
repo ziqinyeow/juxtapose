@@ -5,9 +5,9 @@ import mmengine
 import torch
 from torch import Tensor
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.core.rewriters.rewriter_utils import LibVersionChecker
-from rtm.mmdeploy.utils import Backend, load_config
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.core.rewriters.rewriter_utils import LibVersionChecker
+from pose.mmdeploy.utils import Backend, load_config
 
 
 def get_post_processing_params(deploy_cfg: Union[str, mmengine.Config]):
@@ -195,7 +195,7 @@ def __gather_topk(
     *inputs: Sequence[torch.Tensor],
     inds: torch.Tensor,
     batch_size: int,
-    is_batched: bool = True
+    is_batched: bool = True,
 ) -> Tuple[torch.Tensor]:
     """The default implementation of gather_topk."""
     if is_batched:
@@ -231,7 +231,7 @@ def __gather_topk__trt(
     *inputs: Sequence[torch.Tensor],
     inds: torch.Tensor,
     batch_size: int,
-    is_batched: bool = True
+    is_batched: bool = True,
 ) -> Tuple[torch.Tensor]:
     """TensorRT gather_topk."""
     ctx = FUNCTION_REWRITER.get_context()
@@ -264,7 +264,7 @@ def __gather_topk__nonbatch(
     *inputs: Sequence[torch.Tensor],
     inds: torch.Tensor,
     batch_size: int,
-    is_batched: bool = True
+    is_batched: bool = True,
 ) -> Tuple[torch.Tensor]:
     """Single batch gather_topk."""
     assert batch_size == 1
@@ -278,7 +278,7 @@ def gather_topk(
     *inputs: Sequence[torch.Tensor],
     inds: torch.Tensor,
     batch_size: int,
-    is_batched: bool = True
+    is_batched: bool = True,
 ) -> Tuple[torch.Tensor]:
     """Gather topk of each tensor.
 
@@ -293,7 +293,7 @@ def gather_topk(
     """
     import mmdeploy
 
-    outputs = rtm.mmdeploy.codebase.mmdet.deploy.utils.__gather_topk(
+    outputs = pose.mmdeploy.codebase.mmdet.deploy.utils.__gather_topk(
         *inputs, inds=inds, batch_size=batch_size, is_batched=is_batched
     )
 

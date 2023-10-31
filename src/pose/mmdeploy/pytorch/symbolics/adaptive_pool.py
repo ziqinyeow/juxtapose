@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 
-from rtm.mmdeploy.core import SYMBOLIC_REWRITER
+from pose.mmdeploy.core import SYMBOLIC_REWRITER
 
 
 @SYMBOLIC_REWRITER.register_symbolic(

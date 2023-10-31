@@ -7,9 +7,9 @@ from mmdet.structures.bbox import get_box_tensor
 from mmengine import ConfigDict
 from torch import Tensor
 
-from rtm.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
-from rtm.mmdeploy.core import FUNCTION_REWRITER, mark
-from rtm.mmdeploy.mmcv.ops import multiclass_nms
+from pose.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
+from pose.mmdeploy.core import FUNCTION_REWRITER, mark
+from pose.mmdeploy.mmcv.ops import multiclass_nms
 
 
 @FUNCTION_REWRITER.register_rewriter(

@@ -3,7 +3,7 @@ from typing import Optional
 
 import torch
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(func_name="torch.Tensor.any")

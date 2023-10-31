@@ -4,8 +4,8 @@ from typing import Union
 import torch
 from torch.types import Number
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.utils.constants import Backend
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.utils.constants import Backend
 
 
 @FUNCTION_REWRITER.register_rewriter(

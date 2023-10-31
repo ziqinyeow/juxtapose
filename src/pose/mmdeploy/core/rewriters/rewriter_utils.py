@@ -7,8 +7,8 @@ from abc import ABCMeta, abstractmethod
 from functools import wraps
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
-import rtm.mmdeploy
-from rtm.mmdeploy.utils.constants import IR, Backend
+import pose.mmdeploy
+from pose.mmdeploy.utils.constants import IR, Backend
 
 
 def eval_with_import(path: str) -> Any:
@@ -74,10 +74,10 @@ def collect_env(backend: Backend, ir: IR, **kwargs) -> Dict:
         Dict: Record the value of Backend and IR as well as the versions of
         libraries.
     """
-    from rtm.mmdeploy.utils import get_backend_version, get_codebase_version
+    from pose.mmdeploy.utils import get_backend_version, get_codebase_version
 
     env = dict(backend=backend, ir=ir)
-    env["mmdeploy"] = rtm.mmdeploy.__version__
+    env["mmdeploy"] = pose.mmdeploy.__version__
     env.update(get_backend_version())
     env.update(get_codebase_version())
     env.update(kwargs)

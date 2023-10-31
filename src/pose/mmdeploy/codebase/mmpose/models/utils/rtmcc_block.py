@@ -4,7 +4,7 @@ import torch
 import torch.nn.functional as F
 from mmpose.models.utils import rope
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(

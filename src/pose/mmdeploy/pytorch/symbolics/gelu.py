@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from torch.onnx import symbolic_helper
 
-from rtm.mmdeploy.core import SYMBOLIC_REWRITER
-from rtm.mmdeploy.utils import Backend
+from pose.mmdeploy.core import SYMBOLIC_REWRITER
+from pose.mmdeploy.utils import Backend
 
 
 @symbolic_helper.parse_args("v")

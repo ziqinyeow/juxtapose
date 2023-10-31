@@ -3,8 +3,8 @@
 import torch.nn.functional as F
 from torch.nn.modules.utils import _pair
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.utils import Backend, get_root_logger, is_dynamic_shape
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.utils import Backend, get_root_logger, is_dynamic_shape
 
 
 @FUNCTION_REWRITER.register_rewriter(

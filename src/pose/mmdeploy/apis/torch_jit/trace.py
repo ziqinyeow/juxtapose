@@ -5,8 +5,8 @@ from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 import torch
 
-from rtm.mmdeploy.core import RewriterContext, patch_model
-from rtm.mmdeploy.utils import IR, Backend, get_ir_config, get_root_logger
+from pose.mmdeploy.core import RewriterContext, patch_model
+from pose.mmdeploy.utils import IR, Backend, get_ir_config, get_root_logger
 from ..core import PIPELINE_MANAGER
 
 
@@ -24,7 +24,7 @@ def trace(
     """A wrapper of `torch.jit.trace` with some enhancement.
 
     Examples:
-        >>> from rtm.mmdeploy.apis.torch_jit import trace
+        >>> from pose.mmdeploy.apis.torch_jit import trace
         >>>
         >>> func = create_model()
         >>> inputs = get_input_tensor()

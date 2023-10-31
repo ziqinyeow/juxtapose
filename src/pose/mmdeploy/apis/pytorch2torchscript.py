@@ -4,7 +4,7 @@ from typing import Any, Optional, Union
 
 import mmengine
 
-from rtm.mmdeploy.apis.core.pipeline_manager import PIPELINE_MANAGER, no_mp
+from pose.mmdeploy.apis.core.pipeline_manager import PIPELINE_MANAGER, no_mp
 
 
 @PIPELINE_MANAGER.register_pipeline()
@@ -33,7 +33,7 @@ def torch2torchscript(
     """
     import torch
 
-    from rtm.mmdeploy.utils import get_backend, get_input_shape, load_config
+    from pose.mmdeploy.utils import get_backend, get_input_shape, load_config
     from .torch_jit import trace
 
     # load deploy_cfg if necessary
@@ -42,7 +42,7 @@ def torch2torchscript(
 
     input_shape = get_input_shape(deploy_cfg)
 
-    from rtm.mmdeploy.apis import build_task_processor
+    from pose.mmdeploy.apis import build_task_processor
 
     task_processor = build_task_processor(model_cfg, deploy_cfg, device)
     torch_model = task_processor.build_pytorch_model(model_checkpoint)

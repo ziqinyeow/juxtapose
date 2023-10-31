@@ -3,10 +3,10 @@ import torch
 from mmcv.ops import RoIAlign
 from torch.autograd import Function
 
-from rtm.mmdeploy.core.optimizers import mark
-from rtm.mmdeploy.core.rewriters import FUNCTION_REWRITER
-from rtm.mmdeploy.utils import get_backend
-from rtm.mmdeploy.utils.constants import Backend
+from pose.mmdeploy.core.optimizers import mark
+from pose.mmdeploy.core.rewriters import FUNCTION_REWRITER
+from pose.mmdeploy.utils import get_backend
+from pose.mmdeploy.utils.constants import Backend
 
 
 class MultiLevelRoiAlign(Function):

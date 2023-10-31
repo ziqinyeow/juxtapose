@@ -4,7 +4,7 @@ from typing import Sequence
 import torch
 from packaging.version import parse
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER, SYMBOLIC_REWRITER
+from pose.mmdeploy.core import FUNCTION_REWRITER, SYMBOLIC_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(func_name="torch.Tensor.__setitem__")

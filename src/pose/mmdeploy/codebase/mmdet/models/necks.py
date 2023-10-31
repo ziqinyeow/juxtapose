@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.utils import Backend, get_root_logger
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.utils import Backend, get_root_logger
 
 
 @FUNCTION_REWRITER.register_rewriter(

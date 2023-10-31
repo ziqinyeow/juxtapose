@@ -11,7 +11,7 @@ try:
 except ImportError:
     import multiprocess as mp
 
-from rtm.mmdeploy.utils.logging import get_logger
+from pose.mmdeploy.utils.logging import get_logger
 
 
 def target_wrapper(
@@ -83,7 +83,7 @@ def deprecate(
 
     Examples:
         >>> from math import ceil
-        >>> from rtm.mmdeploy.utils.utils import deprecate
+        >>> from pose.mmdeploy.utils.utils import deprecate
         >>> @deprecate(status='past', dst_obj=ceil, msg='')
         >>> def my_ceil(num):
         >>>     num = num if(num==int(num)) else int(num) + 1

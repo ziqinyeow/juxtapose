@@ -13,15 +13,15 @@ from mmdet.structures.bbox.transforms import distance2bbox
 from mmengine import ConfigDict
 from torch import Tensor
 
-from rtm.mmdeploy.codebase.mmdet.deploy import (
+from pose.mmdeploy.codebase.mmdet.deploy import (
     gather_topk,
     get_post_processing_params,
     pad_with_value_if_necessary,
 )
-from rtm.mmdeploy.codebase.mmdet.ops import ncnn_detection_output_forward
-from rtm.mmdeploy.core import FUNCTION_REWRITER, mark
-from rtm.mmdeploy.mmcv.ops import multiclass_nms
-from rtm.mmdeploy.utils import Backend, is_dynamic_shape
+from pose.mmdeploy.codebase.mmdet.ops import ncnn_detection_output_forward
+from pose.mmdeploy.core import FUNCTION_REWRITER, mark
+from pose.mmdeploy.mmcv.ops import multiclass_nms
+from pose.mmdeploy.utils import Backend, is_dynamic_shape
 
 
 @FUNCTION_REWRITER.register_rewriter(

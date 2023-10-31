@@ -29,8 +29,8 @@ from transformers import (
     RobertaTokenizerFast,
 )
 
-from rtm.detectors.groundingdino.util import box_ops, get_tokenlizer
-from rtm.detectors.groundingdino.util.misc import (
+from pose.detectors.groundingdino.util import box_ops, get_tokenlizer
+from pose.detectors.groundingdino.util.misc import (
     NestedTensor,
     accuracy,
     get_world_size,
@@ -39,9 +39,9 @@ from rtm.detectors.groundingdino.util.misc import (
     is_dist_avail_and_initialized,
     nested_tensor_from_tensor_list,
 )
-from rtm.detectors.groundingdino.util.utils import get_phrases_from_posmap
-from rtm.detectors.groundingdino.util.visualizer import COCOVisualizer
-from rtm.detectors.groundingdino.util.vl_utils import create_positive_map_from_span
+from pose.detectors.groundingdino.util.utils import get_phrases_from_posmap
+from pose.detectors.groundingdino.util.visualizer import COCOVisualizer
+from pose.detectors.groundingdino.util.vl_utils import create_positive_map_from_span
 
 from ..registry import MODULE_BUILD_FUNCS
 from .backbone import build_backbone

@@ -4,9 +4,9 @@ from packaging import version
 from torch import Tensor
 from torch.onnx import symbolic_helper as sym_help
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER, mark
-from rtm.mmdeploy.utils import IR, is_dynamic_batch
-from rtm.mmdeploy.utils.constants import Backend
+from pose.mmdeploy.core import FUNCTION_REWRITER, mark
+from pose.mmdeploy.utils import IR, is_dynamic_batch
+from pose.mmdeploy.utils.constants import Backend
 from .nms_rotated import multiclass_nms_rotated
 
 
@@ -594,7 +594,7 @@ def multiclass_nms__coreml(
     """
 
     # load custom nms
-    from rtm.mmdeploy.backend.torchscript import get_ops_path, ops_available
+    from pose.mmdeploy.backend.torchscript import get_ops_path, ops_available
 
     assert ops_available(), "coreml require custom torchscript ops support."
     torch.ops.load_library(get_ops_path())

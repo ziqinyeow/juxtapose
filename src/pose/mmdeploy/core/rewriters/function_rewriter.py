@@ -3,7 +3,7 @@ import types
 from collections import defaultdict
 from typing import Any, Callable, Dict, List, MutableSequence, Optional, Tuple, Union
 
-from rtm.mmdeploy.utils import IR, Backend, get_root_logger
+from pose.mmdeploy.utils import IR, Backend, get_root_logger
 from .rewriter_utils import (
     Checker,
     ContextCaller,

@@ -7,8 +7,8 @@ from mmdet.utils import OptConfigType
 from torch import Tensor
 from torch.nn import functional as F
 
-from rtm.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(
@@ -20,7 +20,7 @@ def solohead__predict_by_feat(
     mlvl_cls_scores: List[Tensor],
     batch_img_metas: List[Dict],
     cfg: OptConfigType = None,
-    **kwargs
+    **kwargs,
 ):
     """Rewrite `predict_by_feat` of `SOLOHead` for default backend."""
 

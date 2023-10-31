@@ -6,14 +6,14 @@ from mmengine.config import ConfigDict
 from mmengine.structures import InstanceData
 from torch import Tensor
 
-from rtm.mmdeploy.codebase.mmdet.deploy import (
+from pose.mmdeploy.codebase.mmdet.deploy import (
     gather_topk,
     get_post_processing_params,
     pad_with_value_if_necessary,
 )
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.mmcv.ops import multiclass_nms
-from rtm.mmdeploy.utils import is_dynamic_shape
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.mmcv.ops import multiclass_nms
+from pose.mmdeploy.utils import is_dynamic_shape
 
 
 def _bbox_pre_decode(

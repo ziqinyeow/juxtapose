@@ -4,8 +4,8 @@ from typing import Any, Callable, Dict, Optional, Sequence
 
 import torch
 
-from rtm.mmdeploy.core.rewriters import FUNCTION_REWRITER
-from rtm.mmdeploy.utils import IR, cfg_apply_marks, get_partition_config
+from pose.mmdeploy.core.rewriters import FUNCTION_REWRITER
+from pose.mmdeploy.utils import IR, cfg_apply_marks, get_partition_config
 
 MARK_FUNCTION_COUNT = dict()
 
@@ -89,7 +89,7 @@ def forward_of_mark(
         assert partition_params is not None, "No partition config."
         partition_type = partition_params["type"]
 
-        from rtm.mmdeploy.apis import get_predefined_partition_cfg
+        from pose.mmdeploy.apis import get_predefined_partition_cfg
 
         partition_cfgs = get_predefined_partition_cfg(deploy_cfg, partition_type)
         assert hasattr(rewriter, "calib_file")
@@ -228,7 +228,7 @@ def mark(
         Callable: The process of mark decorator.
 
     Examples:
-        >>> from rtm.mmdeploy.core import FUNCTION_REWRITER, mark
+        >>> from pose.mmdeploy.core import FUNCTION_REWRITER, mark
         >>> @FUNCTION_REWRITER.register_rewriter(
         >>>     func_name='mmdet.models.roi_heads.ConvFCBBoxHead.forward')
         >>> def forward_of_bbox_head(self, x):

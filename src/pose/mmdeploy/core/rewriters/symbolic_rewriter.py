@@ -6,7 +6,7 @@ import torch
 from torch.autograd import Function
 from torch.onnx.symbolic_helper import parse_args
 
-from rtm.mmdeploy.utils import IR, Backend, get_root_logger
+from pose.mmdeploy.utils import IR, Backend, get_root_logger
 from .rewriter_utils import (
     Checker,
     ContextCaller,

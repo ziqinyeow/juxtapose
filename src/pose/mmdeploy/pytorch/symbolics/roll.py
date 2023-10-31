@@ -5,7 +5,7 @@ import sys
 
 from torch.onnx.symbolic_helper import _slice_helper, parse_args
 
-from rtm.mmdeploy.core import SYMBOLIC_REWRITER
+from pose.mmdeploy.core import SYMBOLIC_REWRITER
 
 
 @parse_args("v", "is", "is")

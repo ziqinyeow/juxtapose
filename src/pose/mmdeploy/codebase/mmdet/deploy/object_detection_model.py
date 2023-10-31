@@ -12,11 +12,11 @@ from mmengine.registry import Registry
 from mmengine.structures import BaseDataElement, InstanceData
 from torch import Tensor, nn
 
-from rtm.mmdeploy.backend.base import get_backend_file_count
-from rtm.mmdeploy.codebase.base import BaseBackendModel
-from rtm.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
-from rtm.mmdeploy.mmcv.ops import multiclass_nms
-from rtm.mmdeploy.utils import (
+from pose.mmdeploy.backend.base import get_backend_file_count
+from pose.mmdeploy.codebase.base import BaseBackendModel
+from pose.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
+from pose.mmdeploy.mmcv.ops import multiclass_nms
+from pose.mmdeploy.utils import (
     Backend,
     get_backend,
     get_codebase_config,

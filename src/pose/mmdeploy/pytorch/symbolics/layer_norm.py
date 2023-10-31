@@ -4,8 +4,8 @@
 
 from torch.onnx.symbolic_helper import parse_args
 
-from rtm.mmdeploy.core import SYMBOLIC_REWRITER
-from rtm.mmdeploy.utils import Backend
+from pose.mmdeploy.core import SYMBOLIC_REWRITER
+from pose.mmdeploy.utils import Backend
 
 
 @SYMBOLIC_REWRITER.register_symbolic(

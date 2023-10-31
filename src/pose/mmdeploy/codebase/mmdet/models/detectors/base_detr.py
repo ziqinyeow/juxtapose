@@ -6,8 +6,8 @@ from mmdet.models.detectors.base import ForwardResults
 from mmdet.structures import DetDataSample
 from mmdet.structures.det_data_sample import OptSampleList
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER, mark
-from rtm.mmdeploy.utils import is_dynamic_shape
+from pose.mmdeploy.core import FUNCTION_REWRITER, mark
+from pose.mmdeploy.utils import is_dynamic_shape
 
 
 @mark("detr_predict", inputs=["input"], outputs=["dets", "labels", "masks"])
@@ -54,7 +54,7 @@ def detection_transformer__predict(
     batch_inputs: torch.Tensor,
     data_samples: OptSampleList = None,
     rescale: bool = True,
-    **kwargs
+    **kwargs,
 ) -> ForwardResults:
     """Rewrite `predict` for default backend.
 

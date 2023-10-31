@@ -1,8 +1,8 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import torch
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER, SYMBOLIC_REWRITER
-from rtm.mmdeploy.utils import IR
+from pose.mmdeploy.core import FUNCTION_REWRITER, SYMBOLIC_REWRITER
+from pose.mmdeploy.utils import IR
 
 
 @FUNCTION_REWRITER.register_rewriter(
@@ -12,7 +12,7 @@ def modulated_deform_conv__torchscript(
     input, offset, mask, weight, bias, stride, padding, dilation, groups, deform_groups
 ):
     """rewriter for the custom torchscript mdcn op."""
-    from rtm.mmdeploy.backend.torchscript import get_ops_path, ops_available
+    from pose.mmdeploy.backend.torchscript import get_ops_path, ops_available
 
     assert ops_available(), "torchscript custom ops is required."
     torch.ops.load_library(get_ops_path())
@@ -72,5 +72,5 @@ def modulated_deform_conv_default(
         padding_i=padding,
         dilation_i=dilation,
         groups_i=groups,
-        deform_groups_i=deform_groups
+        deform_groups_i=deform_groups,
     )

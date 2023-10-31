@@ -19,9 +19,9 @@ try:
 except Exception:
     from torch.testing import assert_allclose as torch_assert_close
 
-import rtm.mmdeploy.codebase  # noqa: F401,F403
-from rtm.mmdeploy.core import RewriterContext, patch_model
-from rtm.mmdeploy.utils import (
+import pose.mmdeploy.codebase  # noqa: F401,F403
+from pose.mmdeploy.core import RewriterContext, patch_model
+from pose.mmdeploy.utils import (
     IR,
     Backend,
     get_backend,
@@ -41,7 +41,7 @@ def backend_checker(backend: Backend, require_plugin: bool = False):
             will also check if the backend plugin has been compiled. Default
             to `False`.
     """
-    from rtm.mmdeploy.backend.base import get_backend_manager
+    from pose.mmdeploy.backend.base import get_backend_manager
 
     backend_mgr = get_backend_manager(backend.value)
     result = backend_mgr.is_available(with_custom_ops=require_plugin)
@@ -63,7 +63,7 @@ def check_backend(backend: Backend, require_plugin: bool = False):
             will also check if the backend plugin has been compiled. Default
             to `False`.
     """
-    from rtm.mmdeploy.backend.base import get_backend_manager
+    from pose.mmdeploy.backend.base import get_backend_manager
 
     backend_mgr = get_backend_manager(backend.value)
     result = backend_mgr.is_available(with_custom_ops=require_plugin)
@@ -81,7 +81,7 @@ class WrapFunction(nn.Module):
         wrapped_function (Callable): Input function to be wrapped.
 
     Examples:
-        >>> from rtm.mmdeploy.utils.test import WrapFunction
+        >>> from pose.mmdeploy.utils.test import WrapFunction
         >>> import torch
         >>>
         >>> def clip(x, min, max):
@@ -111,7 +111,7 @@ class WrapModel(nn.Module):
         func_name (str): Which function to use as forward function.
 
     Examples:
-        >>> from rtm.mmdeploy.utils.test import WrapModel
+        >>> from pose.mmdeploy.utils.test import WrapModel
         >>> from mmdet.models import AnchorHead
         >>>
         >>> model = AnchorHead(num_classes=4, in_channels=1)
@@ -153,8 +153,8 @@ class DummyModel(BaseModel):
 class SwitchBackendWrapper:
     """A switcher for backend wrapper for unit tests.
     Examples:
-        >>> from rtm.mmdeploy.utils.test import SwitchBackendWrapper
-        >>> from rtm.mmdeploy.backend.onnxruntime import ORTWrapper
+        >>> from pose.mmdeploy.utils.test import SwitchBackendWrapper
+        >>> from pose.mmdeploy.backend.onnxruntime import ORTWrapper
         >>> with SwitchBackendWrapper(ORTWrapper) as wrapper:
         >>>     wrapper.set(ORTWrapper, outputs=outputs)
         >>>     ...
@@ -375,7 +375,7 @@ def get_ts_model(
     ir_file_path = tempfile.NamedTemporaryFile(suffix=".pt").name
     backend = get_backend(deploy_cfg)
 
-    from rtm.mmdeploy.apis.torch_jit import trace
+    from pose.mmdeploy.apis.torch_jit import trace
 
     context_info = dict(deploy_cfg=deploy_cfg)
     output_prefix = osp.splitext(ir_file_path)[0]
@@ -408,7 +408,7 @@ def get_backend_outputs(
             If the backend specified in 'deploy_cfg' is not available,
             then None will be returned.
     """
-    from rtm.mmdeploy.apis.utils import to_backend
+    from pose.mmdeploy.apis.utils import to_backend
 
     backend = get_backend(deploy_cfg)
     flatten_model_inputs = get_flatten_inputs(model_inputs)
@@ -442,7 +442,7 @@ def get_backend_outputs(
     if backend == Backend.TORCHSCRIPT:
         backend_feats = [v for _, v in model_inputs.items()]
 
-    from rtm.mmdeploy.codebase.base import BaseBackendModel
+    from pose.mmdeploy.codebase.base import BaseBackendModel
 
     backend_model = BaseBackendModel._build_wrapper(
         backend,

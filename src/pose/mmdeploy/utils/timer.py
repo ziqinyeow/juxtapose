@@ -8,7 +8,7 @@ from typing import Optional
 import numpy as np
 import torch
 
-from rtm.mmdeploy.utils.logging import get_logger
+from pose.mmdeploy.utils.logging import get_logger
 
 
 class TimeCounter:

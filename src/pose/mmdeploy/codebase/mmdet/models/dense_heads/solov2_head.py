@@ -6,8 +6,8 @@ import torch.nn.functional as F
 from mmdet.models.layers.matrix_nms import mask_matrix_nms
 from torch import Tensor
 
-from rtm.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(
@@ -19,7 +19,7 @@ def solov2_head__predict_by_feat(
     mlvl_cls_scores: List[Tensor],
     mask_feats: Tensor,
     batch_img_metas: List[Dict],
-    **kwargs
+    **kwargs,
 ):
     """Rewrite `predict_by_feat` of `SOLOV2Head` for default backend.
 

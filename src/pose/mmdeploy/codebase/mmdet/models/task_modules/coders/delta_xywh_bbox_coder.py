@@ -2,7 +2,7 @@
 import numpy as np
 import torch
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 @FUNCTION_REWRITER.register_rewriter(
@@ -140,7 +140,7 @@ def delta2bbox(
     y2 = xy2[..., 1]
 
     if clip_border and max_shape is not None:
-        from rtm.mmdeploy.codebase.mmdet.deploy import clip_bboxes
+        from pose.mmdeploy.codebase.mmdet.deploy import clip_bboxes
 
         x1, y1, x2, y2 = clip_bboxes(x1, y1, x2, y2, max_shape)
 
@@ -235,7 +235,7 @@ def delta2bbox__ncnn(
     y2 = xy2[..., 1]
 
     if clip_border and max_shape is not None:
-        from rtm.mmdeploy.codebase.mmdet.deploy import clip_bboxes
+        from pose.mmdeploy.codebase.mmdet.deploy import clip_bboxes
 
         x1, y1, x2, y2 = clip_bboxes(x1, y1, x2, y2, max_shape)
 

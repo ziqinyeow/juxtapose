@@ -5,8 +5,8 @@ import onnx
 import onnx.helper
 import onnx.utils
 
-from rtm.mmdeploy.apis.core import PIPELINE_MANAGER
-from rtm.mmdeploy.core.optimizers import (
+from pose.mmdeploy.apis.core import PIPELINE_MANAGER
+from pose.mmdeploy.core.optimizers import (
     attribute_to_dict,
     create_extractor,
     get_new_name,
@@ -15,7 +15,7 @@ from rtm.mmdeploy.core.optimizers import (
     remove_imports,
     rename_value,
 )
-from rtm.mmdeploy.utils import get_root_logger
+from pose.mmdeploy.utils import get_root_logger
 
 
 @PIPELINE_MANAGER.register_pipeline()
@@ -34,7 +34,7 @@ def extract_partition(
     exactly.
 
     Examples:
-        >>> from rtm.mmdeploy.apis import extract_model
+        >>> from pose.mmdeploy.apis import extract_model
         >>> model = 'work_dir/fastrcnn.onnx'
         >>> start_marker = 'detector:input'
         >>> end_marker = ['extract_feat:output', 'multiclass_nms[0]:input']

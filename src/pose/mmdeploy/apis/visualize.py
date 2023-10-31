@@ -5,7 +5,7 @@ import mmengine
 import numpy as np
 import torch
 
-from rtm.mmdeploy.utils import Backend, get_backend, get_input_shape, load_config
+from pose.mmdeploy.utils import Backend, get_backend, get_input_shape, load_config
 
 
 def visualize_model(
@@ -22,7 +22,7 @@ def visualize_model(
     """Run inference with PyTorch or backend model and show results.
 
     Examples:
-        >>> from rtm.mmdeploy.apis import visualize_model
+        >>> from pose.mmdeploy.apis import visualize_model
         >>> model_cfg = ('mmdetection/configs/fcos/'
                          'fcos_r50_caffe_fpn_gn-head_1x_coco.py')
         >>> deploy_cfg = ('configs/mmdet/detection/'
@@ -49,7 +49,7 @@ def visualize_model(
     """
     deploy_cfg, model_cfg = load_config(deploy_cfg, model_cfg)
 
-    from rtm.mmdeploy.apis.utils import build_task_processor
+    from pose.mmdeploy.apis.utils import build_task_processor
 
     task_processor = build_task_processor(model_cfg, deploy_cfg, device)
 
@@ -80,7 +80,7 @@ def visualize_model(
 
             tkinter.Tk()
         except Exception as e:
-            from rtm.mmdeploy.utils import get_root_logger
+            from pose.mmdeploy.utils import get_root_logger
 
             logger = get_root_logger()
             logger.warning(

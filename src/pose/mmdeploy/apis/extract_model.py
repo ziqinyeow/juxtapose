@@ -23,7 +23,7 @@ def extract_model(
     exactly.
 
     Examples:
-        >>> from rtm.mmdeploy.apis import extract_model
+        >>> from pose.mmdeploy.apis import extract_model
         >>> model = 'work_dir/fastrcnn.onnx'
         >>> start_marker = 'detector:input'
         >>> end_marker = ['extract_feat:output', 'multiclass_nms[0]:input']

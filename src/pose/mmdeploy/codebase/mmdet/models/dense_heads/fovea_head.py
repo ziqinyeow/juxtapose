@@ -6,9 +6,9 @@ from mmengine.config import ConfigDict
 from mmengine.structures import InstanceData
 from torch import Tensor
 
-from rtm.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.mmcv.ops import multiclass_nms
+from pose.mmdeploy.codebase.mmdet.deploy import get_post_processing_params
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.mmcv.ops import multiclass_nms
 
 
 @FUNCTION_REWRITER.register_rewriter(

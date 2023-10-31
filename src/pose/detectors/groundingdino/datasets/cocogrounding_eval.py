@@ -23,7 +23,7 @@ import torch
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
 
-from rtm.detectors.groundingdino.util.misc import all_gather
+from pose.detectors.groundingdino.util.misc import all_gather
 
 
 class CocoGroundingEvaluator(object):

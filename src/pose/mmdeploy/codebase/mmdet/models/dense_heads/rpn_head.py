@@ -5,14 +5,14 @@ import torch
 from mmengine import ConfigDict
 from torch import Tensor
 
-from rtm.mmdeploy.codebase.mmdet.deploy import (
+from pose.mmdeploy.codebase.mmdet.deploy import (
     gather_topk,
     get_post_processing_params,
     pad_with_value_if_necessary,
 )
-from rtm.mmdeploy.core import FUNCTION_REWRITER
-from rtm.mmdeploy.mmcv.ops import multiclass_nms
-from rtm.mmdeploy.utils import Backend, is_dynamic_shape
+from pose.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.mmcv.ops import multiclass_nms
+from pose.mmdeploy.utils import Backend, is_dynamic_shape
 
 
 @FUNCTION_REWRITER.register_rewriter(
@@ -27,7 +27,7 @@ def rpn_head__predict_by_feat(
     cfg: Optional[ConfigDict] = None,
     rescale: bool = False,
     with_nms: bool = True,
-    **kwargs
+    **kwargs,
 ):
     """Rewrite `predict_by_feat` of `RPNHead` for default backend.
 

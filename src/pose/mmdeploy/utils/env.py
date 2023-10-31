@@ -1,7 +1,7 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import importlib
 
-from rtm.mmdeploy.utils import Codebase
+from pose.mmdeploy.utils import Codebase
 
 
 def get_library_version(lib):

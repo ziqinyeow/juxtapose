@@ -20,7 +20,7 @@ def torch2onnx(
     """Convert PyTorch model to ONNX model.
 
     Examples:
-        >>> from rtm.mmdeploy.apis import torch2onnx
+        >>> from pose.mmdeploy.apis import torch2onnx
         >>> img = 'demo.jpg'
         >>> work_dir = 'work_dir'
         >>> save_file = 'fcos.onnx'
@@ -47,8 +47,8 @@ def torch2onnx(
         device (str): A string specifying device type, defaults to 'cuda:0'.
     """
 
-    from rtm.mmdeploy.apis.core.pipeline_manager import no_mp
-    from rtm.mmdeploy.utils import (
+    from pose.mmdeploy.apis.core.pipeline_manager import no_mp
+    from pose.mmdeploy.utils import (
         Backend,
         get_backend,
         get_dynamic_axes,
@@ -65,7 +65,7 @@ def torch2onnx(
     input_shape = get_input_shape(deploy_cfg)
 
     # create model an inputs
-    from rtm.mmdeploy.apis import build_task_processor
+    from pose.mmdeploy.apis import build_task_processor
 
     task_processor = build_task_processor(model_cfg, deploy_cfg, device)
 

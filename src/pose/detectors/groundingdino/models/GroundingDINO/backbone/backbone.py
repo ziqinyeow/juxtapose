@@ -24,7 +24,7 @@ import torchvision
 from torch import nn
 from torchvision.models._utils import IntermediateLayerGetter
 
-from rtm.detectors.groundingdino.util.misc import (
+from pose.detectors.groundingdino.util.misc import (
     NestedTensor,
     clean_state_dict,
     is_main_process,

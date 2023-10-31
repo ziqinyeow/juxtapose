@@ -3,7 +3,7 @@ from typing import Callable
 
 import torch
 
-from rtm.mmdeploy.core import FUNCTION_REWRITER
+from pose.mmdeploy.core import FUNCTION_REWRITER
 
 
 def update_squeeze_unsqueeze_opset13_pass(graph, params_dict, torch_out):
@@ -29,7 +29,7 @@ def model_to_graph__custom_optimizer(*args, **kwargs):
     if hasattr(ctx, "opset"):
         opset_version = ctx.opset
     else:
-        from rtm.mmdeploy.utils import get_ir_config
+        from pose.mmdeploy.utils import get_ir_config
 
         opset_version = get_ir_config(ctx.cfg).get("opset_version", 11)
     if opset_version >= 13:

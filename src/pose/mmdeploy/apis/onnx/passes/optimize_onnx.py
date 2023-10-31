@@ -1,5 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from rtm.mmdeploy.utils import get_root_logger
+from pose.mmdeploy.utils import get_root_logger
 
 
 def optimize_onnx(ctx, graph, params_dict, torch_out):
@@ -7,7 +7,7 @@ def optimize_onnx(ctx, graph, params_dict, torch_out):
     logger = get_root_logger()
     logger.info("Execute onnx optimize passes.")
     try:
-        from rtm.mmdeploy.backend.torchscript import ts_optimizer
+        from pose.mmdeploy.backend.torchscript import ts_optimizer
 
         ts_optimizer.onnx._jit_pass_merge_shape_concate(graph)
         ts_optimizer.onnx._jit_pass_onnx_peephole(graph)

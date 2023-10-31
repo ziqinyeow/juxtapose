@@ -6,7 +6,7 @@ import mmengine
 from mmengine.model import BaseModel
 from torch import nn
 
-from rtm.mmdeploy.utils import Backend, get_ir_config
+from pose.mmdeploy.utils import Backend, get_ir_config
 
 
 class BaseBackendModel(BaseModel, metaclass=ABCMeta):
@@ -60,7 +60,7 @@ class BaseBackendModel(BaseModel, metaclass=ABCMeta):
                 names from the model.
             deploy_cfg: Deployment config file.
         """
-        from rtm.mmdeploy.backend.base import get_backend_manager
+        from pose.mmdeploy.backend.base import get_backend_manager
 
         backend_mgr = get_backend_manager(backend.value)
         if backend_mgr is None:

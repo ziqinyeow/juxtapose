@@ -22,8 +22,8 @@ def create_calib_input_data(
     """Create calibration table.
 
     Examples:
-        >>> from rtm.mmdeploy.apis.utils import create_calib_input_data
-        >>> from rtm.mmdeploy.utils import get_calib_filename, load_config
+        >>> from pose.mmdeploy.apis.utils import create_calib_input_data
+        >>> from pose.mmdeploy.utils import get_calib_filename, load_config
         >>> deploy_cfg = 'configs/mmdet/detection/'
             'detection_tensorrt-int8_dynamic-320x320-1344x1344.py'
         >>> deploy_cfg = load_config(deploy_cfg)[0]
@@ -48,7 +48,7 @@ def create_calib_input_data(
     import h5py
     import tqdm
 
-    from rtm.mmdeploy.core import RewriterContext, reset_mark_function_count
+    from pose.mmdeploy.core import RewriterContext, reset_mark_function_count
 
     backend = "default"
 

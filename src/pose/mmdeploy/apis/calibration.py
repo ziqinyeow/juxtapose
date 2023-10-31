@@ -33,8 +33,8 @@ def create_calib_input_data(
         device (str, optional): Device to create dataset. Defaults to 'cpu'.
     """
 
-    from rtm.mmdeploy.core import patch_model
-    from rtm.mmdeploy.utils import (
+    from pose.mmdeploy.core import patch_model
+    from pose.mmdeploy.utils import (
         IR,
         cfg_apply_marks,
         get_backend,
@@ -58,7 +58,7 @@ def create_calib_input_data(
         calib_dataloader = deepcopy(dataset_cfg[f"{dataset_type}_dataloader"])
         calib_dataloader["batch_size"] = 1
 
-        from rtm.mmdeploy.apis.utils import build_task_processor
+        from pose.mmdeploy.apis.utils import build_task_processor
 
         task_processor = build_task_processor(model_cfg, deploy_cfg, device)
 

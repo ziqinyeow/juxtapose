@@ -4,7 +4,7 @@ from typing import Dict
 import mmengine
 import torch.nn as nn
 
-from rtm.mmdeploy.utils.constants import IR, Backend
+from pose.mmdeploy.utils.constants import IR, Backend
 from .function_rewriter import FunctionRewriter
 from .module_rewriter import ModuleRewriter
 from .rewriter_utils import collect_env
@@ -33,7 +33,7 @@ def patch_model(
     backend: str = Backend.DEFAULT.value,
     ir: IR = IR.DEFAULT,
     recursive: bool = True,
-    **kwargs
+    **kwargs,
 ) -> nn.Module:
     """Patch the model, replace the modules that can be rewritten. Note that
     the original model will be modified permanently.
@@ -49,8 +49,8 @@ def patch_model(
         nn.Module: THe patched model.
 
     Examples:
-        >>> from rtm.mmdeploy.core import patch_model
-        >>> from rtm.mmdeploy.utils import Backend, IR
+        >>> from pose.mmdeploy.core import patch_model
+        >>> from pose.mmdeploy.utils import Backend, IR
         >>> deploy_cfg = {}
         >>> backend = Backend.DEFAULT.value
         >>> ir = IR.ONNX
@@ -72,7 +72,7 @@ class RewriterContext:
             several rewriters
 
     Examples:
-        >>> from rtm.mmdeploy.core import RewriterContext
+        >>> from pose.mmdeploy.core import RewriterContext
         >>> with RewriterContext(cfg, backend='onnxruntime'):
         >>>     # the rewrite has been activated inside the context
         >>>     torch.onnx.export(model, inputs, onnx_file)
@@ -84,7 +84,7 @@ class RewriterContext:
         backend: str = Backend.DEFAULT.value,
         ir: IR = IR.DEFAULT,
         rewriter_manager: RewriterManager = REWRITER_MANAGER,
-        **kwargs
+        **kwargs,
     ):
         self._cfg = cfg
         self._kwargs = kwargs
