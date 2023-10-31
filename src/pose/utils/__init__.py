@@ -20,7 +20,7 @@ import numpy as np
 import torch
 import yaml
 
-from rtm import __version__
+from pose import __version__
 
 # PyTorch Multi-GPU DDP Constants
 RANK = int(os.getenv("RANK", -1))
@@ -37,11 +37,11 @@ NUM_THREADS = min(
     8, max(1, os.cpu_count() - 1)
 )  # number of YOLOv5 multiprocessing threads
 AUTOINSTALL = (
-    str(os.getenv("RTM_AUTOINSTALL", True)).lower() == "true"
+    str(os.getenv("POSE_AUTOINSTALL", True)).lower() == "true"
 )  # global auto-install mode
-VERBOSE = str(os.getenv("RTM_VERBOSE", True)).lower() == "true"  # global verbose mode
+VERBOSE = str(os.getenv("POSE_VERBOSE", True)).lower() == "true"  # global verbose mode
 TQDM_BAR_FORMAT = "{l_bar}{bar:10}{r_bar}"  # tqdm bar format
-LOGGING_NAME = "RTM"
+LOGGING_NAME = "POSE"
 MACOS, LINUX, WINDOWS = (
     platform.system() == x for x in ["Darwin", "Linux", "Windows"]
 )  # environment booleans
@@ -65,7 +65,7 @@ os.environ[
 
 class SimpleClass:
     """
-    RTM SimpleClass is a base class providing helpful string representation, error reporting, and attribute
+    POSE SimpleClass is a base class providing helpful string representation, error reporting, and attribute
     access methods for easier debugging and usage.
     """
 
@@ -100,7 +100,7 @@ class SimpleClass:
 
 class IterableSimpleNamespace(SimpleNamespace):
     """
-    RTM IterableSimpleNamespace is an extension class of SimpleNamespace that adds iterable functionality and
+    POSE IterableSimpleNamespace is an extension class of SimpleNamespace that adds iterable functionality and
     enables usage with dict() and for loops.
     """
 
@@ -117,8 +117,8 @@ class IterableSimpleNamespace(SimpleNamespace):
         name = self.__class__.__name__
         raise AttributeError(
             f"""
-            '{name}' object has no attribute '{attr}'. This may be caused by a modified or out of date RTM
-            'default.yaml' file.\nPlease update your code with 'pip install -U rtm' and if necessary replace
+            '{name}' object has no attribute '{attr}'. This may be caused by a modified or out of date POSE
+            'default.yaml' file.\nPlease update your code with 'pip install -U pose' and if necessary replace
             with the latest version from
             """
         )
@@ -541,7 +541,7 @@ def get_default_args(func):
     }
 
 
-def get_user_config_dir(sub_dir="rtm"):
+def get_user_config_dir(sub_dir="pose"):
     """
     Get the user config directory.
 
@@ -576,7 +576,7 @@ def get_user_config_dir(sub_dir="rtm"):
 
 USER_CONFIG_DIR = Path(
     os.getenv("YOLO_CONFIG_DIR", get_user_config_dir())
-)  # RTM settings dir
+)  # POSE settings dir
 SETTINGS_YAML = USER_CONFIG_DIR / "settings.yaml"
 
 
@@ -663,7 +663,7 @@ def deprecation_warn(arg, new_arg, version=None):
     if not version:
         version = float(__version__[:3]) + 0.2  # deprecate after 2nd major release
     LOGGER.warning(
-        f"WARNING ⚠️ '{arg}' is deprecated and will be removed in 'rtm {version}' in the future. "
+        f"WARNING ⚠️ '{arg}' is deprecated and will be removed in 'pose {version}' in the future. "
         f"Please use '{new_arg}' instead."
     )
 
@@ -691,7 +691,7 @@ def get_time():
 # Run below code on utils init ------------------------------------------------------------------------------------
 
 # Check first-install steps
-PREFIX = colorstr("RTM: ")
+PREFIX = colorstr("POSE: ")
 ENVIRONMENT = (
     "Colab"
     if is_colab()

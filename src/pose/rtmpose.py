@@ -4,13 +4,13 @@ import numpy as np
 
 from pathlib import Path
 
-from rtm.utils.downloads import safe_download
-from rtm.mmdeploy.apis.utils import build_task_processor
-from rtm.mmdeploy.utils import get_input_shape, load_config
+from pose.utils.downloads import safe_download
+from pose.mmdeploy.apis.utils import build_task_processor
+from pose.mmdeploy.utils import get_input_shape, load_config
 from mmpose.structures import merge_data_samples
 
 
-base = "rtm"
+base = "pose"
 
 
 class RTMPose:

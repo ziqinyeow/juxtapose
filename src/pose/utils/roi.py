@@ -1,7 +1,7 @@
 import cv2
 import supervision as sv
 from typing import Literal
-from rtm.utils import LOGGER
+from pose.utils import LOGGER
 
 
 def select_roi(

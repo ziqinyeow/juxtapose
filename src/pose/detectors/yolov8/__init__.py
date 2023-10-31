@@ -2,9 +2,9 @@ from pathlib import Path
 from ultralytics import YOLO
 import supervision as sv
 
-from rtm.utils.downloads import safe_download
+from pose.utils.downloads import safe_download
 
-base = "rtm"
+base = "pose"
 
 
 class YOLOv8:

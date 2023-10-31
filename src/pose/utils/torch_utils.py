@@ -1,6 +1,6 @@
 import torch
 
-from rtm.utils.checks import check_version
+from pose.utils.checks import check_version
 
 
 TORCH_1_9 = check_version(torch.__version__, "1.9.0")

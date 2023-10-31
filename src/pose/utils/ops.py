@@ -8,7 +8,7 @@ import numpy as np
 
 class Profile(contextlib.ContextDecorator):
     """
-    RTM Profile class.
+    POSE Profile class.
     Usage: as a decorator with @Profile() or as a context manager with 'with Profile():'
     """
 

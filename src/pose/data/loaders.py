@@ -13,9 +13,9 @@ import requests
 import torch
 from PIL import Image
 
-from rtm.data.utils import IMG_FORMATS, VID_FORMATS
-from rtm.utils import LOGGER, ROOT, is_colab, is_kaggle, ops
-from rtm.utils.checks import check_requirements
+from pose.data.utils import IMG_FORMATS, VID_FORMATS
+from pose.utils import LOGGER, ROOT, is_colab, is_kaggle, ops
+from pose.utils.checks import check_requirements
 
 
 @dataclass

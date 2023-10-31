@@ -3,12 +3,12 @@ import torch
 import bisect
 import numpy as np
 from pathlib import Path
-from rtm.utils.core import Detections
+from pose.utils.core import Detections
 
 
-from rtm.utils.downloads import safe_download
-import rtm.detectors.groundingdino.datasets.transforms as T
-from rtm.detectors.groundingdino.util.inference import (
+from pose.utils.downloads import safe_download
+import pose.detectors.groundingdino.datasets.transforms as T
+from pose.detectors.groundingdino.util.inference import (
     load_model,
     preprocess_caption,
     get_phrases_from_posmap,

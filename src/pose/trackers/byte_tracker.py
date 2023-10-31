@@ -6,7 +6,7 @@ from .basetrack import BaseTrack, TrackState
 from .utils import matching
 from .utils.kalman_filter import KalmanFilterXYAH
 
-from rtm.utils.core import Detections
+from pose.utils.core import Detections
 
 
 class STrack(BaseTrack):

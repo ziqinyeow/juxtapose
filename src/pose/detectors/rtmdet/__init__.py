@@ -1,14 +1,14 @@
 # https://github.com/open-mmlab/mmdeploy/blob/main/docs/en/04-supported-codebases/mmdet.md
 
 
-from rtm.mmdeploy.apis.utils import build_task_processor
-from rtm.mmdeploy.utils import get_input_shape, load_config
-from rtm.utils.downloads import safe_download
+from pose.mmdeploy.apis.utils import build_task_processor
+from pose.mmdeploy.utils import get_input_shape, load_config
+from pose.utils.downloads import safe_download
 from pathlib import Path
 import numpy as np
-from rtm.utils.core import Detections
+from pose.utils.core import Detections
 
-base = "rtm"
+base = "pose"
 
 
 class RTMDet:

@@ -5,7 +5,7 @@ import copy
 import cv2
 import numpy as np
 
-from rtm.utils import LOGGER
+from pose.utils import LOGGER
 
 
 class GMC:

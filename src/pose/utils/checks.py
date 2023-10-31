@@ -18,7 +18,7 @@ import requests
 import torch
 from matplotlib import font_manager
 
-from rtm.utils import (
+from pose.utils import (
     AUTOINSTALL,
     LOGGER,
     ONLINE,
@@ -140,7 +140,7 @@ def check_version(
     """
     current, minimum = (pkg.parse_version(x) for x in (current, minimum))
     result = (current == minimum) if pinned else (current >= minimum)  # bool
-    warning_message = f"WARNING ⚠️ {name}{minimum} is required by RTM, but {name}{current} is currently installed"
+    warning_message = f"WARNING ⚠️ {name}{minimum} is required by POSE, but {name}{current} is currently installed"
     if hard:
         assert result, emojis(warning_message)  # assert min requirements met
     if verbose and not result:
@@ -175,7 +175,7 @@ def check_pip_update_available():
     """
     if ONLINE and is_pip_package():
         with contextlib.suppress(Exception):
-            from rtm import __version__
+            from pose import __version__
 
             latest = check_latest_pypi_version()
             if pkg.parse_version(__version__) < pkg.parse_version(
@@ -285,7 +285,7 @@ def check_requirements(
         if install and AUTOINSTALL:  # check environment variable
             n = len(pkgs)  # number of packages updates
             LOGGER.info(
-                f"{prefix} RTM requirement{'s' * (n > 1)} {pkgs} not found, attempting AutoUpdate..."
+                f"{prefix} POSE requirement{'s' * (n > 1)} {pkgs} not found, attempting AutoUpdate..."
             )
             try:
                 t = time.time()

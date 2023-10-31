@@ -6,7 +6,7 @@ import numpy as np
 import torch
 from PIL import Image
 
-from rtm.data.loaders import (
+from pose.data.loaders import (
     LOADERS,
     LoadImages,
     LoadPilAndNumpy,
@@ -17,9 +17,9 @@ from rtm.data.loaders import (
     autocast_list,
 )
 
-from rtm.data.utils import IMG_FORMATS, VID_FORMATS
-from rtm.utils import RANK, colorstr
-from rtm.utils.checks import check_file
+from pose.data.utils import IMG_FORMATS, VID_FORMATS
+from pose.utils import RANK, colorstr
+from pose.utils.checks import check_file
 
 
 def check_source(source):

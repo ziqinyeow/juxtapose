@@ -9,7 +9,7 @@ import requests
 import torch
 from tqdm import tqdm
 
-from rtm.utils import LOGGER, checks, clean_url, emojis, is_online, url2file
+from pose.utils import LOGGER, checks, clean_url, emojis, is_online, url2file
 
 
 def is_url(url, check=True):
@@ -171,7 +171,7 @@ def safe_download(
                     if method == "torch":
                         torch.hub.download_url_to_file(url, f, progress=progress)
                     else:
-                        from rtm.utils import TQDM_BAR_FORMAT
+                        from pose.utils import TQDM_BAR_FORMAT
 
                         with request.urlopen(url) as response, tqdm(
                             total=int(response.getheader("Content-Length", 0)),

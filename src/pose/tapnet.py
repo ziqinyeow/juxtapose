@@ -8,17 +8,17 @@ import supervision as sv
 
 from typing import List, Union, Generator, Literal, Optional
 
-from rtm.data import load_inference_source
-from rtm.detectors import get_detector, RTMDet, GroundingDino, YOLOv8
-from rtm.rtmpose import RTMPose
+from pose.data import load_inference_source
+from pose.detectors import get_detector, RTMDet, GroundingDino, YOLOv8
+from pose.rtmpose import RTMPose
 
-from rtm.utils.core import Detections
-from rtm.utils.plotting import Annotator
-from rtm.utils.roi import select_roi
-from rtm.utils.checks import check_imshow
-from rtm.utils.torch_utils import smart_inference_mode
-from rtm.utils.ops import xyxy2xyxyxyxy
-from rtm.utils import (
+from pose.utils.core import Detections
+from pose.utils.plotting import Annotator
+from pose.utils.roi import select_roi
+from pose.utils.checks import check_imshow
+from pose.utils.torch_utils import smart_inference_mode
+from pose.utils.ops import xyxy2xyxyxyxy
+from pose.utils import (
     LOGGER,
     MACOS,
     WINDOWS,
@@ -26,7 +26,7 @@ from rtm.utils import (
     ops,
     get_time,
 )
-from rtm.trackers import Tracker, TRACKER_MAP
+from pose.trackers import Tracker, TRACKER_MAP
 
 from pydantic import BaseModel
 
