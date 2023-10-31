@@ -2,9 +2,6 @@ pydantic==2.1.1
 packaging==23.1
 onnx==1.14.0
 onnxruntime==1.15.1
-mmengine==0.8.2
-mmdet==3.1.0
-mmpose==1.1.0
 aenum==3.1.15
 tqdm==4.65.0
 transformers
@@ -13,18 +10,21 @@ yapf
 timm
 supervision
 pycocotools
-mmcv==2.0.1 ; sys_platform == 'darwin'
+mmengine==0.9.0
+mmdet==3.2.0
+mmpose==1.2.0
+mmcv==2.1.0 ; sys_platform == 'darwin'
 torch==2.0.1 ; sys_platform == 'darwin'
 onnxruntime-gpu==1.15.1 ; sys_platform == 'win32'
 
 # tapnet
-chex
-jax
-jaxline
-optax
-dm-haiku
-dm-tree
-typing_extensions
-mediapy
-einshape
-ipympl
+# chex
+# jax
+# jaxline
+# optax
+# dm-haiku
+# dm-tree
+# typing_extensions
+# mediapy
+# einshape
+# ipympl
