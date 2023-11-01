@@ -18,6 +18,14 @@ Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm
 
 ## 👉 Getting Started
 
+### Install Using PIP
+
+```bash
+pip install juxtapose
+```
+
+## 🧀 Local Development
+
 ### Mac (CPU only)
 
 ```bash
