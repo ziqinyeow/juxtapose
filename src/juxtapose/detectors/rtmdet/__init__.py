@@ -15,34 +15,30 @@ class RTMDet:
     """RTMDet model (s, m, l) to detect only person (class 0)"""
 
     def __init__(self, type: str = "m", device: str = "cpu", conf_thres: float = 0.3):
-        config_dir = get_user_config_dir()
+        download_dir = Path("model")
 
-        model_cfg = config_dir / f"rtmdet-{type}.py"
-        onnx_file = config_dir / f"rtmdet-{type}.onnx"
-        deploy_cfg = config_dir / f"detection_onnxruntime_static.py"
+        model_cfg = download_dir / f"rtmdet-{type}.py"
+        onnx_file = download_dir / f"rtmdet-{type}.onnx"
+        deploy_cfg = download_dir / f"detection_onnxruntime_static.py"
 
         if not model_cfg.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/rtmdet-{type}.py",
                 file=f"rtmdet-{type}",
-                dir=config_dir,
+                dir=download_dir,
             )
         if not onnx_file.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/rtmdet-{type}.onnx",
                 file=f"rtmdet-{type}",
-                dir=config_dir,
+                dir=download_dir,
             )
         if not deploy_cfg.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/detection_onnxruntime_static.py",
                 file=f"detection_onnxruntime_static",
-                dir=config_dir,
+                dir=download_dir,
             )
-
-        model_cfg = str(model_cfg)
-        onnx_file = str(onnx_file)
-        deploy_cfg = str(deploy_cfg)
 
         deploy_cfg, model_cfg = load_config(deploy_cfg, model_cfg)
 

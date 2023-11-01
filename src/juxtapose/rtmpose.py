@@ -18,34 +18,34 @@ class RTMPose:
     """RTMPose model (s, m, l) to detect multi-person poses (class 0) based on bboxes"""
 
     def __init__(self, type: str = "m", device: str = "cpu") -> None:
-        config_dir = get_user_config_dir()
+        download_dir = Path("model")
 
-        model_cfg = config_dir / f"rtmpose-{type}.py"
-        onnx_file = config_dir / f"rtmpose-{type}.onnx"
-        deploy_cfg = config_dir / f"pose-detection_simcc_onnxruntime_dynamic.py"
+        model_cfg = download_dir / f"rtmpose-{type}.py"
+        onnx_file = download_dir / f"rtmpose-{type}.onnx"
+        deploy_cfg = download_dir / f"pose-detection_simcc_onnxruntime_dynamic.py"
 
         if not model_cfg.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/rtmpose-{type}.py",
                 file=f"rtmpose-{type}",
-                dir=config_dir,
+                dir=download_dir,
             )
         if not onnx_file.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/rtmpose-{type}.onnx",
                 file=f"rtmpose-{type}",
-                dir=config_dir,
+                dir=download_dir,
             )
         if not deploy_cfg.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/pose-detection_simcc_onnxruntime_dynamic.py",
                 file=f"detection_simcc_onnxruntime_dynamic",
-                dir=config_dir,
+                dir=download_dir,
             )
 
-        model_cfg = str(model_cfg)
-        onnx_file = str(onnx_file)
-        deploy_cfg = str(deploy_cfg)
+        # model_cfg = str(model_cfg)
+        # onnx_file = str(onnx_file)
+        # deploy_cfg = str(deploy_cfg)
 
         deploy_cfg, model_cfg = load_config(deploy_cfg, model_cfg)
 

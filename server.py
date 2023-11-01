@@ -23,6 +23,13 @@ ROOT = FILE.parents[1]
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 
+import sys
+
+sys.path.insert(
+    0,
+    "/Users/ziqin/University/Sem 6/WIA3002 Academic Project/juxtapose/packages/sdk/src",
+)
+
 from juxtapose import RTM
 
 model = RTM(det="rtmdet-m", tracker="bytetrack", pose="rtmpose-m")

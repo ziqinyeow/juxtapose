@@ -13,5 +13,5 @@ from juxtapose import RTM
 
 # from juxtapose import RTM
 
-model = RTM(det="rtmdet-s", tracker="bytetrack", pose="rtmpose-s")
+model = RTM(det="rtmdet-m", tracker="bytetrack", pose="rtmpose-l")
 model("data/bike.mp4")
