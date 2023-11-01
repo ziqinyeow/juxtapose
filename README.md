@@ -34,8 +34,8 @@ pip install juxtapose
 ### Mac (CPU only)
 
 ```bash
-git clone https://github.com/ziqinyeow/rtm
-cd rtm
+git clone https://github.com/ziqinyeow/juxtapose-sdk
+cd juxtapose-sdk
 pip install -r requirements.txt
 
 ```
@@ -43,8 +43,8 @@ pip install -r requirements.txt
 ### Windows (CPU & CUDA)
 
 ```bash
-git clone https://github.com/ziqinyeow/rtm
-cd rtm
+git clone https://github.com/ziqinyeow/juxtapose-sdk
+cd juxtapose-sdk
 pip3 install torch --index-url https://download.pytorch.org/whl/cu118
 pip install mmcv==2.0.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html
 pip install -r requirements.txt
