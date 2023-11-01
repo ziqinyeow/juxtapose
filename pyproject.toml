@@ -3,12 +3,12 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pose"
+name = "juxtapose"
 version = "0.0.1"
 authors = [
   { name="Yeow Zi Qin", email="ziqinyeow@gmail.com" },
 ]
-description = "A small example package"
+description = "A pose detection, tracking, and estimation hub that streamline 2D human sports analysis"
 readme = "README.md"
 requires-python = ">=3.8"
 license = { file = "LICENSE" }
