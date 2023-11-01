@@ -56,7 +56,7 @@ pip install -r requirements.txt
 ### 🌄 Basic Usage
 
 ```python
-from rtm import RTM
+from juxtapose import RTM
 
 # Init a rtm model (including rtmdet, rtmpose, tracker)
 model = RTM(
@@ -88,7 +88,7 @@ out the bounding boxes based on the ROIs.
 😁 Note: Press `SPACE` again to redraw the bounding boxes. See custom implementation with `cv2` [here](rtm/utils/roi.py).
 
 ```python
-from rtm import RTM
+from juxtapose import RTM
 
 model = RTM(det="groundingdino", pose="rtmpose-l", tracker="none")
 model("data/bike.mp4", roi="rect") # rectangle roi
@@ -103,7 +103,7 @@ model("data/bike.mp4", roi="rect") # rectangle roi
 ```python
 # Adding custom plot
 import cv2
-from rtm import RTM, Annotator
+from juxtapose import RTM, Annotator
 
 model = RTM()
 annotator = Annotator(thickness=3, font_color=(128, 128, 128)) # see rtm.utils.plotting
@@ -133,7 +133,7 @@ for result in model("data/bike.mp4", show=True, plot=False, stream=True):
 # Custom model forward pass
 import cv2
 import torch
-from rtm import RTMDet, RTMPose, Annotator
+from juxtapose import RTMDet, RTMPose, Annotator
 
 frame = cv2.imread("data/football.jpeg")
 device = "cuda" if torch.cuda.is_available() else "cpu"
