@@ -10,6 +10,7 @@ Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm
 
 ## 🥒 Updates
 
+- **`2023/11/01`** Added juxtapose to PYPI repository so that we can install it using `pip install juxtapose`.
 - **`2023/08/25`** Added custom [region of interests (ROI) drawing tools](rtm/utils/roi.py) that enables multi ROIs filtering while performing pose estimation/tracking. See [usage below](#🎨-select-region-of-interests-rois).
 - **`2023/08/15`** Added [GroundingDino](https://github.com/IDEA-Research/GroundingDINO) & [YOLOv8](https://github.com/ultralytics/ultralytics) object detector.
 - **`2023/08/09`** Added keypoints streaming to csv file using csv module.
