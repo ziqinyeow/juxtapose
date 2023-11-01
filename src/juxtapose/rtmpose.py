@@ -1,44 +1,51 @@
 # https://github.com/open-mmlab/mmdeploy/blob/main/docs/en/04-supported-codebases/mmpose.md
 
 import numpy as np
-
 from pathlib import Path
 
+from juxtapose.utils import get_user_config_dir
 from juxtapose.utils.downloads import safe_download
 from juxtapose.mmdeploy.apis.utils import build_task_processor
 from juxtapose.mmdeploy.utils import get_input_shape, load_config
+
 from mmpose.structures import merge_data_samples
 
 
-base = "pose"
+base = "juxtapose"
 
 
 class RTMPose:
     """RTMPose model (s, m, l) to detect multi-person poses (class 0) based on bboxes"""
 
     def __init__(self, type: str = "m", device: str = "cpu") -> None:
-        model_cfg = f"model/rtmpose-{type}.py"
-        onnx_file = Path(f"model/rtmpose-{type}.onnx")
-        deploy_cfg = f"model/pose-detection_simcc_onnxruntime_dynamic.py"
+        config_dir = get_user_config_dir()
 
-        if not Path(model_cfg).exists():
+        model_cfg = config_dir / f"rtmpose-{type}.py"
+        onnx_file = config_dir / f"rtmpose-{type}.onnx"
+        deploy_cfg = config_dir / f"pose-detection_simcc_onnxruntime_dynamic.py"
+
+        if not model_cfg.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/rtmpose-{type}.py",
                 file=f"rtmpose-{type}",
-                dir=Path(f"model/"),
+                dir=config_dir,
             )
         if not onnx_file.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/rtmpose-{type}.onnx",
                 file=f"rtmpose-{type}",
-                dir=Path(f"model/"),
+                dir=config_dir,
             )
-        if not Path(deploy_cfg).exists():
+        if not deploy_cfg.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/pose-detection_simcc_onnxruntime_dynamic.py",
                 file=f"detection_simcc_onnxruntime_dynamic",
-                dir=Path(f"model/"),
+                dir=config_dir,
             )
+
+        model_cfg = str(model_cfg)
+        onnx_file = str(onnx_file)
+        deploy_cfg = str(deploy_cfg)
 
         deploy_cfg, model_cfg = load_config(deploy_cfg, model_cfg)
 

@@ -37,11 +37,13 @@ NUM_THREADS = min(
     8, max(1, os.cpu_count() - 1)
 )  # number of YOLOv5 multiprocessing threads
 AUTOINSTALL = (
-    str(os.getenv("POSE_AUTOINSTALL", True)).lower() == "true"
+    str(os.getenv("JUXTAPOSE_AUTOINSTALL", True)).lower() == "true"
 )  # global auto-install mode
-VERBOSE = str(os.getenv("POSE_VERBOSE", True)).lower() == "true"  # global verbose mode
+VERBOSE = (
+    str(os.getenv("JUXTAPOSE_VERBOSE", True)).lower() == "true"
+)  # global verbose mode
 TQDM_BAR_FORMAT = "{l_bar}{bar:10}{r_bar}"  # tqdm bar format
-LOGGING_NAME = "POSE"
+LOGGING_NAME = "JUXTAPOSE"
 MACOS, LINUX, WINDOWS = (
     platform.system() == x for x in ["Darwin", "Linux", "Windows"]
 )  # environment booleans
@@ -117,8 +119,8 @@ class IterableSimpleNamespace(SimpleNamespace):
         name = self.__class__.__name__
         raise AttributeError(
             f"""
-            '{name}' object has no attribute '{attr}'. This may be caused by a modified or out of date POSE
-            'default.yaml' file.\nPlease update your code with 'pip install -U pose' and if necessary replace
+            '{name}' object has no attribute '{attr}'. This may be caused by a modified or out of date JUXTAPOSE
+            'default.yaml' file.\nPlease update your code with 'pip install -U juxtapose' and if necessary replace
             with the latest version from
             """
         )
@@ -541,7 +543,7 @@ def get_default_args(func):
     }
 
 
-def get_user_config_dir(sub_dir="pose"):
+def get_user_config_dir(sub_dir="juxtapose"):
     """
     Get the user config directory.
 
@@ -663,7 +665,7 @@ def deprecation_warn(arg, new_arg, version=None):
     if not version:
         version = float(__version__[:3]) + 0.2  # deprecate after 2nd major release
     LOGGER.warning(
-        f"WARNING ⚠️ '{arg}' is deprecated and will be removed in 'pose {version}' in the future. "
+        f"WARNING ⚠️ '{arg}' is deprecated and will be removed in 'juxtapose {version}' in the future. "
         f"Please use '{new_arg}' instead."
     )
 
@@ -691,7 +693,7 @@ def get_time():
 # Run below code on utils init ------------------------------------------------------------------------------------
 
 # Check first-install steps
-PREFIX = colorstr("POSE: ")
+PREFIX = colorstr("JUXTAPOSE: ")
 ENVIRONMENT = (
     "Colab"
     if is_colab()

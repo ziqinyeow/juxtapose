@@ -23,7 +23,7 @@ ROOT = FILE.parents[1]
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
 
-from rtm import RTM
+from juxtapose import RTM
 
 model = RTM(det="rtmdet-m", tracker="bytetrack", pose="rtmpose-m")
 
