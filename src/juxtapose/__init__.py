@@ -1,4 +1,4 @@
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 
 from .rtm import RTM
 from .detectors import GroundingDino, RTMDet, YOLOv8

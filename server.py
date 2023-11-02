@@ -19,16 +19,9 @@ app.add_middleware(
 )
 
 FILE = Path(__file__).resolve()
-ROOT = FILE.parents[1]
+ROOT = FILE.parents[0] / "src"
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))
-
-import sys
-
-sys.path.insert(
-    0,
-    "/Users/ziqin/University/Sem 6/WIA3002 Academic Project/juxtapose/packages/sdk/src",
-)
 
 from juxtapose import RTM
 

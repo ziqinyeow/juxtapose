@@ -1,17 +1,13 @@
 # from rtm import RTM
 
-import sys
+# import sys
+# from pathlib import Path
 
-sys.path.insert(
-    0,
-    "/Users/ziqin/University/Sem 6/WIA3002 Academic Project/juxtapose/packages/sdk/src",
-)
+# FILE = Path(__file__).resolve()
+# ROOT = FILE.parents[0] / "src"
+# sys.path.append(str(ROOT))
 
 from juxtapose import RTM
-
-# print(get_user_config_dir())
-
-# from juxtapose import RTM
 
 model = RTM(det="rtmdet-m", tracker="bytetrack", pose="rtmpose-l")
 model("data/bike.mp4")
