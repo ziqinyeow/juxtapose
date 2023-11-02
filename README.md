@@ -29,6 +29,8 @@ Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm
 pip install juxtapose
 ```
 
+Note: If you faced any issues, kindly review this [github issue](https://github.com/ziqinyeow/juxtapose-sdk/issues/2)
+
 ## 🧀 Local Development
 
 ### Mac (CPU only)
