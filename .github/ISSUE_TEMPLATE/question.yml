@@ -1,21 +1,21 @@
 name: ❓ Question
-description: Ask a RTM question
+description: Ask a JUXTAPOSE question
 # title: " "
 labels: [question]
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for asking a RTM ❓ Question!
+        Thank you for asking a JUXTAPOSE ❓ Question!
 
   - type: checkboxes
     attributes:
       label: Search before asking
       description: >
-        Please search the [issues](https://github.com/ziqinyeow/rtm/issues) and [discussions](https://github.com/ziqinyeow/rtm/discussions) to see if a similar question already exists.
+        Please search the [issues](https://github.com/ziqinyeow/juxtapose-sdk/issues) and [discussions](https://github.com/ziqinyeow/juxtapose-sdk/discussions) to see if a similar question already exists.
       options:
         - label: >
-            I have searched the YOLOv8 [issues](https://github.com/ziqinyeow/rtm/issues) and [discussions](https://github.com/ziqinyeow/rtm/discussions) and found no similar questions.
+            I have searched the JUXTAPOSE [issues](https://github.com/ziqinyeow/juxtapose-sdk/issues) and [discussions](https://github.com/ziqinyeow/juxtapose-sdk/discussions) and found no similar questions.
           required: true
 
   - type: textarea
