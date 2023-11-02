@@ -16,6 +16,7 @@ mmdet==3.2.0
 mmpose==1.2.0
 # mmcv==2.0.0 ; sys_platform == "linux"
 # mmcv==2.1.0; sys_platform == "darwin"
+lapx>=0.5.2
 torch==2.0.1
 onnxruntime-gpu==1.15.1 ; sys_platform == "win32"
 
