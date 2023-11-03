@@ -7,7 +7,6 @@
       >
     </a>
   </p>
-  <br>
 </div>
 
 <!-- # JUXTAPOSE Inference Toolbox 🚀 with ONNX -->
