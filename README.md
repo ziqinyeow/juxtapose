@@ -3,8 +3,7 @@
     <a align="center" href="" target="_blank">
       <img
         width="850"
-        src="https://github.com/ziqinyeow/juxt/blob/main/asset/juxt-banner.png?raw=true"
-        <!-- src="https://raw.githubusercontent.com/ziqinyeow/juxtapose/main/asset/juxtapose-banner.png" -->
+        src="https://raw.githubusercontent.com/ziqinyeow/juxtapose/main/asset/juxtapose-banner.png"
       >
     </a>
   </p>
