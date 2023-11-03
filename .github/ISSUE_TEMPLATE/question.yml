@@ -12,10 +12,10 @@ body:
     attributes:
       label: Search before asking
       description: >
-        Please search the [issues](https://github.com/ziqinyeow/juxtapose-sdk/issues) and [discussions](https://github.com/ziqinyeow/juxtapose-sdk/discussions) to see if a similar question already exists.
+        Please search the [issues](https://github.com/ziqinyeow/juxtapose/issues) and [discussions](https://github.com/ziqinyeow/juxtapose/discussions) to see if a similar question already exists.
       options:
         - label: >
-            I have searched the JUXTAPOSE [issues](https://github.com/ziqinyeow/juxtapose-sdk/issues) and [discussions](https://github.com/ziqinyeow/juxtapose-sdk/discussions) and found no similar questions.
+            I have searched the JUXTAPOSE [issues](https://github.com/ziqinyeow/juxtapose/issues) and [discussions](https://github.com/ziqinyeow/juxtapose/discussions) and found no similar questions.
           required: true
 
   - type: textarea

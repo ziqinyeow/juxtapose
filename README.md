@@ -28,15 +28,15 @@ Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm
 1. `pip install mmcv` - Install based on your os, see more [here](https://mmcv.readthedocs.io/en/latest/get_started/installation.html#install-with-pip).
 2. `pip install juxtapose`
 
-Note: If you faced any issues, kindly review this [github issue](https://github.com/ziqinyeow/juxtapose-sdk/issues/2)
+Note: If you faced any issues, kindly review this [github issue](https://github.com/ziqinyeow/juxtapose/issues/2)
 
 ## 🧀 Local Development
 
 ### Mac (CPU only)
 
 ```bash
-git clone https://github.com/ziqinyeow/juxtapose-sdk
-cd juxtapose-sdk
+git clone https://github.com/ziqinyeow/juxtapose
+cd juxtapose
 pip install -r requirements.txt
 
 ```
@@ -44,8 +44,8 @@ pip install -r requirements.txt
 ### Windows (CPU & CUDA)
 
 ```bash
-git clone https://github.com/ziqinyeow/juxtapose-sdk
-cd juxtapose-sdk
+git clone https://github.com/ziqinyeow/juxtapose
+cd juxtapose
 pip3 install torch --index-url https://download.pytorch.org/whl/cu118
 pip install mmcv==2.0.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html
 pip install -r requirements.txt

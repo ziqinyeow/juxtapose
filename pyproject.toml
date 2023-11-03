@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "juxtapose"
-version = "0.0.7"
+version = "0.0.8"
 authors = [
   { name="Yeow Zi Qin", email="ziqinyeow@gmail.com" },
 ]
@@ -54,5 +54,5 @@ dependencies = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/ziqinyeow/juxtapose-sdk"
-"Bug Tracker" = "https://github.com/ziqinyeow/juxtapose-sdk/issues"
+"Homepage" = "https://github.com/ziqinyeow/juxtapose"
+"Bug Tracker" = "https://github.com/ziqinyeow/juxtapose/issues"
