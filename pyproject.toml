@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "juxtapose"
-version = "0.0.6"
+version = "0.0.7"
 authors = [
   { name="Yeow Zi Qin", email="ziqinyeow@gmail.com" },
 ]
@@ -49,9 +49,8 @@ dependencies = [
     'mmengine==0.9.0',
     'mmdet==3.2.0',
     'mmpose==1.2.0',
-    # 'mmcv==2.1.0; sys_platform == "darwin"',
     'torch==2.0.1',
-    'onnxruntime-gpu==1.15.1 ; sys_platform == "win32"',
+    'onnxruntime-gpu>=1.15.1 ; sys_platform == "win32" or sys_platform == "linux"',
 ]
 
 [project.urls]
