@@ -1,10 +1,10 @@
 <div align="center">
   <p>
-    <a align="center" href="https://raw.githubusercontent.com/ziqinyeow/juxtapose/main/asset/juxtapose-banner.png" target="_blank">
+    <a align="center" href="https://github.com/ziqinyeow/juxtapose/main/asset/juxtapose-banner.png" target="_blank">
       <img
         width="850"
         src="https://raw.githubusercontent.com/ziqinyeow/juxtapose/main/asset/juxtapose-banner.png"
-        style="border-radius:50%;"
+        <!-- style="border-radius:50%;" -->
       >
     </a>
   </p>
