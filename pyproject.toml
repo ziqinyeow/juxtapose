@@ -34,8 +34,6 @@ classifiers = [
 keywords = ['pose estimation', 'machine learning']
 dependencies = [
     'packaging==23.1',
-    'onnx==1.14.0',
-    'onnxruntime==1.15.1',
     'aenum==3.1.15',
     'tqdm>=4.65.0',
     'transformers',
@@ -50,7 +48,9 @@ dependencies = [
     'mmdet==3.2.0',
     'mmpose==1.2.0',
     'torch==2.0.1',
-    'onnxruntime-gpu>=1.15.1 ; sys_platform == "win32" or sys_platform == "linux"',
+    'onnx==1.14.0',
+    'onnxruntime>=1.15.1 ; sys_platform == "darwin"',
+    'onnxruntime-gpu>=1.15.1 ; sys_platform != "darwin"',
 ]
 
 [project.urls]
