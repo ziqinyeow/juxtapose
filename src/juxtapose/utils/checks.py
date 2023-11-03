@@ -2,10 +2,8 @@ import contextlib
 import glob
 import inspect
 import math
-import os
 import platform
 import re
-import shutil
 import subprocess
 import time
 from pathlib import Path
@@ -140,7 +138,7 @@ def check_version(
     """
     current, minimum = (pkg.parse_version(x) for x in (current, minimum))
     result = (current == minimum) if pinned else (current >= minimum)  # bool
-    warning_message = f"WARNING ⚠️ {name}{minimum} is required by POSE, but {name}{current} is currently installed"
+    warning_message = f"WARNING ⚠️ {name}{minimum} is required by JUXTAPOSE, but {name}{current} is currently installed"
     if hard:
         assert result, emojis(warning_message)  # assert min requirements met
     if verbose and not result:
@@ -285,7 +283,7 @@ def check_requirements(
         if install and AUTOINSTALL:  # check environment variable
             n = len(pkgs)  # number of packages updates
             LOGGER.info(
-                f"{prefix} POSE requirement{'s' * (n > 1)} {pkgs} not found, attempting AutoUpdate..."
+                f"{prefix} JUXTAPOSE requirement{'s' * (n > 1)} {pkgs} not found, attempting AutoUpdate..."
             )
             try:
                 t = time.time()
