@@ -34,10 +34,11 @@ from juxtapose.utils import (
     get_time,
 )
 
-from pydantic import BaseModel
+from dataclasses import dataclass
 
 
-class Result(BaseModel):
+@dataclass
+class Result:
     im: np.ndarray  # shape -> (h, w, c)
     kpts: List  # shape -> (number of humans, 17, 2)
     bboxes: List  # shape -> (number of humans, 4)
@@ -45,9 +46,6 @@ class Result(BaseModel):
 
     save_dirs: str  # save directory
     name: str  # file name
-
-    class Config:
-        arbitrary_types_allowed = True
 
 
 class RTM:
