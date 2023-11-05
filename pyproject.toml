@@ -52,9 +52,9 @@ dependencies = [
     'mmpose==1.2.0',
     'torch==2.0.1 ; sys_platform == "linux"',
     'torch==2.0.1 ; sys_platform == "darwin"',
-    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1 ; sys_platform == "win32"',
-    # 'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp39-cp39-win_amd64.whl ; sys_platform == "win32"',
-    'onnx==1.14.0',
+    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp39-cp39-win_amd64.whl ; sys_platform == "win32"',
+    'mmcv @ https://download.openmmlab.com/mmcv/dist/cu118/torch2.0.0/mmcv-2.1.0-cp39-cp39-win_amd64.whl ; sys_platform == "win32"',
+    'onnx>=1.14.0',
     'onnxruntime>=1.15.1 ; sys_platform == "darwin"',
     'onnxruntime-gpu>=1.15.1 ; sys_platform != "darwin"',
 ]
