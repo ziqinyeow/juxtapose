@@ -34,7 +34,7 @@ classifiers = [
     'Operating System :: MacOS',
     'Operating System :: Microsoft :: Windows',
 ]
-keywords = ['pose estimation', 'machine learning']
+keywords = ['pose estimation', 'pose tracking', 'computer vision', 'deep learning', 'machine learning']
 dependencies = [
     'packaging==23.1',
     'aenum==3.1.15',
@@ -50,10 +50,21 @@ dependencies = [
     'mmengine==0.9.0',
     'mmdet==3.2.0',
     'mmpose==1.2.0',
+
+    # torch
     'torch==2.0.1 ; sys_platform == "linux"',
     'torch==2.0.1 ; sys_platform == "darwin"',
-    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp39-cp39-win_amd64.whl ; sys_platform == "win32"',
-    'mmcv @ https://download.openmmlab.com/mmcv/dist/cu118/torch2.0.0/mmcv-2.1.0-cp39-cp39-win_amd64.whl ; sys_platform == "win32"',
+    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp38-cp38-win_amd64.whl ; sys_platform == "win32" and python_version == "3.8"',
+    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp39-cp39-win_amd64.whl ; sys_platform == "win32" and python_version == "3.9"',
+    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp310-cp310-win_amd64.whl ; sys_platform == "win32" and python_version == "3.10"',
+    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp311-cp311-win_amd64.whl ; sys_platform == "win32" and python_version == "3.11"',
+
+    # mmcv
+    # 'mmcv @ https://download.openmmlab.com/mmcv/dist/cu118/torch2.0.0/mmcv-2.1.0-cp39-cp39-manylinux1_x86_64.whl ; sys_platform == "linux"',
+    # 'mmcv @ https://download.openmmlab.com/mmcv/dist/cpu/torch2.0.0/mmcv-2.1.0-py2.py3-none-any.whl ; sys_platform == "darwin"',
+    # 'mmcv @ https://download.openmmlab.com/mmcv/dist/cu118/torch2.0.0/mmcv-2.1.0-cp39-cp39-win_amd64.whl ; sys_platform == "win32"',
+
+    # onnx
     'onnx>=1.14.0',
     'onnxruntime>=1.15.1 ; sys_platform == "darwin"',
     'onnxruntime-gpu>=1.15.1 ; sys_platform != "darwin"',
