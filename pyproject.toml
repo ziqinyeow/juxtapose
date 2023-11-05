@@ -2,6 +2,9 @@
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [project]
 name = "juxtapose"
 version = "0.0.9"
@@ -47,12 +50,18 @@ dependencies = [
     'mmengine==0.9.0',
     'mmdet==3.2.0',
     'mmpose==1.2.0',
-    'torch==2.0.1',
+    'torch==2.0.1 ; sys_platform == "linux"',
+    'torch==2.0.1 ; sys_platform == "darwin"',
+    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1 ; sys_platform == "win32"',
+    # 'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp39-cp39-win_amd64.whl ; sys_platform == "win32"',
     'onnx==1.14.0',
     'onnxruntime>=1.15.1 ; sys_platform == "darwin"',
     'onnxruntime-gpu>=1.15.1 ; sys_platform != "darwin"',
 ]
 
+
 [project.urls]
 "Homepage" = "https://github.com/ziqinyeow/juxtapose"
+"Documentation" = "https://github.com/ziqinyeow/juxtapose"
+"Source Code" = "https://github.com/ziqinyeow/juxtapose"
 "Bug Tracker" = "https://github.com/ziqinyeow/juxtapose/issues"
