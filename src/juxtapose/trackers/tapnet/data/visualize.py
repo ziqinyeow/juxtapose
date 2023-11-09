@@ -27,54 +27,50 @@ import mediapy as media
 import numpy as np
 from PIL import Image
 
-from tapnet.utils import viz_utils
+from juxtapose.trackers.tapnet.utils import viz_utils
 
 FLAGS = flags.FLAGS
 
-flags.DEFINE_string(
-    'input_path', None, 'Path to the pickle file.', required=True
-)
-flags.DEFINE_string(
-    'output_path', None, 'Path to the output mp4 video.', required=True
-)
+flags.DEFINE_string("input_path", None, "Path to the pickle file.", required=True)
+flags.DEFINE_string("output_path", None, "Path to the output mp4 video.", required=True)
 
 
 def main(argv: Sequence[str]) -> None:
-  del argv
+    del argv
 
-  logging.info('Loading data from %s. This takes time.', FLAGS.input_path)
-  with open(FLAGS.input_path, 'rb') as f:
-    data = pickle.load(f)
-    if isinstance(data, dict):
-      data = list(data.values())
+    logging.info("Loading data from %s. This takes time.", FLAGS.input_path)
+    with open(FLAGS.input_path, "rb") as f:
+        data = pickle.load(f)
+        if isinstance(data, dict):
+            data = list(data.values())
 
-  idx = random.randint(0, len(data) - 1)
-  video = data[idx]
+    idx = random.randint(0, len(data) - 1)
+    video = data[idx]
 
-  frames = video['video']
+    frames = video["video"]
 
-  if isinstance(frames[0], bytes):
-    # Tapnet is stored and JPEG bytes rather than `np.ndarray`s.
-    def decode(frame):
-      byteio = io.BytesIO(frame)
-      img = Image.open(byteio)
-      return np.array(img)
+    if isinstance(frames[0], bytes):
+        # Tapnet is stored and JPEG bytes rather than `np.ndarray`s.
+        def decode(frame):
+            byteio = io.BytesIO(frame)
+            img = Image.open(byteio)
+            return np.array(img)
 
-    frames = np.array([decode(frame) for frame in frames])
+        frames = np.array([decode(frame) for frame in frames])
 
-  if frames.shape[1] > 360:
-    frames = media.resize_video(frames, (360, 640))
+    if frames.shape[1] > 360:
+        frames = media.resize_video(frames, (360, 640))
 
-  scale_factor = np.array(frames.shape[2:0:-1])[np.newaxis, np.newaxis, :]
-  painted_frames = viz_utils.paint_point_track(
-      frames,
-      video['points'] * scale_factor,
-      ~video['occluded'],
-  )
+    scale_factor = np.array(frames.shape[2:0:-1])[np.newaxis, np.newaxis, :]
+    painted_frames = viz_utils.paint_point_track(
+        frames,
+        video["points"] * scale_factor,
+        ~video["occluded"],
+    )
 
-  media.write_video(FLAGS.output_path, painted_frames, fps=25)
-  logging.info('Examplar point visualization saved to %s', FLAGS.output_path)
+    media.write_video(FLAGS.output_path, painted_frames, fps=25)
+    logging.info("Examplar point visualization saved to %s", FLAGS.output_path)
 
 
-if __name__ == '__main__':
-  app.run(main)
+if __name__ == "__main__":
+    app.run(main)

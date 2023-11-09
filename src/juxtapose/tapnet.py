@@ -1,23 +1,26 @@
-"""Main class to perform inference using RTMDet and RTMPose (ONNX)"""
+import functools
+import haiku as hk
+import jax
+import jax.numpy as jnp
+import matplotlib.pyplot as plt
+import numpy as np
+from tqdm import tqdm
+import mediapy as media
+from pathlib import Path
 
 import cv2
 import csv
-from pathlib import Path
-import numpy as np
 import supervision as sv
 
-from typing import List, Union, Generator, Literal, Optional
+from typing import List, Union, Generator, Literal
 
 from juxtapose.data import load_inference_source
-from juxtapose.detectors import get_detector, RTMDet, GroundingDino, YOLOv8
-from juxtapose.rtmpose import RTMPose
-
-from juxtapose.utils.core import Detections
-from juxtapose.utils.plotting import Annotator
-from juxtapose.utils.roi import select_roi
+from juxtapose.trackers.tapnet import tapir_model
+from juxtapose.trackers.tapnet.utils import transforms
+from juxtapose.trackers.tapnet.utils import viz_utils
+from juxtapose.utils.downloads import safe_download
 from juxtapose.utils.checks import check_imshow
-from juxtapose.utils.torch_utils import smart_inference_mode
-from juxtapose.utils.ops import xyxy2xyxyxyxy
+from juxtapose.utils.plotting import Annotator
 from juxtapose.utils import (
     LOGGER,
     MACOS,
@@ -26,32 +29,56 @@ from juxtapose.utils import (
     ops,
     get_time,
 )
-from juxtapose.trackers import Tracker, TRACKER_MAP
 
-from pydantic import BaseModel
+from dataclasses import dataclass
 
 
-class Result(BaseModel):
+@dataclass
+class Result:
     im: np.ndarray  # shape -> (h, w, c)
-    kpts: List  # shape -> (number of humans, 17, 2)
-    bboxes: List  # shape -> (number of humans, 4)
+    tracks: List  # shape -> (number of humans, 17, 2)
     speed: dict  # {'bboxes': ... ms, 'kpts': ... ms} -> used to record the milliseconds of the inference time
 
     save_dirs: str  # save directory
     name: str  # file name
 
-    class Config:
-        arbitrary_types_allowed = True
 
-
-class RTM:
-    """"""
-
+class Tapnet:
     def __init__(
         self,
-        device="cpu",
         annotator=Annotator(),
-    ) -> None:
+    ):
+        download_dir = Path("model")
+        checkpoint_path = download_dir / f"causal_tapir_checkpoint.npy"
+
+        if not checkpoint_path.exists():
+            safe_download(
+                f"https://huggingface.co/ziq/rtm/resolve/main/causal_tapir_checkpoint.npy",
+                file=f"causal_tapir_checkpoint",
+                dir=download_dir,
+            )
+
+        ckpt_state = np.load(checkpoint_path, allow_pickle=True).item()
+        params, state = ckpt_state["params"], ckpt_state["state"]
+
+        online_init = hk.transform_with_state(Tapnet.build_online_model_init)
+        online_init_apply = jax.jit(online_init.apply)
+
+        online_predict = hk.transform_with_state(Tapnet.build_online_model_predict)
+        online_predict_apply = jax.jit(online_predict.apply)
+
+        rng = jax.random.PRNGKey(42)
+        self.online_init_apply = functools.partial(
+            online_init_apply, params=params, state=state, rng=rng
+        )
+        self.online_predict_apply = functools.partial(
+            online_predict_apply, params=params, state=state, rng=rng
+        )
+        self.resize_height, self.resize_width = 256, 256
+
+        self.annotator = annotator
+        self.box_annotator = sv.BoxAnnotator()
+
         self.dataset = None
         self.vid_path, self.vid_writer = None, None
 
@@ -95,18 +122,56 @@ class RTM:
             writer = csv.writer(f)
             writer.writerow(data)
 
-    def get_labels(self, detections: Detections):
-        mp = {0: "person"}
-        return np.array(
-            [
-                f"{mp[label]} {id} {score:.2f}"
-                for score, label, id in zip(
-                    detections.confidence, detections.labels, detections.track_id
-                )
-            ]
+    def setup_points(self, im):
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.imshow(cv2.cvtColor(im, cv2.COLOR_BGR2RGB))
+        ax.axis("off")
+        ax.set_title(
+            "You can select more than 1 points. After select enough points, run the next cell."
         )
 
-    @smart_inference_mode
+        select_points = []
+
+        # Event handler for mouse clicks
+        def on_click(event):
+            if event.button == 1 and event.inaxes == ax:  # Left mouse button clicked
+                x, y = int(np.round(event.xdata)), int(np.round(event.ydata))
+
+                select_points.append(np.array([x, y]))
+
+                color = (255, 0, 0)
+                color = tuple(np.array(color) / 255.0)
+                ax.plot(x, y, "o", color=color, markersize=5)
+                plt.draw()
+
+        # def close_figure(event):
+        #     if event.key == "enter":
+        #         plt.close(event.canvas.figure)
+        # plt.gcf().canvas.mpl_connect("key_press_event", close_figure)
+
+        fig.canvas.mpl_connect("button_press_event", on_click)
+        plt.show()
+
+        return select_points
+
+    def get_query_features(self, im, resized_im: np.ndarray, select_points):
+        height, width = im.shape[0], im.shape[1]
+        query_points = Tapnet.convert_select_points_to_query_points(0, select_points)
+        query_points = transforms.convert_grid_coordinates(
+            query_points,
+            (1, height, width),
+            (1, self.resize_height, self.resize_width),
+            coordinate_format="tyx",
+        )
+        query_features, _ = self.online_init_apply(
+            frames=Tapnet.preprocess_frames(resized_im),
+            query_points=query_points[None],
+        )
+        causal_state = Tapnet.construct_initial_causal_state(
+            query_points.shape[0], len(query_features.resolutions) - 1
+        )
+        return query_features, causal_state
+
     def stream_inference(
         self,
         source,
@@ -117,7 +182,6 @@ class RTM:
         # panels
         show=True,
         plot=True,
-        plot_bboxes=True,
         save=False,
         save_dirs="",
         verbose=True,
@@ -132,9 +196,6 @@ class RTM:
         profilers = (ops.Profile(), ops.Profile(), ops.Profile())  # count the time
         self.setup_source(source)
 
-        if self.tracker_type:
-            self.setup_tracker()
-
         current_source, index = None, 0
 
         for _, batch in enumerate(self.dataset):
@@ -143,40 +204,53 @@ class RTM:
 
             p, im, im0 = Path(path[0]), im0s[0], im0s[0].copy()
 
+            height, width = im.shape[0], im.shape[1]
+            resized_im = media.resize_image(im, (self.resize_height, self.resize_width))
+            resized_im = np.expand_dims(resized_im, axis=[0, 1])
+
             index += 1
 
             # reset tracker when source changed
             if current_source is None:
                 current_source = p
-                if roi:
-                    zones = self.setup_roi(im)
+                select_points = self.setup_points(im)
+                query_features, causal_state = self.get_query_features(
+                    im, resized_im, select_points
+                )
             elif current_source != p:
-                if roi:
-                    zones = self.setup_roi(im)
-                if self.tracker_type:
-                    self.setup_tracker()
+                select_points = self.setup_points(im)
+                query_features, causal_state = self.get_query_features(
+                    im, resized_im, select_points
+                )
                 current_source = p
                 index = 1
 
             # multi object detection (detect only person)
             with profilers[0]:
-                detections: Detections = self.det(im)
+                (prediction, causal_state), _ = self.online_predict_apply(
+                    frames=resized_im,
+                    query_features=query_features,
+                    causal_context=causal_state,
+                )
+                tracks = prediction["tracks"][0]
+                occlusions = prediction["occlusion"][0]
+                expected_dist = prediction["expected_dist"][0]
+                visibles = Tapnet.postprocess_occlusions(occlusions, expected_dist)
+                tracks = transforms.convert_grid_coordinates(
+                    tracks, (self.resize_width, self.resize_height), (width, height)
+                )
 
             if plot:
-                labels = self.get_labels(detections)
-
-                if plot_bboxes:
-                    self.box_annotator.annotate(im, detections, labels=labels)
-                # self.annotator.draw_kpts(im, kpts)
-                # self.annotator.draw_skeletons(im, kpts)
+                for i, t in enumerate(tracks):
+                    if visibles[i]:
+                        x, y = t[0][0], t[0][1]
+                        cv2.circle(im, (int(x), int(y)), 4, (255, 0, 0), -1)
 
             result = Result(
                 im=im,
-                bboxes=detections.xyxy,  # detections.xyxy,
+                tracks=tracks,  # detections.xyxy,
                 speed={
-                    "bboxes": profilers[0].dt * 1e3 / 1,
-                    "track": profilers[1].dt * 1e3 / 1,
-                    "kpts": profilers[2].dt * 1e3 / 1,
+                    "tracks": profilers[0].dt * 1e3 / 1,
                 },
                 save_dirs=str(save_dirs) if save else "",
                 name=p.name,
@@ -197,11 +271,12 @@ class RTM:
                     if key == ord("q"):
                         break
                     elif key == 32:
-                        zones = self.setup_roi(im0)
+                        pass
+                        # zones = self.setup_roi(im0)
 
             if verbose:
                 LOGGER.info(
-                    f"{s}Detected {len(detections.xyxy)} person(s) ({colorstr('green', f'{profilers[0].dt * 1E3:.1f}ms')} | {colorstr('green', f'{profilers[1].dt * 1E3:.1f}ms')} | {colorstr('green', f'{profilers[2].dt * 1E3:.1f}ms')})"
+                    f"{s}Tracking {len(tracks)} point(s) ({colorstr('green', f'{profilers[0].dt * 1E3:.1f}ms')})"
                 )
 
             if save:
@@ -210,6 +285,7 @@ class RTM:
                     str(save_dirs / p.with_suffix(".csv").name),
                     [
                         str(index),
+                        str(np.array(tracks).tolist())
                         # str([{i: kpt} for i, kpt in zip(detections.track_id, kpts)]),
                     ],
                 )
@@ -230,7 +306,6 @@ class RTM:
         # panels
         show=True,
         plot=True,
-        plot_bboxes=True,
         save=False,
         save_dirs="",
         verbose=True,
@@ -243,7 +318,6 @@ class RTM:
                 roi=roi,
                 show=show,
                 plot=plot,
-                plot_bboxes=plot_bboxes,
                 save=save,
                 save_dirs=save_dirs,
                 verbose=verbose,
@@ -257,9 +331,130 @@ class RTM:
                     roi=roi,
                     show=show,
                     plot=plot,
-                    plot_bboxes=plot_bboxes,
                     save=save,
                     save_dirs=save_dirs,
                     verbose=verbose,
                 )
             )
+
+    @staticmethod
+    def build_online_model_init(frames, query_points):
+        """Initialize query features for the query points."""
+        model = tapir_model.TAPIR(
+            use_causal_conv=True, bilinear_interp_with_depthwise_conv=False
+        )
+
+        feature_grids = model.get_feature_grids(frames, is_training=False)
+        query_features = model.get_query_features(
+            frames,
+            is_training=False,
+            query_points=query_points,
+            feature_grids=feature_grids,
+        )
+        return query_features
+
+    @staticmethod
+    def build_online_model_predict(frames, query_features, causal_context):
+        """Compute point tracks and occlusions given frames and query points."""
+        model = tapir_model.TAPIR(
+            use_causal_conv=True, bilinear_interp_with_depthwise_conv=False
+        )
+        feature_grids = model.get_feature_grids(frames, is_training=False)
+        trajectories = model.estimate_trajectories(
+            frames.shape[-3:-1],
+            is_training=False,
+            feature_grids=feature_grids,
+            query_features=query_features,
+            query_points_in_video=None,
+            query_chunk_size=64,
+            causal_context=causal_context,
+            get_causal_context=True,
+        )
+        causal_context = trajectories["causal_context"]
+        del trajectories["causal_context"]
+        return {k: v[-1] for k, v in trajectories.items()}, causal_context
+
+    @staticmethod
+    def preprocess_frames(frames):
+        """Preprocess frames to model inputs.
+
+        Args:
+        frames: [num_frames, height, width, 3], [0, 255], np.uint8
+
+        Returns:
+        frames: [num_frames, height, width, 3], [-1, 1], np.float32
+        """
+        frames = frames.astype(np.float32)
+        frames = frames / 255 * 2 - 1
+        return frames
+
+    @staticmethod
+    def postprocess_occlusions(occlusions, expected_dist):
+        """Postprocess occlusions to boolean visible flag.
+
+        Args:
+        occlusions: [num_points, num_frames], [-inf, inf], np.float32
+
+        Returns:
+        visibles: [num_points, num_frames], bool
+        """
+        pred_occ = jax.nn.sigmoid(occlusions)
+        pred_occ = 1 - (1 - pred_occ) * (1 - jax.nn.sigmoid(expected_dist))
+        visibles = pred_occ < 0.5  # threshold
+        return visibles
+
+    @staticmethod
+    def sample_random_points(frame_max_idx, height, width, num_points):
+        """Sample random points with (time, height, width) order."""
+        y = np.random.randint(0, height, (num_points, 1))
+        x = np.random.randint(0, width, (num_points, 1))
+        t = np.random.randint(0, frame_max_idx + 1, (num_points, 1))
+        points = np.concatenate((t, y, x), axis=-1).astype(np.int32)  # [num_points, 3]
+        return points
+
+    @staticmethod
+    def construct_initial_causal_state(num_points, num_resolutions):
+        value_shapes = {
+            "tapir/~/pips_mlp_mixer/block_1_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_1_causal_2": (1, num_points, 2, 2048),
+            "tapir/~/pips_mlp_mixer/block_2_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_2_causal_2": (1, num_points, 2, 2048),
+            "tapir/~/pips_mlp_mixer/block_3_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_3_causal_2": (1, num_points, 2, 2048),
+            "tapir/~/pips_mlp_mixer/block_4_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_4_causal_2": (1, num_points, 2, 2048),
+            "tapir/~/pips_mlp_mixer/block_5_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_5_causal_2": (1, num_points, 2, 2048),
+            "tapir/~/pips_mlp_mixer/block_6_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_6_causal_2": (1, num_points, 2, 2048),
+            "tapir/~/pips_mlp_mixer/block_7_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_7_causal_2": (1, num_points, 2, 2048),
+            "tapir/~/pips_mlp_mixer/block_8_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_8_causal_2": (1, num_points, 2, 2048),
+            "tapir/~/pips_mlp_mixer/block_9_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_9_causal_2": (1, num_points, 2, 2048),
+            "tapir/~/pips_mlp_mixer/block_10_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_10_causal_2": (1, num_points, 2, 2048),
+            "tapir/~/pips_mlp_mixer/block_11_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_11_causal_2": (1, num_points, 2, 2048),
+            "tapir/~/pips_mlp_mixer/block_causal_1": (1, num_points, 2, 512),
+            "tapir/~/pips_mlp_mixer/block_causal_2": (1, num_points, 2, 2048),
+        }
+        fake_ret = {k: jnp.zeros(v, dtype=jnp.float32) for k, v in value_shapes.items()}
+        return [fake_ret] * num_resolutions * 4
+
+    @staticmethod
+    def convert_select_points_to_query_points(frame, points):
+        """Convert select points to query points.
+
+        Args:
+        points: [num_points, 2], [t, y, x]
+        Returns:
+        query_points: [num_points, 3], [t, y, x]
+        """
+        points = np.stack(points)
+        query_points = np.zeros(shape=(points.shape[0], 3), dtype=np.float32)
+        query_points[:, 0] = frame
+        query_points[:, 1] = points[:, 1]
+        query_points[:, 2] = points[:, 0]
+        return query_points
