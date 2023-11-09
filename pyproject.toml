@@ -64,6 +64,18 @@ onnxruntime-gpu = [
     {version = "^1.15.1", platform = "linux"}, 
 ]
 
+# tapnet
+chex = {version = "*"}
+jax = {version = "*"}
+jaxline = {version = "*"}
+optax = {version = "*"}
+dm-haiku = {version = "*"}
+dm-tree = {version = "*"}
+typing_extensions = {version = "*"}
+mediapy = {version = "*"}
+einshape = {version = "*"}
+ipympl = {version = "*"}
+
 [[tool.poetry.source]]
 name = "torch+cu118"
 # url = "https://download.pytorch.org/whl/cpu"

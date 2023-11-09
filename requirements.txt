@@ -20,13 +20,13 @@
 # onnxruntime-gpu>=1.15.1 ; sys_platform != "darwin"
 
 # tapnet
-chex
-jax
-jaxline
-optax
-dm-haiku
-dm-tree
-typing_extensions
-mediapy
-einshape
-ipympl
+# chex
+# jax
+# jaxline
+# optax
+# dm-haiku
+# dm-tree
+# typing_extensions
+# mediapy
+# einshape
+# ipympl
