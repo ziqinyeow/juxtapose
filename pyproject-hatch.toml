@@ -1,0 +1,78 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[project]
+name = "juxtapose"
+version = "0.0.9"
+authors = [
+  { name="Yeow Zi Qin", email="ziqinyeow@gmail.com" },
+]
+description = "A pose detection, tracking, and estimation hub that streamline 2D human sports analysis"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "License :: OSI Approved :: MIT License",
+    'Intended Audience :: Developers',
+    'Intended Audience :: Education',
+    'Intended Audience :: Science/Research',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Topic :: Software Development',
+    'Topic :: Scientific/Engineering',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    'Topic :: Scientific/Engineering :: Image Recognition',
+    'Operating System :: POSIX :: Linux',
+    'Operating System :: MacOS',
+    'Operating System :: Microsoft :: Windows',
+]
+keywords = ['pose estimation', 'pose tracking', 'computer vision', 'deep learning', 'machine learning']
+dependencies = [
+    'packaging==23.1',
+    'aenum==3.1.15',
+    'tqdm>=4.65.0',
+    'transformers',
+    'addict',
+    'yapf',
+    'timm',
+    'supervision',
+    'pycocotools',
+    'ultralytics',
+    'lapx>=0.5.2',
+    'mmengine==0.9.0',
+    'mmdet==3.2.0',
+    'mmpose==1.2.0',
+
+    # torch
+    'torch==2.0.1 ; sys_platform == "linux"',
+    'torch==2.0.1 ; sys_platform == "darwin"',
+    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp38-cp38-win_amd64.whl ; sys_platform == "win32" and python_version == "3.8"',
+    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp39-cp39-win_amd64.whl ; sys_platform == "win32" and python_version == "3.9"',
+    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp310-cp310-win_amd64.whl ; sys_platform == "win32" and python_version == "3.10"',
+    'torch @ https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp311-cp311-win_amd64.whl ; sys_platform == "win32" and python_version == "3.11"',
+
+    # mmcv
+    # 'mmcv @ https://download.openmmlab.com/mmcv/dist/cu118/torch2.0.0/mmcv-2.1.0-cp39-cp39-manylinux1_x86_64.whl ; sys_platform == "linux"',
+    # 'mmcv @ https://download.openmmlab.com/mmcv/dist/cpu/torch2.0.0/mmcv-2.1.0-py2.py3-none-any.whl ; sys_platform == "darwin"',
+    # 'mmcv @ https://download.openmmlab.com/mmcv/dist/cu118/torch2.0.0/mmcv-2.1.0-cp39-cp39-win_amd64.whl ; sys_platform == "win32"',
+
+    # onnx
+    'onnx>=1.14.0',
+    'onnxruntime>=1.15.1 ; sys_platform == "darwin"',
+    'onnxruntime-gpu>=1.15.1 ; sys_platform != "darwin"',
+]
+
+
+[project.urls]
+"Homepage" = "https://github.com/ziqinyeow/juxtapose"
+"Documentation" = "https://github.com/ziqinyeow/juxtapose"
+"Source Code" = "https://github.com/ziqinyeow/juxtapose"
+"Bug Tracker" = "https://github.com/ziqinyeow/juxtapose/issues"

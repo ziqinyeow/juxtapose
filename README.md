@@ -1,4 +1,15 @@
-# JUXTAPOSE Inference Toolbox 🚀 with ONNX
+<div align="center">
+  <p>
+    <a align="center" href="" target="_blank">
+      <img
+        width="850"
+        src="https://raw.githubusercontent.com/ziqinyeow/juxtapose/main/asset/juxtapose-banner.png"
+      >
+    </a>
+  </p>
+</div>
+
+<!-- # JUXTAPOSE Inference Toolbox 🚀 with ONNX -->
 
 ## 🍿 Intro
 
