@@ -1,23 +1,23 @@
-packaging==23.1
-aenum==3.1.15
-tqdm>=4.65.0
-transformers
-addict
-yapf
-timm
-supervision
-pycocotools
-ultralytics
-mmengine==0.9.0
-mmdet==3.2.0
-mmpose==1.2.0
-# mmcv==2.0.0 ; sys_platform == "linux"
-# mmcv==2.1.0; sys_platform == "darwin"
-lapx>=0.5.2
-torch==2.0.1
-onnx==1.14.0
-onnxruntime>=1.15.1 ; sys_platform == "darwin"
-onnxruntime-gpu>=1.15.1 ; sys_platform != "darwin"
+# packaging==23.1
+# aenum==3.1.15
+# tqdm>=4.65.0
+# transformers
+# addict
+# yapf
+# timm
+# supervision
+# pycocotools
+# ultralytics
+# mmengine==0.9.0
+# mmdet==3.2.0
+# mmpose==1.2.0
+# # mmcv==2.0.0 ; sys_platform == "linux"
+# # mmcv==2.1.0; sys_platform == "darwin"
+# lapx>=0.5.2
+# torch==2.0.1
+# onnx==1.14.0
+# onnxruntime>=1.15.1 ; sys_platform == "darwin"
+# onnxruntime-gpu>=1.15.1 ; sys_platform != "darwin"
 
 # tapnet
 # chex
