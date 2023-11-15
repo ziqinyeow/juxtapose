@@ -58,7 +58,7 @@ class RTM:
         det: DETECTOR_TYPES = "rtmdet-m",
         pose: POSE_ESTIMATOR_TYPES = "rtmpose-m",
         tracker: TRACKER_TYPES = "bytetrack",
-        device: DEVICE_TYPES = torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+        device: DEVICE_TYPES = "cuda" if torch.cuda.is_available() else "cpu",
         annotator=Annotator(),
     ) -> None:
         self.det = self.setup_detector(det, device)

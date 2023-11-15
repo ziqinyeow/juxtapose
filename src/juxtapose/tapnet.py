@@ -244,7 +244,7 @@ class Tapnet:
                 for i, t in enumerate(tracks):
                     if visibles[i]:
                         x, y = t[0][0], t[0][1]
-                        cv2.circle(im, (int(x), int(y)), 4, (255, 0, 0), -1)
+                        cv2.circle(im, (int(x), int(y)), 8, (0, 0, 255), -1)
 
             result = Result(
                 im=im,
