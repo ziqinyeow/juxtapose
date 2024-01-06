@@ -300,7 +300,14 @@ class RTM:
                     str(save_dirs / p.with_suffix(".csv").name),
                     [
                         str(index),
-                        str([{i: kpt} for i, kpt in zip(detections.track_id, kpts)]),
+                        str(
+                            [
+                                {"id": i, "kpts": kpt.tolist(), "bboxes": bboxes}
+                                for i, kpt, bboxes in zip(
+                                    detections.track_id, kpts, detections.xyxy.tolist()
+                                )
+                            ]
+                        ),
                     ],
                 )
 
