@@ -2,11 +2,17 @@
 
 
 from pathlib import Path
-from juxtapose.mmdeploy.apis.utils import build_task_processor
-from juxtapose.mmdeploy.utils import get_input_shape, load_config
-from juxtapose.utils import get_user_config_dir
+from juxtapose.utils import LOGGER
 from juxtapose.utils.downloads import safe_download
 from juxtapose.utils.core import Detections
+
+import cv2
+from typing import List, Tuple
+
+import numpy as np
+import onnxruntime as ort
+from .utils import multiclass_nms
+
 
 base = "juxtapose"
 
@@ -16,62 +22,172 @@ class RTMDet:
 
     def __init__(self, type: str = "m", device: str = "cpu", conf_thres: float = 0.3):
         download_dir = Path("model")
+        onnx_model = download_dir / f"rtmdet-{type}.onnx"
 
-        model_cfg = download_dir / f"rtmdet-{type}.py"
-        onnx_file = download_dir / f"rtmdet-{type}.onnx"
-        deploy_cfg = download_dir / f"detection_onnxruntime_static.py"
-
-        if not model_cfg.exists():
-            safe_download(
-                f"https://huggingface.co/ziq/rtm/resolve/main/rtmdet-{type}.py",
-                file=f"rtmdet-{type}",
-                dir=download_dir,
-            )
-        if not onnx_file.exists():
+        if not onnx_model.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/rtmdet-{type}.onnx",
                 file=f"rtmdet-{type}",
                 dir=download_dir,
             )
-        if not deploy_cfg.exists():
-            safe_download(
-                f"https://huggingface.co/ziq/rtm/resolve/main/detection_onnxruntime_static.py",
-                file=f"detection_onnxruntime_static",
-                dir=download_dir,
-            )
 
-        deploy_cfg, model_cfg = load_config(deploy_cfg, model_cfg)
+        providers = {"cpu": "CPUExecutionProvider", "cuda": "CUDAExecutionProvider"}[
+            device
+        ]
 
-        # build task and backend model
-        self.task_processor = build_task_processor(model_cfg, deploy_cfg, device)
-        self.model = self.task_processor.build_backend_model([onnx_file])
+        self.session = ort.InferenceSession(
+            path_or_bytes=onnx_model, providers=[providers]
+        )
 
-        # process input image
-        self.input_shape = get_input_shape(deploy_cfg)
-
+        self.onnx_model = onnx_model
+        self.model_input_size = (640, 640)
+        self.mean = (103.53, 116.28, 123.675)
+        self.std = (57.375, 57.12, 58.395)
+        self.device = device
         self.conf_thres = conf_thres
+        LOGGER.info(f"Loaded rtmdet-{type} onnx model.")
+
+    def inference(self, im: np.ndarray):
+        im = im.transpose(2, 0, 1)
+        im = np.ascontiguousarray(im, dtype=np.float32)
+        input = im[None, :, :, :]
+
+        sess_input = {self.session.get_inputs()[0].name: input}
+        sess_output = []
+        for out in self.session.get_outputs():
+            sess_output.append(out.name)
+
+        outputs = self.session.run(sess_output, sess_input)
+        return outputs
 
     def __call__(self, im):
         """Return List of xyxy coordinates based on im frame (cv2.imread)
         im -> (h, w, c)
         return -> [[x, y, x, y], [x, y, x, y], ...] -> two persons detected
         """
-
-        model_inputs, _ = self.task_processor.create_input(im, self.input_shape)
-        result = self.model.test_step(model_inputs)
-
-        pred_instances = result[0].pred_instances
-
-        # filter confidence threshold
-        pred_instances = pred_instances[pred_instances.scores > self.conf_thres]
-
-        # get only class 0 (person)
-        pred_instances = pred_instances[pred_instances.labels == 0].cpu().numpy()
-
-        result = Detections(
-            xyxy=pred_instances.bboxes,
-            confidence=pred_instances.scores,
-            labels=pred_instances.labels,
+        im, ratio = self.preprocess(im)
+        outputs = self.inference(im)
+        preds, scores, labels = self.postprocess(outputs, ratio)
+        results = Detections(
+            xyxy=preds,
+            confidence=scores,
+            labels=labels,
         )
+        return results
 
-        return result
+    def preprocess(self, img: np.ndarray):
+        """Do preprocessing for RTMPose model inference.
+
+        Args:
+            img (np.ndarray): Input image in shape.
+
+        Returns:
+            tuple:
+            - resized_img (np.ndarray): Preprocessed image.
+            - center (np.ndarray): Center of image.
+            - scale (np.ndarray): Scale of image.
+        """
+        if len(img.shape) == 3:
+            padded_img = (
+                np.ones(
+                    (self.model_input_size[0], self.model_input_size[1], 3),
+                    dtype=np.uint8,
+                )
+                * 114
+            )
+        else:
+            padded_img = np.ones(self.model_input_size, dtype=np.uint8) * 114
+
+        ratio = min(
+            self.model_input_size[0] / img.shape[0],
+            self.model_input_size[1] / img.shape[1],
+        )
+        resized_img = cv2.resize(
+            img,
+            (int(img.shape[1] * ratio), int(img.shape[0] * ratio)),
+            interpolation=cv2.INTER_LINEAR,
+        ).astype(np.uint8)
+        padded_shape = (int(img.shape[0] * ratio), int(img.shape[1] * ratio))
+        padded_img[: padded_shape[0], : padded_shape[1]] = resized_img
+
+        # normalize image
+        if self.mean is not None:
+            self.mean = np.array(self.mean)
+            self.std = np.array(self.std)
+            padded_img = (padded_img - self.mean) / self.std
+
+        return padded_img, ratio
+
+    def postprocess(
+        self,
+        outputs: List[np.ndarray],
+        ratio: float = 1.0,
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """Do postprocessing for RTMDet model inference.
+
+        Args:
+            outputs (List[np.ndarray]): Outputs of RTMDet model.
+            ratio (float): Ratio of preprocessing.
+
+        Returns:
+            tuple:
+            - final_boxes (np.ndarray): Final bounding boxes.
+            - final_scores (np.ndarray): Final scores.
+        """
+        outputs, [labels] = outputs
+
+        if outputs.shape[-1] == 4:
+            # onnx without nms module
+
+            grids = []
+            expanded_strides = []
+            strides = [8, 16, 32]
+
+            hsizes = [self.model_input_size[0] // stride for stride in strides]
+            wsizes = [self.model_input_size[1] // stride for stride in strides]
+
+            for hsize, wsize, stride in zip(hsizes, wsizes, strides):
+                xv, yv = np.meshgrid(np.arange(wsize), np.arange(hsize))
+                grid = np.stack((xv, yv), 2).reshape(1, -1, 2)
+                grids.append(grid)
+                shape = grid.shape[:2]
+                expanded_strides.append(np.full((*shape, 1), stride))
+
+            grids = np.concatenate(grids, 1)
+            expanded_strides = np.concatenate(expanded_strides, 1)
+            outputs[..., :2] = (outputs[..., :2] + grids) * expanded_strides
+            outputs[..., 2:4] = np.exp(outputs[..., 2:4]) * expanded_strides
+
+            predictions = outputs[0]
+            boxes = predictions[:, :4]
+            scores = predictions[:, 4:5] * predictions[:, 5:]
+
+            boxes_xyxy = np.ones_like(boxes)
+            boxes_xyxy[:, 0] = boxes[:, 0] - boxes[:, 2] / 2.0
+            boxes_xyxy[:, 1] = boxes[:, 1] - boxes[:, 3] / 2.0
+            boxes_xyxy[:, 2] = boxes[:, 0] + boxes[:, 2] / 2.0
+            boxes_xyxy[:, 3] = boxes[:, 1] + boxes[:, 3] / 2.0
+            boxes_xyxy /= ratio
+            dets = multiclass_nms(
+                boxes_xyxy, scores, nms_thr=self.nms_thr, score_thr=self.conf_thres
+            )
+            if dets is not None:
+                pack_dets = (dets[:, :4], dets[:, 4], dets[:, 5])
+                final_boxes, final_scores, final_cls_inds = pack_dets
+                isscore = final_scores > 0.3
+                iscat = final_cls_inds == 0
+                isbbox = [i and j for (i, j) in zip(isscore, iscat)]
+                final_boxes = final_boxes[isbbox]
+
+        elif outputs.shape[-1] == 5:
+            # onnx contains nms module
+
+            pack_dets = (outputs[0, :, :4], outputs[0, :, 4])
+            final_boxes, final_scores = pack_dets
+            final_boxes /= ratio
+            isscore = final_scores > self.conf_thres
+            isperson = labels == 0
+            isbbox = [i and j for (i, j) in zip(isscore, isperson)]
+            final_boxes = final_boxes[isbbox]
+
+        return final_boxes, final_scores[isbbox], labels[isbbox]

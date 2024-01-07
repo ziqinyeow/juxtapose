@@ -1,8 +1,9 @@
-__version__ = "0.0.11"
+__version__ = "0.0.12"
 
 from .rtm import RTM
 from .detectors import GroundingDino, RTMDet, YOLOv8
-from .rtmpose import RTMPose
+
+from .pose.rtmpose import RTMPose
 from .tapnet import Tapnet
 from .utils.plotting import Annotator
 

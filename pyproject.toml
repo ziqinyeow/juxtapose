@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "juxtapose"
-version = "0.0.11"
+version = "0.0.12"
 description = ""
 authors = ["Zi Qin <ziqinyeow@gmail.com>"]
 license = "MIT"
@@ -46,22 +46,24 @@ supervision = {version = "*"}
 pycocotools = {version = "*"}
 ultralytics = {version = "*"}
 lapx = {version = "0.5.2"}
-mmengine = {version = "0.9.0"}
-mmdet = {version = "3.2.0"}
-mmpose = {version = "1.2.0"}
+opencv-contrib-python = {version = "*"}
+opencv-python = {version = "*"}
+# mmengine = {version = "0.9.0"}
+# mmdet = {version = "3.2.0"}
+# mmpose = {version = "1.2.0"}
 # mmcv = [
 #     {platform = 'win32', version='2.1.0', source = "mmcv-cu118"},
 #     {platform = 'linux', version='2.1.0', source = "mmcv-cu118"},
 #     {platform = 'darwin', version='2.1.0', source = "mmcv-cpu"}
 # ]
-torch = [
-    # {platform = 'win32', url = "https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp310-cp310-win_amd64.whl"},
-    # {platform = "linux", url = "https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp310-cp310-linux_x86_64.whl"},
-    # {platform = "darwin", url = "https://download.pytorch.org/whl/cpu/torch-2.0.1-cp310-none-macosx_11_0_arm64.whl"},
-    {platform = 'win32', source = "torch+cu118", version = "2.0.1"},
-    {platform = "linux", version = "2.0.1"},
-    {platform = "darwin", version = "2.0.1"},
-]
+# torch = [
+#     # {platform = 'win32', url = "https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp310-cp310-win_amd64.whl"},
+#     # {platform = "linux", url = "https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp310-cp310-linux_x86_64.whl"},
+#     # {platform = "darwin", url = "https://download.pytorch.org/whl/cpu/torch-2.0.1-cp310-none-macosx_11_0_arm64.whl"},
+#     {platform = 'win32', source = "torch+cu118", version = "2.0.1"},
+#     {platform = "linux", version = "2.0.1"},
+#     {platform = "darwin", version = "2.0.1"},
+# ]
 onnx = "^1.14.0"
 onnxruntime = {version = "^1.15.1", platform = "darwin"}
 onnxruntime-gpu = [
@@ -81,20 +83,20 @@ mediapy = {version = "*"}
 einshape = {version = "*"}
 ipympl = {version = "*"}
 
-[[tool.poetry.source]]
-name = "torch+cu118"
-url = "https://download.pytorch.org/whl/cu118"
-priority = "explicit"
+# [[tool.poetry.source]]
+# name = "torch+cu118"
+# url = "https://download.pytorch.org/whl/cu118"
+# priority = "explicit"
 
-[[tool.poetry.source]]
-name = "mmcv-cpu"
-url = "https://download.openmmlab.com/mmcv/dist/cpu/torch2.0/index.html"
-priority = "explicit"
+# [[tool.poetry.source]]
+# name = "mmcv-cpu"
+# url = "https://download.openmmlab.com/mmcv/dist/cpu/torch2.0/index.html"
+# priority = "explicit"
 
-[[tool.poetry.source]]
-name = "mmcv-cu118"
-url = "https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html"
-priority = "explicit"
+# [[tool.poetry.source]]
+# name = "mmcv-cu118"
+# url = "https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html"
+# priority = "explicit"
 
 [tool.poetry.urls]
 "Homepage" = "https://github.com/ziqinyeow/juxtapose"
