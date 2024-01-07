@@ -12,7 +12,7 @@ import torch
 
 from juxtapose.data import load_inference_source
 from juxtapose.detectors import get_detector
-from juxtapose.rtmpose import RTMPose
+from juxtapose.pose.rtmpose import RTMPose
 from juxtapose.trackers import Tracker, TRACKER_MAP
 from juxtapose.types import (
     DETECTOR_TYPES,
@@ -233,7 +233,8 @@ class RTM:
             # pose estimation (detect 17 keypoints based on the bounding boxes)
             with profilers[2]:
                 if detections:
-                    kpts = self.rtmpose(im, bboxes=detections.xyxy)
+                    # kpts = self.rtmpose(im, bboxes=detections.xyxy)
+                    kpts, kpts_scores = self.rtmpose(im, bboxes=detections.xyxy)
 
             if plot:
                 labels = self.get_labels(detections)
