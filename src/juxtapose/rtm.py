@@ -41,7 +41,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Result:
-    im: np.ndarray  # shape -> (h, w, c)
+    im: np.ndarray or None  # shape -> (h, w, c)
     kpts: List  # shape -> (number of humans, 17, 2)
     bboxes: List  # shape -> (number of humans, 4)
     speed: dict  # {'bboxes': ... ms, 'kpts': ... ms} -> used to record the milliseconds of the inference time
@@ -166,6 +166,7 @@ class RTM:
         save=False,
         save_dirs="",
         verbose=True,
+        return_im=False,
     ) -> Result:
         if show:
             check_imshow(warn=True)
@@ -261,9 +262,9 @@ class RTM:
                     self.annotator.draw_skeletons(im, kpts)
 
             result = Result(
-                im=im,
-                kpts=kpts,
-                bboxes=detections.xyxy,  # detections.xyxy,
+                im=im if return_im else None,
+                kpts=kpts.tolist(),
+                bboxes=detections.xyxy.tolist(),  # detections.xyxy,
                 speed={
                     "bboxes": profilers[0].dt * 1e3 / 1,
                     "track": profilers[1].dt * 1e3 / 1,
@@ -332,6 +333,7 @@ class RTM:
         save=False,
         save_dirs="",
         verbose=True,
+        return_im=False,
     ) -> Union[List[Result], Generator[Result, None, None]]:
         if stream:
             return self.stream_inference(
@@ -345,6 +347,7 @@ class RTM:
                 save=save,
                 save_dirs=save_dirs,
                 verbose=verbose,
+                return_im=return_im,
             )
         else:
             return list(
@@ -359,5 +362,6 @@ class RTM:
                     save=save,
                     save_dirs=save_dirs,
                     verbose=verbose,
+                    return_im=return_im,
                 )
             )

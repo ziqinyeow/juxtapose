@@ -58,6 +58,7 @@ class RTMDet:
             sess_output.append(out.name)
 
         outputs = self.session.run(sess_output, sess_input)
+        # print(outputs[0].shape, outputs[1].shape)
         return outputs
 
     def __call__(self, im):
@@ -87,6 +88,7 @@ class RTMDet:
             - center (np.ndarray): Center of image.
             - scale (np.ndarray): Scale of image.
         """
+        # print("pre", img.shape)
         if len(img.shape) == 3:
             padded_img = (
                 np.ones(
@@ -109,6 +111,7 @@ class RTMDet:
         ).astype(np.uint8)
         padded_shape = (int(img.shape[0] * ratio), int(img.shape[1] * ratio))
         padded_img[: padded_shape[0], : padded_shape[1]] = resized_img
+        print(padded_shape, resized_img.shape, padded_img.shape)
 
         # normalize image
         if self.mean is not None:
@@ -183,6 +186,7 @@ class RTMDet:
             # onnx contains nms module
 
             pack_dets = (outputs[0, :, :4], outputs[0, :, 4])
+            print(outputs.shape, pack_dets[0].shape, pack_dets[1].shape)
             final_boxes, final_scores = pack_dets
             final_boxes /= ratio
             isscore = final_scores > self.conf_thres
