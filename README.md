@@ -25,6 +25,8 @@ Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm
 
 ## 🥒 Updates
 
+- **`2024/01/11`** Added Nextra docs + deployed to Vercel at [sdk.juxt.space](https://sdk.juxt.space).
+- **`2024/01/07`** Reduce dependencies by removing MMCV, MMDet, MMPose SDK, run fully on ONNX.
 - **`2023/11/01`** Added juxtapose to PYPI repository so that we can install it using `pip install juxtapose`.
 - **`2023/08/25`** Added custom [region of interests (ROI) drawing tools](rtm/utils/roi.py) that enables multi ROIs filtering while performing pose estimation/tracking. See [usage below](#🎨-select-region-of-interests-rois).
 - **`2023/08/15`** Added [GroundingDino](https://github.com/IDEA-Research/GroundingDINO) & [YOLOv8](https://github.com/ultralytics/ultralytics) object detector.
@@ -36,31 +38,15 @@ Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm
 
 ### Install Using PIP
 
-1. `pip install mmcv` - Install based on your os, see more [here](https://mmcv.readthedocs.io/en/latest/get_started/installation.html#install-with-pip).
-2. `pip install juxtapose`
+`pip install juxtapose`
 
 Note: If you faced any issues, kindly review this [github issue](https://github.com/ziqinyeow/juxtapose/issues/2)
 
 ## 🧀 Local Development
 
-### Mac (CPU only)
-
 ```bash
 git clone https://github.com/ziqinyeow/juxtapose
-cd juxtapose
-pip install -r requirements.txt
-
-```
-
-### Windows (CPU & CUDA)
-
-```bash
-git clone https://github.com/ziqinyeow/juxtapose
-cd juxtapose
-pip3 install torch --index-url https://download.pytorch.org/whl/cu118
-pip install mmcv==2.0.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html
-pip install -r requirements.txt
-
+pip install .
 ```
 
 ## 🤩 Feel The Magic
