@@ -61,6 +61,10 @@ class RTM:
         device: DEVICE_TYPES = "cuda" if torch.cuda.is_available() else "cpu",
         annotator=Annotator(),
     ) -> None:
+        if device == "cuda" and not torch.cuda.is_available():
+            LOGGER.info(f"Auto switch to CPU, as you are running without CUDA")
+            device = "cpu"
+
         self.det = self.setup_detector(det, device)
         self.rtmpose = RTMPose(pose.split("-")[1], device=device)
         self.annotator = annotator
@@ -278,13 +282,13 @@ class RTM:
 
             if show:
                 if is_image:
-                    cv2.imshow(result.name, result.im)
+                    cv2.imshow(result.name, result.im if return_im else im)
                     key = cv2.waitKey(0) & 0xFF
                     if key == ord("q"):
                         cv2.destroyWindow(result.name)
                         continue
                 else:
-                    cv2.imshow(result.name, result.im)
+                    cv2.imshow(result.name, result.im if return_im else im)
                     key = cv2.waitKey(1) & 0xFF
                     if key == ord("q"):
                         break
