@@ -1,0 +1,96 @@
+---
+title: RTM
+---
+
+import { Callout } from 'nextra/components'
+
+# RTM
+
+RTM (i.e. real time multi pose estimation) is an elegant wrapper that simplifies the loading of [rtmdet](https://github.com/open-mmlab/mmdetection/tree/main/configs/rtmdet) and [rtmpose](https://github.com/open-mmlab/mmpose/tree/main/projects/rtmpose) models created by [OpenMMLab](https://github.com/open-mmlab).
+
+### Basic Usage
+
+```python copy filename="main.py" showLineNumbers
+from juxtapose import RTM
+```
+
+```python copy showLineNumbers
+model = RTM(
+  det="rtmdet-m",
+  tracker="botsort",
+  pose="rtmpose-l"
+) 
+```
+
+Note: Running the code above will check if the local `model` directory exists the model file, if not, it will automatically download the model + config file from the pre-configured source.
+
+### Inference With The Whole Directory/Folder
+
+```python copy showLineNumbers
+model("asset")
+```
+
+All the images and videos in the dir will get inference sequentially, not concurrently/parallelly at the moment.
+
+### Inference With A Single Image/Video File
+
+```python copy showLineNumbers
+# Inference with image
+model("asset/football.jpeg", verbose=False) # verbose -> disable terminal printing
+
+# Inference with video
+model("asset/bike.mp4")
+
+# Inference with the YouTube Source
+model("https://www.youtube.com/watch?v=1vYvTbDJuFs&ab_channel=PeterGrant", save=True)
+```
+
+
+### Accessing Result Of Each Frame
+
+When calling the `model()` and setting stream equals to true - `model(stream=True)`, this will return a python generator, you can either access it by:
+
+```python copy showLineNumbers
+generator = model("data/bike.mp4", show=False, stream=True)
+first_frame = next(iter(generator))
+second_frame = next(iter(generator))
+# ...
+# do what you want with the frame
+```
+
+OR
+
+```python copy showLineNumbers
+import cv2
+
+for result in model("data/bike.mp4", show=False, stream=True):
+    # do what ever you want with the data
+    im, bboxes, kpts = result.im, result.bboxes, result.kpts
+    cv2.imshow(im)
+```
+
+#### Plot The Bboxes + Keypoints Yourself
+
+```python copy showLineNumbers
+import cv2
+from juxtapose import Annotator
+
+annotator = Annotator(thickness=3, font_color=(128, 128, 128)) # see juxtapose.utils.plotting
+
+for result in model("data/bike.mp4", show=False, stream=True):
+    # do what ever you want with the data
+    im, bboxes, kpts = result.im, result.bboxes, result.kpts
+    # e.g custom plot anything using cv2 API
+    cv2.putText(
+        im, "custom text", (100, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (128, 128, 128)
+    )
+
+    # use the annotator class -> see rtm.utils.plotting
+    annotator.draw_bboxes(
+        im, bboxes, labels=[f"children_{i}" for i in range(len(bboxes))]
+    )
+    annotator.draw_kpts(im, kpts, thickness=4)
+    annotator.draw_skeletons(im, kpts)
+
+    cv2.imshow(im)
+```

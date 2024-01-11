@@ -66,3 +66,5 @@ demo.py
 server
 
 .env
+
+asset/*

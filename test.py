@@ -5,5 +5,5 @@ sys.path.insert(0, "src")
 from juxtapose import RTM, RTMDet
 
 
-model = RTM(det="rtmdet-m", tracker="botsort", pose="rtmpose-l")
-print(model("./asset/football.jpeg", show=False, return_im=False))
+model = RTM(det="rtmdet-m", tracker="bytetrack", pose="rtmpose-l")
+model("./asset/shortput.MP4", show=False, save=True)

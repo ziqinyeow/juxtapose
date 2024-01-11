@@ -1,0 +1,19 @@
+---
+title: Tapnet
+---
+
+import { Callout } from "nextra/components";
+
+# Tapnet
+
+{/* RTM (i.e. real time multi pose estimation) is an elegant wrapper that simplifies the loading of [rtmdet](https://github.com/open-mmlab/mmdetection/tree/main/configs/rtmdet) and [rtmpose](https://github.com/open-mmlab/mmpose/tree/main/projects/rtmpose) models created by [OpenMMLab](https://github.com/open-mmlab). */}
+
+### Basic Usage
+
+```python copy filename="main.py" showLineNumbers
+from juxtapose import Tapnet
+
+tapnet = Tapnet()
+
+tapnet("./asset/track.mp4", show=True, save=False)
+```

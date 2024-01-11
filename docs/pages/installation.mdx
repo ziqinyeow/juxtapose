@@ -1,0 +1,157 @@
+---
+title: Installation
+---
+
+import { Tabs, Tab } from "@/components/Tabs";
+
+# Installation
+
+Just run the following code.
+
+```bash copy filename="Terminal" /juxtapose/
+pip install juxtapose
+```
+
+System Requirements:
+
+- [Python 3.8](https://www.python.org/) or later.
+- [mmcv 2.0.0](https://mmcv.readthedocs.io/en/latest/get_started/installation.html#install-with-pip) or later. (See [guide below](#step-1-install-mmcv) to install)
+- macOS, Windows (including WSL), and Linux are supported.
+
+> **Good to know (Optional)**:
+>
+> - You can install in the root pythonpath, OR
+> - You can setup a brand new conda environment if you have installed [conda](https://docs.conda.io/en/latest/) by running `conda create -n <name> python=3.9`.
+> - After you have successfully create the conda environment, you can run `conda activate <name>` to activate the environment.
+> - Then, you can follow the steps below.
+
+---
+
+## Installation Guide
+
+### Step 1: Install `juxtapose`
+
+```bash copy filename="Terminal" /juxtapose/
+pip install juxtapose
+```
+
+### Step 2: Test If The Installation Works
+
+Create a python script, make sure you are in the environment that you've installed `juxtapose`.
+
+```python copy filename="test.py" showLineNumbers {1,4-8,11-15}
+from juxtapose import RTM
+
+# you can view type hinting for each argument
+model = RTM(
+  det="rtmdet-s",
+  tracker="bytetrack",
+  pose="rtmpose-l"
+)
+
+# run inference
+model(
+  source="https://raw.githubusercontent.com/ziqinyeow/juxtapose-sdk/main/asset/football.jpeg",
+  show=True, # this will create an cv2 window to show the inference result
+  save=True # this will save a copy of inference images/videos and its keypoints in csv format
+)
+
+```
+
+Then run the following:
+
+```python copy filename="Terminal"
+python test.py
+```
+
+If you faced any errors, please kindly refer to the [potential errors](#potential-errors) section below or create an issue [here](https://github.com/ziqinyeow/juxtapose/issues/new/choose).
+
+## Potential Errors
+
+### `ModuleNotFoundError: No module named 'numpy'`
+
+This error is raised when installing `juxtapose` library with a brand new environment,
+because [`xtcocotools`](https://github.com/jin-s13/xtcocoapi) which required by [`mmpose`](https://github.com/open-mmlab/mmpose)
+in `juxtapose` expects us to have `numpy` and `matplotlib` pre-installed. This is often occur in macOs (Apple Silicon) environment.
+You can solve it elegantly by running:
+
+```bash copy filename="Terminal"
+pip install numpy matplotlib
+
+# then only run
+pip install juxtapose
+```
+
+### `ModuleNotFoundError: No module named 'mmcv._ext'`
+
+This error is raised when running the `RTM()` function to load the `rtmdet` or `rtmpose` model. This is often caused by the
+installation issue of `mmcv`. You can solve it elegantly by running:
+
+<Tabs items={['Windows', 'macOS', 'Linux']} storageKey="selected-pkg-manager">
+  <Tab>
+    ```bash copy filename="Terminal"
+    pip uninstall mmcv
+
+    # reinstall back mmcv
+    pip install mmcv==2.1.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html
+    ```
+
+  </Tab>
+  <Tab>
+    ```bash copy filename="Terminal"
+    pip uninstall mmcv
+
+    # reinstall back mmcv
+    pip install mmcv==2.1.0 -f https://download.openmmlab.com/mmcv/dist/cpu/torch2.0/index.html
+    ```
+
+  </Tab>
+  <Tab>
+    ```bash copy filename="Terminal"
+    pip uninstall mmcv
+
+    # reinstall back mmcv
+    pip install mmcv==2.1.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html
+    ```
+
+  </Tab>
+</Tabs>
+
+### `ImportError: DLL load failed`
+
+This error is raised when you installed an uncompatible version of `torch`. It is often occur when you installed a GPU version of PyTorch
+in a non-GPU environment. This error can be elegantly solved by running:
+
+<Tabs items={['Windows', 'macOS', 'Linux']} storageKey="selected-pkg-manager">
+  <Tab>
+    ```bash copy filename="Terminal"
+    pip uninstall torch
+
+    # reinstall back torch
+    pip install torch==2.0.1 --index-url https://download.pytorch.org/whl/cu118 # gpu
+    # pip install torch==2.0.1 --index-url https://download.pytorch.org/whl/cu118 # cpu only
+    ```
+
+  </Tab>
+  <Tab>
+    ```bash copy filename="Terminal"
+    pip uninstall torch
+
+    # reinstall back torch
+    pip install torch==2.0.1
+    ```
+
+  </Tab>
+  <Tab>
+    ```bash copy filename="Terminal"
+    pip uninstall torch
+
+    # reinstall back torch
+    pip install torch==2.0.1 --index-url https://download.pytorch.org/whl/cu118 # gpu
+    # pip install torch==2.0.1 --index-url https://download.pytorch.org/whl/cpu # cpu only
+    ```
+
+  </Tab>
+</Tabs>
+
+You can view more installation steps on the [Official Pytorch Installation Guide](https://pytorch.org/get-started/locally/).
