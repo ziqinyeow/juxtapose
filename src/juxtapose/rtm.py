@@ -271,7 +271,7 @@ class RTM:
                 kpts=kpts.tolist(),
                 bboxes=detections.xyxy.tolist(),  # detections.xyxy,
                 persons=[
-                    {"id": i, "kpts": kpt.tolist(), "bboxes": bboxes}
+                    {"id": str(i), "kpts": kpt.tolist(), "bboxes": bboxes}
                     for i, kpt, bboxes in zip(
                         detections.track_id, kpts, detections.xyxy.tolist()
                     )
