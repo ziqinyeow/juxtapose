@@ -42,6 +42,7 @@ from dataclasses import dataclass
 @dataclass
 class Result:
     im: np.ndarray or None  # shape -> (h, w, c)
+    persons: List
     kpts: List  # shape -> (number of humans, 17, 2)
     bboxes: List  # shape -> (number of humans, 4)
     speed: dict  # {'bboxes': ... ms, 'kpts': ... ms} -> used to record the milliseconds of the inference time
@@ -269,6 +270,12 @@ class RTM:
                 im=im if return_im else None,
                 kpts=kpts.tolist(),
                 bboxes=detections.xyxy.tolist(),  # detections.xyxy,
+                persons=[
+                    {"id": i, "kpts": kpt.tolist(), "bboxes": bboxes}
+                    for i, kpt, bboxes in zip(
+                        detections.track_id, kpts, detections.xyxy.tolist()
+                    )
+                ],
                 speed={
                     "bboxes": profilers[0].dt * 1e3 / 1,
                     "track": profilers[1].dt * 1e3 / 1,
