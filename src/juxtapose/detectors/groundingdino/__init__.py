@@ -4,6 +4,7 @@ import bisect
 import numpy as np
 from pathlib import Path
 from juxtapose.utils.core import Detections
+from juxtapose.utils import ops
 
 
 from juxtapose.utils.downloads import safe_download
@@ -21,19 +22,26 @@ class GroundingDino:
         self,
         type="",
         device: str = "cpu",
-        text: str = "person on the track .",
+        text: str = "person .",
         conf_thres: float = 0.35,
         text_thres: float = 0.25,
     ):
         model_path = Path(f"model/groundingdino_swint_ogc.pth")
+        config_path = Path(f"model/gd-ogc.py")
         if not model_path.exists():
             safe_download(
                 f"https://huggingface.co/ziq/rtm/resolve/main/groundingdino_swint_ogc.pth",
                 file=f"groundingdino_swint_ogc.pth",
                 dir=Path(f"model/"),
             )
+        if not config_path.exists():
+            safe_download(
+                f"https://huggingface.co/ziq/rtm/resolve/main/gd-ogc.py",
+                file=f"gd-ogc.py",
+                dir=Path(f"model/"),
+            )
         self.model = load_model(
-            "rtm/conf/gd-ogc.py",
+            str(config_path),
             model_path,
         )
         self.model.to(device)
