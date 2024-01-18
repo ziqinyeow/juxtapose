@@ -74,6 +74,7 @@ class RTMDet:
             confidence=scores,
             labels=labels,
         )
+
         return results
 
     def preprocess(self, img: np.ndarray):
