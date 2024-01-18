@@ -61,12 +61,13 @@ class RTM:
         tracker: TRACKER_TYPES = "bytetrack",
         device: DEVICE_TYPES = "cuda" if torch.cuda.is_available() else "cpu",
         annotator=Annotator(),
+        captions="person .",
     ) -> None:
         if device == "cuda" and not torch.cuda.is_available():
             LOGGER.info(f"Auto switch to CPU, as you are running without CUDA")
             device = "cpu"
 
-        self.det = self.setup_detector(det, device)
+        self.det = self.setup_detector(det, device, captions)
         self.rtmpose = RTMPose(pose.split("-")[1], device=device)
         self.annotator = annotator
         self.box_annotator = sv.BoxAnnotator()
@@ -91,11 +92,8 @@ class RTM:
     def setup_tracker(self) -> None:
         self.tracker = Tracker(self.tracker_type).tracker
 
-    def setup_detector(self, det, device):
-        return get_detector(
-            det,
-            device=device,
-        )
+    def setup_detector(self, det, device, captions):
+        return get_detector(det, device=device, captions=captions)
 
     def save_preds(self, im0, vid_cap, idx, save_path) -> None:
         """Save video predictions as mp4 at specified path."""
@@ -258,32 +256,49 @@ class RTM:
                     detections = Detections(xyxy=xyxy, labels=labels, track_id=track_id)
                     if plot_bboxes:
                         self.box_annotator.annotate(im, detections, labels=labels)
-                    self.annotator.draw_kpts(im, kpts)
-                    self.annotator.draw_skeletons(im, kpts)
+                    if detections:
+                        self.annotator.draw_kpts(im, kpts)
+                        self.annotator.draw_skeletons(im, kpts)
                 else:
                     if plot_bboxes:
                         self.box_annotator.annotate(im, detections, labels=labels)
-                    self.annotator.draw_kpts(im, kpts)
-                    self.annotator.draw_skeletons(im, kpts)
+                    if detections:
+                        self.annotator.draw_kpts(im, kpts)
+                        self.annotator.draw_skeletons(im, kpts)
 
-            result = Result(
-                im=im if return_im else None,
-                kpts=kpts.tolist(),
-                bboxes=detections.xyxy.tolist(),  # detections.xyxy,
-                persons=[
-                    {"id": str(i), "kpts": kpt.tolist(), "bboxes": bboxes}
-                    for i, kpt, bboxes in zip(
-                        detections.track_id, kpts, detections.xyxy.tolist()
-                    )
-                ],
-                speed={
-                    "bboxes": profilers[0].dt * 1e3 / 1,
-                    "track": profilers[1].dt * 1e3 / 1,
-                    "kpts": profilers[2].dt * 1e3 / 1,
-                },
-                save_dirs=str(save_dirs) if save else "",
-                name=p.name,
-            )
+            if detections:
+                result = Result(
+                    im=im if return_im else None,
+                    kpts=kpts.tolist(),
+                    bboxes=detections.xyxy.tolist(),  # detections.xyxy,
+                    persons=[
+                        {"id": str(i), "kpts": kpt.tolist(), "bboxes": bboxes}
+                        for i, kpt, bboxes in zip(
+                            detections.track_id, kpts, detections.xyxy.tolist()
+                        )
+                    ],
+                    speed={
+                        "bboxes": profilers[0].dt * 1e3 / 1,
+                        "track": profilers[1].dt * 1e3 / 1,
+                        "kpts": profilers[2].dt * 1e3 / 1,
+                    },
+                    save_dirs=str(save_dirs) if save else "",
+                    name=p.name,
+                )
+            else:
+                result = Result(
+                    im=im if return_im else None,
+                    kpts=[],
+                    bboxes=[],  # detections.xyxy,
+                    persons=[],
+                    speed={
+                        "bboxes": profilers[0].dt * 1e3 / 1,
+                        "track": profilers[1].dt * 1e3 / 1,
+                        "kpts": profilers[2].dt * 1e3 / 1,
+                    },
+                    save_dirs=str(save_dirs) if save else "",
+                    name=p.name,
+                )
 
             yield result
 

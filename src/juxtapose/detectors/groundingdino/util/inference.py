@@ -27,10 +27,15 @@ def preprocess_caption(caption: str) -> str:
 
 
 def load_model(
-    model_config_path: str, model_checkpoint_path: str, device: str = "cuda"
+    model_config_path: str,
+    model_checkpoint_path: str,
+    captions: str,
+    device: str = "cuda",
 ):
     args = SLConfig.fromfile(model_config_path)
     args.device = device
+    args.captions = captions
+
     model = build_model(args)
     checkpoint = torch.load(model_checkpoint_path, map_location="cpu")
     model.load_state_dict(clean_state_dict(checkpoint["model"]), strict=False)

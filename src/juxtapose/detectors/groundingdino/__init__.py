@@ -22,7 +22,7 @@ class GroundingDino:
         self,
         type="",
         device: str = "cpu",
-        text: str = "person .",
+        captions: str = "person .",
         conf_thres: float = 0.35,
         text_thres: float = 0.25,
     ):
@@ -40,13 +40,10 @@ class GroundingDino:
                 file=f"gd-ogc.py",
                 dir=Path(f"model/"),
             )
-        self.model = load_model(
-            str(config_path),
-            model_path,
-        )
+        self.model = load_model(str(config_path), model_path, captions=captions)
         self.model.to(device)
         self.device = device
-        self.text = text
+        self.captions = captions
         self.conf_thres = conf_thres
         self.text_thres = text_thres
 
@@ -64,7 +61,8 @@ class GroundingDino:
 
     def predict(self, im, remove_combined: bool = False):
         with torch.no_grad():
-            outputs = self.model(im[None], captions=[self.text])
+            outputs = self.model(im[None])
+            # outputs = self.model(im[None], captions=[self.captions])
 
         prediction_logits = (
             outputs["pred_logits"].cpu().sigmoid()[0]
@@ -78,7 +76,7 @@ class GroundingDino:
         boxes = prediction_boxes[mask]  # boxes.shape = (n, 4)
 
         tokenizer = self.model.tokenizer
-        tokenized = tokenizer(self.text)
+        tokenized = tokenizer(self.captions)
 
         if remove_combined:
             sep_idx = [
@@ -123,6 +121,8 @@ class GroundingDino:
         result = Detections(
             xyxy=xyxy,
             confidence=conf.numpy(),
-            labels=np.array([0 if label == "person" else -1 for label in labels]),
+            labels=np.array([0 if label == "person" else 0 for label in labels]),
+            # labels=np.array([0 if label == "person" else -1 for label in labels]),
         )
+        # print(result)
         return result

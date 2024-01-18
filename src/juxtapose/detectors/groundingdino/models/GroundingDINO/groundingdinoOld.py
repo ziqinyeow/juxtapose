@@ -82,7 +82,6 @@ class GroundingDINO(nn.Module):
         text_encoder_type="bert-base-uncased",
         sub_sentence_present=True,
         max_text_len=256,
-        captions="person .",
     ):
         """Initializes the model.
         Parameters:
@@ -100,7 +99,6 @@ class GroundingDINO(nn.Module):
         self.nheads = nheads
         self.max_text_len = 256
         self.sub_sentence_present = sub_sentence_present
-        self.captions = [captions]
 
         # setting query dim
         self.query_dim = query_dim
@@ -224,69 +222,6 @@ class GroundingDINO(nn.Module):
 
         self._reset_parameters()
 
-        # with torch.no_grad():
-        #     self.init_text()
-
-    def init_text(self):
-        # encoder texts
-        tokenized = self.tokenizer(
-            self.captions, padding="longest", return_tensors="pt"
-        ).to("cpu")
-        (
-            text_self_attention_masks,
-            position_ids,
-            cate_to_token_mask_list,
-        ) = generate_masks_with_special_tokens_and_transfer_map(
-            tokenized, self.specical_tokens, self.tokenizer
-        )
-
-        if text_self_attention_masks.shape[1] > self.max_text_len:
-            text_self_attention_masks = text_self_attention_masks[
-                :, : self.max_text_len, : self.max_text_len
-            ]
-            position_ids = position_ids[:, : self.max_text_len]
-            tokenized["input_ids"] = tokenized["input_ids"][:, : self.max_text_len]
-            tokenized["attention_mask"] = tokenized["attention_mask"][
-                :, : self.max_text_len
-            ]
-            tokenized["token_type_ids"] = tokenized["token_type_ids"][
-                :, : self.max_text_len
-            ]
-
-        # extract text embeddings
-        if self.sub_sentence_present:
-            tokenized_for_encoder = {
-                k: v for k, v in tokenized.items() if k != "attention_mask"
-            }
-            tokenized_for_encoder["attention_mask"] = text_self_attention_masks
-            tokenized_for_encoder["position_ids"] = position_ids
-        else:
-            # import ipdb; ipdb.set_trace()
-            tokenized_for_encoder = tokenized
-
-        bert_output = self.bert(**tokenized_for_encoder)  # bs, 195, 768
-
-        encoded_text = self.feat_map(
-            bert_output["last_hidden_state"]
-        )  # bs, 195, d_model
-        text_token_mask = tokenized.attention_mask.bool()  # bs, 195
-
-        if encoded_text.shape[1] > self.max_text_len:
-            encoded_text = encoded_text[:, : self.max_text_len, :]
-            text_token_mask = text_token_mask[:, : self.max_text_len]
-            position_ids = position_ids[:, : self.max_text_len]
-            text_self_attention_masks = text_self_attention_masks[
-                :, : self.max_text_len, : self.max_text_len
-            ]
-
-        self.text_dict = {
-            "encoded_text": encoded_text,  # bs, 195, d_model
-            "text_token_mask": text_token_mask,  # bs, 195
-            "position_ids": position_ids,  # bs, 195
-            "text_self_attention_masks": text_self_attention_masks,  # bs, 195,195
-        }
-        # print(self.text_dict)
-
     def _reset_parameters(self):
         # init input_proj
         for proj in self.input_proj:
@@ -326,14 +261,79 @@ class GroundingDINO(nn.Module):
            - "aux_outputs": Optional, only returned when auxilary losses are activated. It is a list of
                             dictionnaries containing the two above keys for each decoder layer.
         """
-        # print(self.captions)
+        # print("targets---" * 3)
+        # print(targets)
+        if targets is None:
+            captions = kw["captions"]
+        else:
+            captions = [t["caption"] for t in targets]
+
+        # encoder texts
+        tokenized = self.tokenizer(captions, padding="longest", return_tensors="pt").to(
+            samples.device
+        )
+        (
+            text_self_attention_masks,
+            position_ids,
+            cate_to_token_mask_list,
+        ) = generate_masks_with_special_tokens_and_transfer_map(
+            tokenized, self.specical_tokens, self.tokenizer
+        )
+
+        if text_self_attention_masks.shape[1] > self.max_text_len:
+            text_self_attention_masks = text_self_attention_masks[
+                :, : self.max_text_len, : self.max_text_len
+            ]
+            position_ids = position_ids[:, : self.max_text_len]
+            tokenized["input_ids"] = tokenized["input_ids"][:, : self.max_text_len]
+            tokenized["attention_mask"] = tokenized["attention_mask"][
+                :, : self.max_text_len
+            ]
+            tokenized["token_type_ids"] = tokenized["token_type_ids"][
+                :, : self.max_text_len
+            ]
+
+        # extract text embeddings
+        if self.sub_sentence_present:
+            tokenized_for_encoder = {
+                k: v for k, v in tokenized.items() if k != "attention_mask"
+            }
+            tokenized_for_encoder["attention_mask"] = text_self_attention_masks
+            tokenized_for_encoder["position_ids"] = position_ids
+        else:
+            # import ipdb; ipdb.set_trace()
+            tokenized_for_encoder = tokenized
+
+        bert_output = self.bert(**tokenized_for_encoder)  # bs, 195, 768
+
+        encoded_text = self.feat_map(
+            bert_output["last_hidden_state"]
+        )  # bs, 195, d_model
+        text_token_mask = tokenized.attention_mask.bool()  # bs, 195
+        # text_token_mask: True for nomask, False for mask
+        # text_self_attention_masks: True for nomask, False for mask
+
+        if encoded_text.shape[1] > self.max_text_len:
+            encoded_text = encoded_text[:, : self.max_text_len, :]
+            text_token_mask = text_token_mask[:, : self.max_text_len]
+            position_ids = position_ids[:, : self.max_text_len]
+            text_self_attention_masks = text_self_attention_masks[
+                :, : self.max_text_len, : self.max_text_len
+            ]
+
+        text_dict = {
+            "encoded_text": encoded_text,  # bs, 195, d_model
+            "text_token_mask": text_token_mask,  # bs, 195
+            "position_ids": position_ids,  # bs, 195
+            "text_self_attention_masks": text_self_attention_masks,  # bs, 195,195
+        }
 
         # import ipdb; ipdb.set_trace()
         if isinstance(samples, (list, torch.Tensor)):
             samples = nested_tensor_from_tensor_list(samples)
         if not hasattr(self, "features") or not hasattr(self, "poss"):
             self.set_image_tensor(samples)
-        self.init_text()
+
         srcs = []
         masks = []
         for l, feat in enumerate(self.features):
@@ -365,7 +365,7 @@ class GroundingDINO(nn.Module):
             self.poss,
             input_query_label,
             attn_mask,
-            self.text_dict,
+            text_dict,
         )
 
         # deformable-detr-like anchor update
@@ -382,7 +382,7 @@ class GroundingDINO(nn.Module):
         # output
         outputs_class = torch.stack(
             [
-                layer_cls_embed(layer_hs, self.text_dict)
+                layer_cls_embed(layer_hs, text_dict)
                 for layer_cls_embed, layer_hs in zip(self.class_embed, hs)
             ]
         )
@@ -445,7 +445,6 @@ def build_groundingdino(args):
         text_encoder_type=args.text_encoder_type,
         sub_sentence_present=sub_sentence_present,
         max_text_len=args.max_text_len,
-        captions=args.captions,
     )
 
     return model
