@@ -10,6 +10,36 @@ from supervision.detection.utils import non_max_suppression, xywh_to_xyxy
 from supervision.geometry.core import Position
 
 
+def calculate_masks_centroids(masks: np.ndarray) -> np.ndarray:
+    """
+    Calculate the centroids of binary masks in a tensor.
+
+    Parameters:
+        masks (np.ndarray): A 3D NumPy array of shape (num_masks, height, width).
+            Each 2D array in the tensor represents a binary mask.
+
+    Returns:
+        A 2D NumPy array of shape (num_masks, 2), where each row contains the x and y
+            coordinates (in that order) of the centroid of the corresponding mask.
+    """
+    num_masks, height, width = masks.shape
+    total_pixels = masks.sum(axis=(1, 2))
+
+    # offset for 1-based indexing
+    vertical_indices, horizontal_indices = np.indices((height, width)) + 0.5
+    # avoid division by zero for empty masks
+    total_pixels[total_pixels == 0] = 1
+
+    def sum_over_mask(indices: np.ndarray, axis: tuple) -> np.ndarray:
+        return np.tensordot(masks, indices, axes=axis)
+
+    aggregation_axis = ([1, 2], [0, 1])
+    centroid_x = sum_over_mask(horizontal_indices, aggregation_axis) / total_pixels
+    centroid_y = sum_over_mask(vertical_indices, aggregation_axis) / total_pixels
+
+    return np.column_stack((centroid_x, centroid_y)).astype(int)
+
+
 def _validate_xyxy(xyxy: Any, n: int) -> None:
     is_valid = isinstance(xyxy, np.ndarray) and xyxy.shape == (n, 4)
     if not is_valid:
@@ -291,6 +321,10 @@ class Detections:
             class_id=np.array([], dtype=int),
         )
 
+    def gg(self):
+        print("gg")
+        return
+
     def get_anchor_coordinates(self, anchor: Position) -> np.ndarray:
         """
         Returns the bounding box coordinates for a specific anchor.
@@ -301,6 +335,7 @@ class Detections:
         Returns:
             np.ndarray: An array of shape `(n, 2)` containing the bounding box anchor coordinates in format `[x, y]`.
         """
+
         if anchor == Position.CENTER:
             return np.array(
                 [
@@ -308,10 +343,42 @@ class Detections:
                     (self.xyxy[:, 1] + self.xyxy[:, 3]) / 2,
                 ]
             ).transpose()
+        elif anchor == Position.CENTER_OF_MASS:
+            if self.mask is None:
+                raise ValueError(
+                    "Cannot use `Position.CENTER_OF_MASS` without a detection mask."
+                )
+            return calculate_masks_centroids(masks=self.mask)
+        elif anchor == Position.CENTER_LEFT:
+            return np.array(
+                [
+                    self.xyxy[:, 0],
+                    (self.xyxy[:, 1] + self.xyxy[:, 3]) / 2,
+                ]
+            ).transpose()
+        elif anchor == Position.CENTER_RIGHT:
+            return np.array(
+                [
+                    self.xyxy[:, 2],
+                    (self.xyxy[:, 1] + self.xyxy[:, 3]) / 2,
+                ]
+            ).transpose()
         elif anchor == Position.BOTTOM_CENTER:
             return np.array(
                 [(self.xyxy[:, 0] + self.xyxy[:, 2]) / 2, self.xyxy[:, 3]]
             ).transpose()
+        elif anchor == Position.BOTTOM_LEFT:
+            return np.array([self.xyxy[:, 0], self.xyxy[:, 3]]).transpose()
+        elif anchor == Position.BOTTOM_RIGHT:
+            return np.array([self.xyxy[:, 2], self.xyxy[:, 3]]).transpose()
+        elif anchor == Position.TOP_CENTER:
+            return np.array(
+                [(self.xyxy[:, 0] + self.xyxy[:, 2]) / 2, self.xyxy[:, 1]]
+            ).transpose()
+        elif anchor == Position.TOP_LEFT:
+            return np.array([self.xyxy[:, 0], self.xyxy[:, 1]]).transpose()
+        elif anchor == Position.TOP_RIGHT:
+            return np.array([self.xyxy[:, 2], self.xyxy[:, 1]]).transpose()
 
         raise ValueError(f"{anchor} is not supported.")
 

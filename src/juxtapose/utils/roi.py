@@ -11,7 +11,7 @@ def select_roi(
     color=sv.ColorPalette.default(),
 ):
     x0, y0 = -1, -1
-    points, bboxes, bboxes_color = [], [], []
+    points, bboxes = [], []
     img, img4show = im.copy(), im.copy()
     col = ()
 
@@ -26,7 +26,6 @@ def select_roi(
         elif event == cv2.EVENT_LBUTTONUP:
             img = img4show
             bboxes.append([x0, y0, x, y])
-            bboxes_color.append(col)
 
     def POINT(event, x, y, flags, param):
         nonlocal x0, y0, img4show, img
@@ -74,6 +73,6 @@ Press q/Q/ESC         to quit
     cv2.destroyWindow(win)
 
     if type == "rect":
-        return bboxes, bboxes_color
+        return bboxes
     else:
         return points, [i + 1 for i in range(len(points))]
