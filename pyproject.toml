@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "juxtapose"
-version = "0.0.18"
+version = "0.0.19"
 description = ""
 authors = ["Zi Qin <ziqinyeow@gmail.com>"]
 license = "MIT"
