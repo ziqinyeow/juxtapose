@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "juxtapose"
-version = "0.0.19"
+version = "0.0.20"
 description = ""
 authors = ["Zi Qin <ziqinyeow@gmail.com>"]
 license = "MIT"
@@ -65,11 +65,8 @@ opencv-python = {version = "*"}
 #     {platform = "darwin", version = "2.0.1"},
 # ]
 onnx = "^1.14.0"
-onnxruntime = {version = "^1.15.1", platform = "darwin"}
-onnxruntime-gpu = [
-    {version = "^1.15.1", platform = "win32"}, 
-    {version = "^1.15.1", platform = "linux"}, 
-]
+onnxruntime = [{version = "^1.15.1", platform = "darwin"}, {version = "^1.15.1", platform = "linux"}, ]
+onnxruntime-gpu = [{version = "^1.15.1", platform = "win32"}]
 
 # tapnet
 chex = {version = "*"}
@@ -99,8 +96,8 @@ ipympl = {version = "*"}
 # priority = "explicit"
 
 [tool.poetry.urls]
-"Homepage" = "https://github.com/ziqinyeow/juxtapose"
-"Documentation" = "https://github.com/ziqinyeow/juxtapose"
+"Homepage" = "https://juxt.space"
+"Documentation" = "https://sdk.juxt.space"
 "Source Code" = "https://github.com/ziqinyeow/juxtapose"
 "Bug Tracker" = "https://github.com/ziqinyeow/juxtapose/issues"
 
