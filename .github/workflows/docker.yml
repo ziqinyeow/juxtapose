@@ -42,7 +42,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: latest
+          tags: ziqinyeow/juxtapose:latest
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Build and push Docker Server image
@@ -51,5 +51,5 @@ jobs:
           context: ./examples/fastapi/
           file: ./examples/fastapi/Dockerfile
           push: true
-          tags: server
+          tags: ziqinyeow/juxtapose:server
           labels: ${{ steps.meta.outputs.labels }}
