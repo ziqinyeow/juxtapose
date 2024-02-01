@@ -170,6 +170,7 @@ class RTM:
         poi: Literal["point", "box", "text", ""] = "",
         roi: Literal["rect", ""] = "",
         zones: List = [],
+        framestamp: List = [],
         # panels
         show=True,
         plot=True,
@@ -201,6 +202,12 @@ class RTM:
             p, im, im0 = Path(path[0]), im0s[0], im0s[0].copy()
 
             index += 1
+
+            if len(framestamp) > 0:
+                if framestamp[0] >= index:
+                    continue
+                if index > framestamp[1] + 1:
+                    break
 
             # reset tracker when source changed
             if current_source is None:
@@ -367,6 +374,7 @@ class RTM:
         poi: Literal["point", "box", "text", ""] = "",
         roi: Literal["rect", ""] = "",
         zones: List = [],
+        framestamp: List = [],
         # panels
         show=True,
         plot=True,
@@ -383,6 +391,7 @@ class RTM:
                 poi=poi,
                 roi=roi,
                 zones=zones,
+                framestamp=framestamp,
                 show=show,
                 plot=plot,
                 plot_bboxes=plot_bboxes,
@@ -399,6 +408,7 @@ class RTM:
                     poi=poi,
                     roi=roi,
                     zones=zones,
+                    framestamp=framestamp,
                     show=show,
                     plot=plot,
                     plot_bboxes=plot_bboxes,
