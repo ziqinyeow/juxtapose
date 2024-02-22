@@ -215,7 +215,7 @@ class Tapnet:
 
             result = Result(
                 im=im,
-                tracks=tracks,  # detections.xyxy,
+                tracks=tracks.tolist(),  # detections.xyxy,
                 speed={
                     "tracks": profilers[0].dt * 1e3 / 1,
                 },
