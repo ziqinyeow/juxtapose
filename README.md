@@ -1,3 +1,7 @@
+## 🍿 Intro
+
+Juxtapose is a 2D multi person pose detection, tracking, and estimation inference toolbox for sports + kinematics analysis. Visit [Docs](https://sdk.juxt.space).
+
 <div align="center">
   <p>
     <a align="center" href="" target="_blank">
@@ -10,10 +14,6 @@
 </div>
 
 <!-- # JUXTAPOSE Inference Toolbox 🚀 with ONNX -->
-
-## 🍿 Intro
-
-Juxtapose is a 2D multi person pose detection, tracking, and estimation inference toolbox for sports + kinematics analysis.
 
 ## 🍄 Overview
 

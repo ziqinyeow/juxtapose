@@ -21,6 +21,8 @@ from juxtapose.types import (
     DEVICE_TYPES,
 )
 
+from juxtapose.utils.polygon import PolygonZone
+
 from juxtapose.utils.core import Detections
 from juxtapose.utils.plotting import Annotator
 from juxtapose.utils.roi import select_roi
@@ -34,6 +36,7 @@ from juxtapose.utils import (
     colorstr,
     ops,
     get_time,
+    DEFAULT_COLOR_PALETTE,
 )
 
 from dataclasses import dataclass
@@ -141,22 +144,26 @@ class RTM:
             ]
         )
 
-    def setup_roi(self, im, win: str = "roi", type: Literal["rect"] = "rect") -> List:
-        w, h, _ = im.shape
-        roi_zones, roi_zones_color = select_roi(im, win, type=type)
-        roi_zones = xyxy2xyxyxyxy(roi_zones)
+    def setup_zones(self, w, h, zones: List):
+        print(zones)
         zones = [
             (
-                sv.PolygonZone(
-                    polygon=zone,
+                PolygonZone(
+                    polygon=np.array(zone),
                     frame_resolution_wh=(w, h),
                     triggering_position=sv.Position.CENTER,
                 ),
-                roi_zones_color[idx],
+                sv.Color(0, 0, 0).from_hex(DEFAULT_COLOR_PALETTE[idx]),
             )
-            for idx, zone in enumerate(roi_zones)
+            for idx, zone in enumerate(zones)
         ]
         return zones
+
+    def setup_roi(self, im, win: str = "roi", type: Literal["rect"] = "rect") -> List:
+        w, h, _ = im.shape
+        roi_zones = select_roi(im, win, type=type)
+        roi_zones = xyxy2xyxyxyxy(roi_zones)
+        return self.setup_zones(w, h, roi_zones)
 
     @smart_inference_mode
     def stream_inference(
@@ -166,6 +173,8 @@ class RTM:
         timer: List = [],
         poi: Literal["point", "box", "text", ""] = "",
         roi: Literal["rect", ""] = "",
+        zones: List = [],
+        framestamp: List = [],
         # panels
         show=True,
         plot=True,
@@ -198,13 +207,25 @@ class RTM:
 
             index += 1
 
+            if len(framestamp) > 0:
+                if framestamp[0] >= index:
+                    continue
+                if index > framestamp[1] + 1:
+                    break
+
             # reset tracker when source changed
             if current_source is None:
                 current_source = p
-                if roi:
+                if len(zones) > 0:
+                    w, h, _ = im.shape
+                    zones = self.setup_zones(w, h, zones)
+                if roi and not zones:
                     zones = self.setup_roi(im)
             elif current_source != p:
-                if roi:
+                if len(zones) > 0:
+                    w, h, _ = im.shape
+                    zones = self.setup_zones(w, h, zones)
+                if roi and not zones:
                     zones = self.setup_roi(im)
                 if self.tracker_type:
                     self.setup_tracker()
@@ -225,7 +246,7 @@ class RTM:
                     detections.track_id = track_id
 
             # filter bboxes based on roi
-            if roi and zones and detections:
+            if zones and detections:
                 masks = set()
                 for zone, color in zones:
                     mask = zone.trigger(detections=detections)
@@ -243,7 +264,7 @@ class RTM:
             if plot:
                 labels = self.get_labels(detections)
 
-                if roi and zones:
+                if zones:
                     for zone, color in zones:
                         im = sv.draw_polygon(im, zone.polygon, color)
 
@@ -352,6 +373,8 @@ class RTM:
         timer: List = [],
         poi: Literal["point", "box", "text", ""] = "",
         roi: Literal["rect", ""] = "",
+        zones: List = [],
+        framestamp: List = [],
         # panels
         show=True,
         plot=True,
@@ -367,6 +390,8 @@ class RTM:
                 timer=timer,
                 poi=poi,
                 roi=roi,
+                zones=zones,
+                framestamp=framestamp,
                 show=show,
                 plot=plot,
                 plot_bboxes=plot_bboxes,
@@ -382,6 +407,8 @@ class RTM:
                     timer=timer,
                     poi=poi,
                     roi=roi,
+                    zones=zones,
+                    framestamp=framestamp,
                     show=show,
                     plot=plot,
                     plot_bboxes=plot_bboxes,

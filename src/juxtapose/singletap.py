@@ -46,8 +46,10 @@ class Result:
 class Tapnet:
     def __init__(
         self,
+        points: List = [],
         annotator=Annotator(),
     ):
+        self.points = [np.array(point) for point in points]
         download_dir = Path("model")
         checkpoint_path = download_dir / f"causal_tapir_checkpoint.npy"
 
@@ -122,38 +124,6 @@ class Tapnet:
             writer = csv.writer(f)
             writer.writerow(data)
 
-    def setup_points(self, im):
-        fig, ax = plt.subplots(figsize=(10, 5))
-        ax.imshow(cv2.cvtColor(im, cv2.COLOR_BGR2RGB))
-        ax.axis("off")
-        ax.set_title(
-            "You can select more than 1 points. After select enough points, run the next cell."
-        )
-
-        select_points = []
-
-        # Event handler for mouse clicks
-        def on_click(event):
-            if event.button == 1 and event.inaxes == ax:  # Left mouse button clicked
-                x, y = int(np.round(event.xdata)), int(np.round(event.ydata))
-
-                select_points.append(np.array([x, y]))
-
-                color = (255, 0, 0)
-                color = tuple(np.array(color) / 255.0)
-                ax.plot(x, y, "o", color=color, markersize=5)
-                plt.draw()
-
-        # def close_figure(event):
-        #     if event.key == "enter":
-        #         plt.close(event.canvas.figure)
-        # plt.gcf().canvas.mpl_connect("key_press_event", close_figure)
-
-        fig.canvas.mpl_connect("button_press_event", on_click)
-        plt.show()
-
-        return select_points
-
     def get_query_features(self, im, resized_im: np.ndarray, select_points):
         height, width = im.shape[0], im.shape[1]
         query_points = Tapnet.convert_select_points_to_query_points(0, select_points)
@@ -181,14 +151,12 @@ class Tapnet:
         roi: Literal["rect", ""] = "",
         points: List = [],
         # panels
-        show=True,
-        plot=True,
+        show=False,
+        plot=False,
         save=False,
         save_dirs="",
         verbose=True,
     ) -> Result:
-        if show:
-            check_imshow(warn=True)
 
         if save:
             save_dirs = Path(get_time() if not save_dirs else save_dirs)
@@ -214,14 +182,12 @@ class Tapnet:
             # reset tracker when source changed
             if current_source is None:
                 current_source = p
-                select_points = self.setup_points(im)
                 query_features, causal_state = self.get_query_features(
-                    im, resized_im, select_points
+                    im, resized_im, self.points
                 )
             elif current_source != p:
-                select_points = self.setup_points(im)
                 query_features, causal_state = self.get_query_features(
-                    im, resized_im, select_points
+                    im, resized_im, self.points
                 )
                 current_source = p
                 index = 1
@@ -249,7 +215,7 @@ class Tapnet:
 
             result = Result(
                 im=im,
-                tracks=tracks,  # detections.xyxy,
+                tracks=tracks.tolist(),  # detections.xyxy,
                 speed={
                     "tracks": profilers[0].dt * 1e3 / 1,
                 },
@@ -259,36 +225,9 @@ class Tapnet:
 
             yield result
 
-            if show:
-                if is_image:
-                    cv2.imshow(result.name, result.im)
-                    key = cv2.waitKey(0) & 0xFF
-                    if key == ord("q"):
-                        cv2.destroyWindow(result.name)
-                        continue
-                else:
-                    cv2.imshow(result.name, result.im)
-                    key = cv2.waitKey(1) & 0xFF
-                    if key == ord("q"):
-                        break
-                    elif key == 32:
-                        pass
-                        # zones = self.setup_roi(im0)
-
             if verbose:
                 LOGGER.info(
                     f"{s}Tracking {len(tracks)} point(s) ({colorstr('green', f'{profilers[0].dt * 1E3:.1f}ms')})"
-                )
-
-            if save:
-                self.save_preds(im, vid_cap, 0, str(save_dirs / p.name))
-                self.save_csv(
-                    str(save_dirs / p.with_suffix(".csv").name),
-                    [
-                        str(index),
-                        str(np.array(tracks).tolist()),
-                        # str([{i: kpt} for i, kpt in zip(detections.track_id, kpts)]),
-                    ],
                 )
 
         if isinstance(self.vid_writer[-1], cv2.VideoWriter):
@@ -306,8 +245,8 @@ class Tapnet:
         roi: Literal["rect", ""] = "",
         points: List = [],
         # panels
-        show=True,
-        plot=True,
+        show=False,
+        plot=False,
         save=False,
         save_dirs="",
         verbose=True,
