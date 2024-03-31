@@ -4,3 +4,6 @@ clean:
 
 demo:
 	python demo.py
+
+build:
+	pyinstaller -c -F --clean --name main-x86_64-pc-windows-msvc --distpath dist src/index.py

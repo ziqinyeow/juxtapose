@@ -150,13 +150,14 @@ class Tapnet:
         poi: Literal["point", "box", "text", ""] = "",
         roi: Literal["rect", ""] = "",
         points: List = [],
+        startFrame: int = 0,
         # panels
         show=False,
         plot=False,
         save=False,
         save_dirs="",
         verbose=True,
-    ) -> Result:
+    ) -> Result:  # type: ignore
 
         if save:
             save_dirs = Path(get_time() if not save_dirs else save_dirs)
@@ -171,13 +172,16 @@ class Tapnet:
             path, im0s, vid_cap, s = batch
             is_image = s.startswith("image")
 
+            index += 1
+
+            if startFrame >= index:
+                continue
+
             p, im, im0 = Path(path[0]), im0s[0], im0s[0].copy()
 
             height, width = im.shape[0], im.shape[1]
             resized_im = media.resize_image(im, (self.resize_height, self.resize_width))
             resized_im = np.expand_dims(resized_im, axis=[0, 1])
-
-            index += 1
 
             # reset tracker when source changed
             if current_source is None:
@@ -244,6 +248,7 @@ class Tapnet:
         poi: Literal["point", "box", "text", ""] = "",
         roi: Literal["rect", ""] = "",
         points: List = [],
+        startFrame: int = 0,
         # panels
         show=False,
         plot=False,
@@ -257,6 +262,7 @@ class Tapnet:
                 timer=timer,
                 poi=poi,
                 roi=roi,
+                startFrame=startFrame,
                 points=points,
                 show=show,
                 plot=plot,
@@ -272,6 +278,7 @@ class Tapnet:
                     poi=poi,
                     roi=roi,
                     points=points,
+                    startFrame=startFrame,
                     show=show,
                     plot=plot,
                     save=save,
