@@ -5,5 +5,5 @@ clean:
 demo:
 	python demo.py
 
-build:
-	pyinstaller -c -F --clean --name main-x86_64-pc-windows-msvc --distpath dist src/index.py
+b:
+	pyinstaller -c -F --clean --name sidecar --specpath dist --distpath dist src/server.py

@@ -1,7 +1,7 @@
 __version__ = "0.0.24"
 
 from .rtm import RTM
-from .detectors import RTMDet
+from .detectors import RTMDet, YOLOv8
 
 from .pose.rtmpose import RTMPose
 from .tapnet import Tapnet
