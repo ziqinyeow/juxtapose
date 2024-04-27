@@ -1,4 +1,5 @@
 """Supervision v0.6.0 with Optional xyxy enabled"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -389,13 +390,13 @@ class Detections:
             return Detections(
                 xyxy=self.xyxy[index],
                 mask=self.mask[index] if self.mask is not None else None,
-                confidence=self.confidence[index]
-                if self.confidence is not None
-                else None,
+                confidence=(
+                    self.confidence[index] if self.confidence is not None else None
+                ),
                 class_id=self.class_id[index] if self.class_id is not None else None,
-                tracker_id=self.tracker_id[index]
-                if self.tracker_id is not None
-                else None,
+                tracker_id=(
+                    self.tracker_id[index] if self.tracker_id is not None else None
+                ),
             )
         raise TypeError(
             f"Detections.__getitem__ not supported for index of type {type(index)}."
