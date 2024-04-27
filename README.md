@@ -15,6 +15,8 @@ Juxtapose is a 2D multi person pose detection, tracking, and estimation inferenc
 
 <!-- # JUXTAPOSE Inference Toolbox 🚀 with ONNX -->
 
+**See how we integrated juxtapose into this app: [Juxt Space](https://github.com/ziqinyeow/juxt.space)**
+
 ## 🍄 Overview
 
 Code mostly adopted from four repos -> [ultralytics](https://github.com/ultralytics/ultralytics), [mmdeploy](https://github.com/open-mmlab/mmdeploy), [mmdetection](https://github.com/open-mmlab/mmdetection), [mmpose](https://github.com/open-mmlab/mmpose).
