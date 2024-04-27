@@ -42,7 +42,7 @@ transformers = {version = "*"}
 addict = {version = "*"}
 yapf = {version = "*"}
 timm = {version = "*"}
-supervision = {version = "0.20.0"}
+supervision = {version = "0.17.1"}
 pycocotools = {version = "*"}
 ultralytics = {version = "*"}
 lapx = {version = "0.5.2"}
