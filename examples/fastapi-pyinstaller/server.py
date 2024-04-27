@@ -5,14 +5,7 @@ import time
 start = time.time()
 
 sys.path.insert(0, "src")
-
-# from yapf_third_party._ylib2to3.pgen2 import driver
-
-# _GRAMMAR_FILE = os.path.join(os.path.dirname(__file__), "Grammar.txt")
-# _PATTERN_GRAMMAR_FILE = os.path.join(os.path.dirname(__file__), "PatternGrammar.txt")
-# driver.load_grammar(_GRAMMAR_FILE)
-# driver.load_grammar(_PATTERN_GRAMMAR_FILE)
-
+sys.path.insert(1, "examples/fastapi-pyinstaller")
 
 import json
 import uvicorn
