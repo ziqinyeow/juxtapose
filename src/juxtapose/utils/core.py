@@ -464,5 +464,5 @@ class Detections:
         predictions = np.hstack(
             (self.xyxy, self.confidence.reshape(-1, 1), self.class_id.reshape(-1, 1))
         )
-        indices = non_max_suppression(predictions=predictions, iou_threshold=threshold)
+        indices = box_non_max_suppression(predictions=predictions, iou_threshold=threshold)
         return self[indices]
