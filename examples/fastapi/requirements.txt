@@ -1,4 +1,5 @@
 fastapi
 uvicorn[standard]
 python-multipart
-juxtapose==0.0.20
+juxtapose
+juxtematics
