@@ -42,7 +42,7 @@ transformers = {version = "*"}
 addict = {version = "*"}
 yapf = {version = "*"}
 timm = {version = "*"}
-supervision = {version = "*"}
+supervision = {version = "0.20.0"}
 pycocotools = {version = "*"}
 ultralytics = {version = "*"}
 lapx = {version = "0.5.2"}
@@ -76,6 +76,7 @@ onnxruntime-gpu = [{version = "^1.15.1", platform = "win32"}]
 # tapnet
 chex = {version = "*"}
 jax = {version = "0.4.24"}
+jaxlib = {version = "0.4.24"}
 jaxline = {version = "*"}
 optax = {version = "*"}
 dm-haiku = {version = "*"}

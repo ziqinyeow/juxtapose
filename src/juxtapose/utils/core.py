@@ -1,4 +1,5 @@
 """Supervision v0.6.0 with Optional xyxy enabled"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -6,7 +7,7 @@ from typing import Any, Iterator, List, Optional, Tuple
 
 import numpy as np
 
-from supervision.detection.utils import non_max_suppression, xywh_to_xyxy
+from supervision.detection.utils import box_non_max_suppression, xywh_to_xyxy
 from supervision.geometry.core import Position
 
 
@@ -389,13 +390,13 @@ class Detections:
             return Detections(
                 xyxy=self.xyxy[index],
                 mask=self.mask[index] if self.mask is not None else None,
-                confidence=self.confidence[index]
-                if self.confidence is not None
-                else None,
+                confidence=(
+                    self.confidence[index] if self.confidence is not None else None
+                ),
                 class_id=self.class_id[index] if self.class_id is not None else None,
-                tracker_id=self.tracker_id[index]
-                if self.tracker_id is not None
-                else None,
+                tracker_id=(
+                    self.tracker_id[index] if self.tracker_id is not None else None
+                ),
             )
         raise TypeError(
             f"Detections.__getitem__ not supported for index of type {type(index)}."
@@ -450,7 +451,7 @@ class Detections:
 
         if class_agnostic:
             predictions = np.hstack((self.xyxy, self.confidence.reshape(-1, 1)))
-            indices = non_max_suppression(
+            indices = box_non_max_suppression(
                 predictions=predictions, iou_threshold=threshold
             )
             return self[indices]
