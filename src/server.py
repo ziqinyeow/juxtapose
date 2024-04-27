@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 
@@ -5,11 +6,18 @@ start = time.time()
 
 sys.path.insert(0, "src")
 
+# from yapf_third_party._ylib2to3.pgen2 import driver
 
-import os
+# _GRAMMAR_FILE = os.path.join(os.path.dirname(__file__), "Grammar.txt")
+# _PATTERN_GRAMMAR_FILE = os.path.join(os.path.dirname(__file__), "PatternGrammar.txt")
+# driver.load_grammar(_GRAMMAR_FILE)
+# driver.load_grammar(_PATTERN_GRAMMAR_FILE)
+
+
 import json
 import uvicorn
 from pathlib import Path
+from typing import Dict
 
 import numpy as np
 from juxtapose import RTM, RTMPose
@@ -166,20 +174,22 @@ def get_valid_joint_name(joint_name):
 
 @app.post("/api/humans")
 def humans(
-    humans,
+    humans: Dict,
     preprocess_interpolate: bool = False,
     preprocess_filter: bool = False,
     preprocess_smoothing: bool = False,
     postcalculate_filter: bool = False,
     postcalculate_smoothing: bool = False,
 ):
+    humans = humans["humans"]
+
     # Humans is array of {id: 1, body_joints: [[[1,2],[3,4],...]]}
     result_humans = []
     for individual_human in humans:
-        if individual_human.id == "":
+        if individual_human["id"] == "":
             continue
-        human_profile = HumanProfile(human_idx=int(individual_human.id))
-        human_profile.init_with_data(np.array(individual_human.body_joints))
+        human_profile = HumanProfile(human_idx=int(individual_human["id"]))
+        human_profile.init_with_data(np.array(individual_human["body_joints"]))
         human_profile.compute(
             preprocess_interpolate_on=preprocess_interpolate,
             preprocess_filter_on=preprocess_filter,
@@ -188,7 +198,7 @@ def humans(
             postcalculate_smoothing_on=postcalculate_smoothing,
         )
         metrics = human_profile.get_metrics()
-        result_humans.append({"id": individual_human.id, "metrics": metrics})
+        result_humans.append({"id": individual_human["id"], "metrics": metrics})
         # human_profile.export_csv("output")
 
     # SPECIAL PROCESSING JUST FOR FRONTEND
@@ -233,15 +243,16 @@ def humans(
 
 @app.post("/api/human")
 def human(
-    human,
+    human: Dict,
     preprocess_interpolate_on=False,
     preprocess_filter_on=False,
     preprocess_smoothing_on=True,
     postcalculate_filter_on=True,
     postcalculate_smoothing_on=True,
 ):
+    human = human["human"]
     human_profile = HumanProfile()
-    human_profile.init_with_data(np.array(human.body_joints))
+    human_profile.init_with_data(np.array(human["body_joints"]))
     human_profile.compute(
         preprocess_interpolate_on=preprocess_interpolate_on,
         preprocess_filter_on=preprocess_filter_on,

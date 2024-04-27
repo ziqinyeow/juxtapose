@@ -75,7 +75,7 @@ onnxruntime-gpu = [{version = "^1.15.1", platform = "win32"}]
 
 # tapnet
 chex = {version = "*"}
-jax = {version = "*"}
+jax = {version = "0.4.24"}
 jaxline = {version = "*"}
 optax = {version = "*"}
 dm-haiku = {version = "*"}
