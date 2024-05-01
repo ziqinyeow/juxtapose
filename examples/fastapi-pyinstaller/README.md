@@ -6,9 +6,14 @@
 git clone https://github.com/ziqinyeow/juxtapose
 cd juxtapose
 pip install .
-pip install uninstall juxtapose
+pip install uninstall juxtapose ultralytics yapf
 pip install pyinstaller fastapi uvicorn[standard] python-multipart juxtematics
+
+# mac
 pyinstaller -c -F --clean --name sidecar --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
+
+# windows
+pyinstaller -c -F --clean --hidden-import=cv2 --hidden-import=supervision --hidden-import=addict --hidden-import=chex --hidden-import=lap --hidden-import=optax --hidden-import=einshape --hidden-import=haiku --hidden-import=mediapy --name sidecar --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
 ```
 
 ## How to run the exe

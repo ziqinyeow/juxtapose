@@ -1,4 +1,4 @@
-__version__ = "0.0.24"
+__version__ = "0.0.25"
 
 from .rtm import RTM
 from .detectors import RTMDet, YOLOv8

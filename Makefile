@@ -5,5 +5,8 @@ clean:
 demo:
 	python demo.py
 
-b:
+windows:
+	pyinstaller -c -F --clean --hidden-import=cv2 --hidden-import=supervision --hidden-import=addict --hidden-import=chex --hidden-import=lap --hidden-import=optax --hidden-import=einshape --hidden-import=haiku --hidden-import=mediapy --name sidecar --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
+
+mac:
 	pyinstaller -c -F --clean --name sidecar --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py

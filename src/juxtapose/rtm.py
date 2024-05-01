@@ -7,6 +7,7 @@ import numpy as np
 import supervision as sv
 
 from typing import List, Union, Generator, Literal
+import onnxruntime as ort
 
 import torch
 
@@ -62,11 +63,11 @@ class RTM:
         det: DETECTOR_TYPES = "rtmdet-m",
         pose: POSE_ESTIMATOR_TYPES = "rtmpose-m",
         tracker: TRACKER_TYPES = "bytetrack",
-        device: DEVICE_TYPES = "cuda" if torch.cuda.is_available() else "cpu",
+        device: DEVICE_TYPES = "cuda" if ort.get_device() == 'GPU' else "cpu",
         annotator=Annotator(),
         captions="person .",
     ) -> None:
-        if device == "cuda" and not torch.cuda.is_available():
+        if device == "cuda" and not ort.get_device() == "GPU":
             LOGGER.info(f"Auto switch to CPU, as you are running without CUDA")
             device = "cpu"
 

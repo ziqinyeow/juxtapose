@@ -23,10 +23,11 @@ from juxtematics.human_profile import HumanProfile
 from juxtematics.constants import BODY_JOINTS_MAP
 from fastapi.middleware.cors import CORSMiddleware
 from tempfile import NamedTemporaryFile
+import onnxruntime as ort
 
 importing_time = time.time()
 
-port = 8000
+port = 1421
 
 app = FastAPI(title="Juxt API", docs_url="/api/docs", openapi_url="/api/openapi.json")
 
@@ -41,7 +42,7 @@ app.add_middleware(
 
 @app.get("/")
 def ok():
-    return {"status": "ok"}
+    return {"status": "ok", "gpu": ort.get_device() == "GPU"}
 
 
 @app.get("/dir")
