@@ -1,6 +1,5 @@
 from .groundingdino import GroundingDino
 from .rtmdet import RTMDet
-
 from .yolov8 import YOLOv8
 
 DET_MAP = {

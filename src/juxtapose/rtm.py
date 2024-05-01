@@ -63,11 +63,13 @@ class RTM:
         det: DETECTOR_TYPES = "rtmdet-m",
         pose: POSE_ESTIMATOR_TYPES = "rtmpose-m",
         tracker: TRACKER_TYPES = "bytetrack",
-        device: DEVICE_TYPES = "cuda" if ort.get_device() == 'GPU' else "cpu",
+        device: DEVICE_TYPES = "cuda" if ort.get_device() == "GPU" else "cpu",
         annotator=Annotator(),
         captions="person .",
     ) -> None:
-        if device == "cuda" and not ort.get_device() == "GPU":
+        if device == "cuda" and not (
+            ort.get_device() == "GPU" and torch.cuda.is_available()
+        ):
             LOGGER.info(f"Auto switch to CPU, as you are running without CUDA")
             device = "cpu"
 
