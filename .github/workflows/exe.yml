@@ -1,0 +1,83 @@
+name: Publish FastAPI EXE
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+env:
+  APP_NAME: "juxtapose"
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build changelog
+        id: build_changelog
+        run: |
+          # NOTE: if commits subjects are standardized, you can filter the git log based on feat: and fix:
+          # and then replace "feat:" with "New: " and "fix:" with "Fixed "
+          # when AI gets good, we can also summarized commits into a bullet point list
+          PREV_TAG=$(git tag --list v* | tail -n2 | head -n1)
+          echo "changelog=$(git log $PREV_TAG...${{ github.ref_name }} --pretty=format:"- %s")" >> $GITHUB_OUTPUT
+    outputs:
+      changelog: ${{ steps.build_changelog.outputs.changelog }}
+
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    needs: [changelog]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          pip install .
+          pip install uninstall juxtapose ultralytics yapf
+          pip install pyinstaller fastapi uvicorn[standard] python-multipart juxtematics
+
+      - name: Build Windows exe
+        if: ${{ github.ref_type == 'branch' && matrix.platform == 'windows-latest' }}
+        run: |
+          mv src/juxtapose examples/fastapi-pyinstaller
+          pyinstaller -c -F --clean --hidden-import=cv2 --hidden-import=supervision --hidden-import=addict --hidden-import=chex --hidden-import=lap --hidden-import=optax --hidden-import=einshape --hidden-import=haiku --hidden-import=mediapy --name sidecar-x86_64-pc-windows-msvc --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
+
+      - name: Build Mac exe
+        if: ${{ github.ref_type == 'branch' && matrix.platform == 'macos-latest' }}
+        run: |
+          pyinstaller -c -F --clean --name sidecar-aarch64-apple-darwin --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
+
+      - name: CI Upload Windows
+        if: ${{ github.ref_type == 'branch' && matrix.platform == 'windows-latest' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: "Windows Installers"
+          path: |
+            dist/sidecar-x86_64-pc-windows-msvc.exe
+
+      - name: CI Upload macOS
+        if: ${{ github.ref_type == 'branch' && matrix.platform == 'macos-latest' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: "macOS Installer"
+          path: |
+            dist/sidecar-aarch64-apple-darwin
+
+    #   - name: CI Upload Linux
+    #     if: ${{ github.ref_type == 'branch' && matrix.platform == 'ubuntu-latest' }}
+    #     uses: actions/upload-artifact@v4
+    #     with:
+    #       name: "Linux Distributions"
+    #       path: |
+    #         src-tauri/target/release/bundle/deb/*.deb
+    #         src-tauri/target/release/bundle/AppImage/*.AppImage
