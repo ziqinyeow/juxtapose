@@ -43,7 +43,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install .
-          pip uninstall juxtapose ultralytics yapf
+          pip uninstall -y juxtapose ultralytics yapf
           pip install pyinstaller fastapi uvicorn[standard] python-multipart juxtematics
 
       - name: Build Windows exe
