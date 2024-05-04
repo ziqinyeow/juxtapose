@@ -42,9 +42,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
           pip install .
-          pip install uninstall juxtapose ultralytics yapf
+          pip uninstall juxtapose ultralytics yapf
           pip install pyinstaller fastapi uvicorn[standard] python-multipart juxtematics
 
       - name: Build Windows exe
@@ -58,21 +57,35 @@ jobs:
         run: |
           pyinstaller -c -F --clean --name sidecar-aarch64-apple-darwin --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
 
-      - name: CI Upload Windows
+      - name: Upload Windows EXE
+        uses: softprops/action-gh-release@v2
         if: ${{ matrix.platform == 'windows-latest' }}
-        uses: actions/upload-artifact@v4
         with:
-          name: "Windows Installers"
-          path: |
+          files: |
             dist/sidecar-x86_64-pc-windows-msvc.exe
 
-      - name: CI Upload macOS
+      - name: Upload Windows EXE
+        uses: softprops/action-gh-release@v2
         if: ${{ matrix.platform == 'macos-latest' }}
-        uses: actions/upload-artifact@v4
         with:
-          name: "macOS Installer"
-          path: |
+          files: |
             dist/sidecar-aarch64-apple-darwin
+
+    #   - name: CI Upload Windows
+    #     if: ${{ matrix.platform == 'windows-latest' }}
+    #     uses: actions/upload-artifact@v4
+    #     with:
+    #       name: "Windows Installers"
+    #       path: |
+    #         dist/sidecar-x86_64-pc-windows-msvc.exe
+
+    #   - name: CI Upload macOS
+    #     if: ${{ matrix.platform == 'macos-latest' }}
+    #     uses: actions/upload-artifact@v4
+    #     with:
+    #       name: "macOS Installer"
+    #       path: |
+    #         dist/sidecar-aarch64-apple-darwin
 
     #   - name: CI Upload Linux
     #     if: ${{ github.ref_type == 'branch' && matrix.platform == 'ubuntu-latest' }}
