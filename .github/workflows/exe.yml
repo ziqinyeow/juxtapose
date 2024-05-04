@@ -3,28 +3,28 @@ on:
   push:
     tags:
       - "v*"
-  workflow_dispatch:
+#   workflow_dispatch:
 
 env:
   APP_NAME: "juxtapose"
 
 jobs:
-  changelog:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  #   changelog:
+  #     runs-on: ubuntu-latest
+  #     steps:
+  #       - name: Checkout repository
+  #         uses: actions/checkout@v4
 
-      - name: Build changelog
-        id: build_changelog
-        run: |
-          # NOTE: if commits subjects are standardized, you can filter the git log based on feat: and fix:
-          # and then replace "feat:" with "New: " and "fix:" with "Fixed "
-          # when AI gets good, we can also summarized commits into a bullet point list
-          PREV_TAG=$(git tag --list v* | tail -n2 | head -n1)
-          echo "changelog=$(git log $PREV_TAG...${{ github.ref_name }} --pretty=format:"- %s")" >> $GITHUB_OUTPUT
-    outputs:
-      changelog: ${{ steps.build_changelog.outputs.changelog }}
+  #       - name: Build changelog
+  #         id: build_changelog
+  #         run: |
+  #           # NOTE: if commits subjects are standardized, you can filter the git log based on feat: and fix:
+  #           # and then replace "feat:" with "New: " and "fix:" with "Fixed "
+  #           # when AI gets good, we can also summarized commits into a bullet point list
+  #           PREV_TAG=$(git tag --list v* | tail -n2 | head -n1)
+  #           echo "changelog=$(git log $PREV_TAG...${{ github.ref_name }} --pretty=format:"- %s")" >> $GITHUB_OUTPUT
+  #     outputs:
+  #       changelog: ${{ steps.build_changelog.outputs.changelog }}
 
   release:
     strategy:
@@ -32,7 +32,7 @@ jobs:
       matrix:
         platform: [macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
-    needs: [changelog]
+    # needs: [changelog]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -42,23 +42,24 @@ jobs:
 
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install .
           pip install uninstall juxtapose ultralytics yapf
           pip install pyinstaller fastapi uvicorn[standard] python-multipart juxtematics
 
       - name: Build Windows exe
-        if: ${{ github.ref_type == 'branch' && matrix.platform == 'windows-latest' }}
+        if: ${{ matrix.platform == 'windows-latest' }}
         run: |
           mv src/juxtapose examples/fastapi-pyinstaller
           pyinstaller -c -F --clean --hidden-import=cv2 --hidden-import=supervision --hidden-import=addict --hidden-import=chex --hidden-import=lap --hidden-import=optax --hidden-import=einshape --hidden-import=haiku --hidden-import=mediapy --name sidecar-x86_64-pc-windows-msvc --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
 
       - name: Build Mac exe
-        if: ${{ github.ref_type == 'branch' && matrix.platform == 'macos-latest' }}
+        if: ${{ matrix.platform == 'macos-latest' }}
         run: |
           pyinstaller -c -F --clean --name sidecar-aarch64-apple-darwin --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
 
       - name: CI Upload Windows
-        if: ${{ github.ref_type == 'branch' && matrix.platform == 'windows-latest' }}
+        if: ${{ matrix.platform == 'windows-latest' }}
         uses: actions/upload-artifact@v4
         with:
           name: "Windows Installers"
@@ -66,7 +67,7 @@ jobs:
             dist/sidecar-x86_64-pc-windows-msvc.exe
 
       - name: CI Upload macOS
-        if: ${{ github.ref_type == 'branch' && matrix.platform == 'macos-latest' }}
+        if: ${{ matrix.platform == 'macos-latest' }}
         uses: actions/upload-artifact@v4
         with:
           name: "macOS Installer"
