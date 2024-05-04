@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "juxtapose"
-version = "0.0.29"
+version = "0.0.30"
 description = ""
 authors = ["Zi Qin <ziqinyeow@gmail.com>"]
 license = "MIT"
@@ -76,7 +76,7 @@ onnxruntime-gpu = [{version = "^1.15.1", platform = "win32"}]
 # tapnet
 chex = {version = "*"}
 jax = {version = "0.4.24"}
-jaxlib = {version = "0.4.24"}
+jaxlib = {version = "0.4.23"}
 jaxline = {version = "*"}
 optax = {version = "*"}
 dm-haiku = {version = "*"}

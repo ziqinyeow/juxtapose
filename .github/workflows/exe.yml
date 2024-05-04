@@ -55,6 +55,7 @@ jobs:
       - name: Build Mac exe
         if: ${{ matrix.platform == 'macos-latest' }}
         run: |
+          mv src/juxtapose examples/fastapi-pyinstaller
           pyinstaller -c -F --clean --name sidecar-aarch64-apple-darwin --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
 
       - name: Upload Windows EXE
