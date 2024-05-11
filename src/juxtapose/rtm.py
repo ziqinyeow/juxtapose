@@ -67,11 +67,11 @@ class RTM:
         annotator=Annotator(),
         captions="person .",
     ) -> None:
-        if device == "cuda" and not (
-            ort.get_device() == "GPU" and torch.cuda.is_available()
-        ):
-            LOGGER.info(f"Auto switch to CPU, as you are running without CUDA")
-            device = "cpu"
+        # if device == "cuda" and not (
+        #     ort.get_device() == "GPU" and torch.cuda.is_available()
+        # ):
+        #     LOGGER.info(f"Auto switch to CPU, as you are running without CUDA")
+        #     device = "cpu"
 
         self.det = self.setup_detector(det, device, captions)
         self.rtmpose = RTMPose(pose.split("-")[1], device=device)

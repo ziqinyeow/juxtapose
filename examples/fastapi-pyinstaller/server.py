@@ -87,6 +87,7 @@ async def stream(
         tracker=config["tracker"],
         pose=config["pose"],
         captions=config["detectorPrompt"],
+        device=config["device"],
     )
 
     def _stream(model, file):

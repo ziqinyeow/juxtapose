@@ -15,10 +15,11 @@ class YOLOv8:
 
     def __init__(self, type: str = "m", device: str = "cpu", conf_thres: float = 0.3):
         self.model = YOLO(f"model/yolov8{type}.pt")
-        if device == "cuda" and torch.cuda.is_available():
-            self.model.to(device)
-        else:
-            self.model.to("cpu")
+        self.model.to(device)
+        # if device == "cuda" and torch.cuda.is_available():
+        #     self.model.to(device)
+        # else:
+        #     self.model.to("cpu")
         self.conf_thres = conf_thres
         LOGGER.info(f"Loaded yolov8{type} pt model.")
 
