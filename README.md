@@ -27,6 +27,7 @@ Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm
 
 ## 🥒 Updates
 
+- **`2024/04/27`** Added FastAPI to EXE example with ONNX GPU Runtime in [examples/fastapi-pyinstaller](./examples/fastapi-pyinstaller).
 - **`2024/01/11`** Added Nextra docs + deployed to Vercel at [sdk.juxt.space](https://sdk.juxt.space).
 - **`2024/01/07`** Reduce dependencies by removing MMCV, MMDet, MMPose SDK, run fully on ONNX.
 - **`2023/11/01`** Added juxtapose to PYPI repository so that we can install it using `pip install juxtapose`.
