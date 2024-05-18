@@ -1,5 +1,3 @@
-# Ultralytics YOLO 🚀, AGPL-3.0 license
-
 import numpy as np
 import scipy
 from scipy.spatial.distance import cdist

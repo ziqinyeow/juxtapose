@@ -144,7 +144,7 @@ class RTM:
         )
 
     def setup_zones(self, w, h, zones: List):
-        print(zones)
+        # print(zones)
         zones = [
             (
                 PolygonZone(
@@ -182,7 +182,7 @@ class RTM:
         save_dirs="",
         verbose=True,
         return_im=False,
-    ) -> Result:
+    ):
         if show:
             check_imshow(warn=True)
 

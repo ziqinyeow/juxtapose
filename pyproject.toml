@@ -44,7 +44,6 @@ yapf = {version = "*"}
 timm = {version = "*"}
 supervision = {version = "0.17.1"}
 pycocotools = {version = "*"}
-ultralytics = {version = "*"}
 lapx = {version = "0.5.2"}
 opencv-contrib-python = {version = "*"}
 opencv-python = {version = "*"}

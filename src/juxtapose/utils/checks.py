@@ -106,9 +106,7 @@ def check_imgsz(imgsz, stride=32, min_dim=1, max_dim=2, floor=0):
     sz = (
         [sz[0], sz[0]]
         if min_dim == 2 and len(sz) == 1
-        else sz[0]
-        if min_dim == 1 and len(sz) == 1
-        else sz
+        else sz[0] if min_dim == 1 and len(sz) == 1 else sz
     )
 
     return sz
@@ -146,7 +144,7 @@ def check_version(
     return result
 
 
-def check_latest_pypi_version(package_name="ultralytics"):
+def check_latest_pypi_version(package_name=""):
     """
     Returns the latest version of a PyPI package without downloading or installing it.
 
@@ -162,29 +160,6 @@ def check_latest_pypi_version(package_name="ultralytics"):
         if response.status_code == 200:
             return response.json()["info"]["version"]
     return None
-
-
-def check_pip_update_available():
-    """
-    Checks if a new version of the ultralytics package is available on PyPI.
-
-    Returns:
-        (bool): True if an update is available, False otherwise.
-    """
-    if ONLINE and is_pip_package():
-        with contextlib.suppress(Exception):
-            from juxtapose import __version__
-
-            latest = check_latest_pypi_version()
-            if pkg.parse_version(__version__) < pkg.parse_version(
-                latest
-            ):  # update is available
-                LOGGER.info(
-                    f"New https://pypi.org/project/ultralytics/{latest} available 😃 "
-                    f"Update with 'pip install -U ultralytics'"
-                )
-                return True
-    return False
 
 
 @ThreadingLocked()
@@ -442,7 +417,7 @@ def print_args(args: Optional[dict] = None, show_file=True, show_func=False):
     """Print function arguments (optional args dict)."""
 
     def strip_auth(v):
-        """Clean longer Ultralytics HUB URLs by stripping potential authentication information."""
+        """Clean longer HUB URLs by stripping potential authentication information."""
         return (
             clean_url(v)
             if (isinstance(v, str) and v.startswith("http") and len(v) > 100)
