@@ -37,9 +37,10 @@ Double click or run terminal `./dist/sidecar`.
 
 It takes some time to load, open for PR to optimize this with `pyinstaller --one dir` or `cython`.
 
-## Reason to git clone ultralytics & yapf
+## Reason to git clone yapf
 
 Once compiled using pyinstaller to `.exe` file, you will defo face error of couldn't import files.
 
-1. ultralytics - DEFAULT.yaml file - to resolve this (modify in [utils file](./ultralytics//utils/__init__.py)) to self import the yaml.
-2. yapf - GRAMMAR.txt and PATTERNGRAMMAR.txt - to resolve this (modify in [grammar file](./yapf_third_party/_ylib2to3//pgen2/grammar.py)) to self import the grammar txt file.
+<!-- 1. ultralytics - DEFAULT.yaml file - to resolve this (modify in [utils file](./ultralytics//utils/__init__.py)) to self import the yaml. -->
+
+1. yapf - GRAMMAR.txt and PATTERNGRAMMAR.txt - to resolve this (modify in [grammar file](./yapf_third_party/_ylib2to3//pgen2/grammar.py)) to self import the grammar txt file.

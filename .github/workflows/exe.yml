@@ -45,7 +45,7 @@ jobs:
           pip install --upgrade pip
           pip cache purge
           pip install --no-cache-dir .
-          pip uninstall -y juxtapose ultralytics yapf
+          pip uninstall -y juxtapose yapf
           pip install pyinstaller fastapi uvicorn[standard] python-multipart juxtematics
 
       - name: Build Windows CPU exe
