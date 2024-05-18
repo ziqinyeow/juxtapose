@@ -24,6 +24,7 @@ Code mostly adopted from four repos -> [ultralytics](https://github.com/ultralyt
 Supported Detectors: [rtmdet-s](./rtm/detectors/rtmdet/), [rtmdet-m](./rtm/detectors/rtmdet/), [rtmdet-l](./rtm/detectors/rtmdet/), [groundingdino](./rtm/detectors/groundingdino/__init__.py), [yolov8](./rtm/detectors/yolov8/__init__.py) \
 Supported Pose Estimators: [rtmpose-s](./rtm/rtmpose.py), [rtmpose-m](./rtm/rtmpose.py), [rtmpose-l](./rtm/rtmpose.py) \
 Supported Trackers: [bytetrack](./rtm/trackers/byte_tracker.py), [botsort](./rtm/trackers/bot_sort.py)
+Supported Point Trackers: [Tapnet](https://github.com/google-deepmind/tapnet)
 
 ## 🥒 Updates
 
