@@ -16,6 +16,7 @@ import numpy as np
 from juxtapose import RTM, RTMPose
 from juxtapose.singletap import Tapnet
 from juxtapose.detectors import get_detector
+from fastapi import BackgroundTasks
 
 from fastapi import FastAPI, UploadFile, File, Form, Body
 from fastapi.responses import StreamingResponse
@@ -80,6 +81,7 @@ def download_model(
 async def stream(
     config: str = Form(...),
     file: UploadFile = File(...),
+    background_tasks: BackgroundTasks = None,
 ):
     config = json.loads(config)
     model = RTM(
@@ -115,7 +117,10 @@ async def stream(
             return {"message": "There was an error uploading the file", "path": ""}
         finally:
             file.file.close()
-        return StreamingResponse(_stream(model, temp.name))
+        # background_tasks.add_task(os.remove, file)
+        return StreamingResponse(
+            _stream(model, temp.name), media_type="application/json"
+        )
 
     except Exception:
         return {"message": "There was an error processing the file", "path": ""}

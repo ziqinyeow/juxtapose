@@ -40,9 +40,7 @@ class YOLOv8:
         im -> (h, w, c)
         return -> [[x, y, x, y], [x, y, x, y], ...] -> two persons detected
         """
-        result = self.model(
-            im, verbose=False, conf=self.conf_thres, device=self.device
-        )[0].boxes
+        result = self.model(im, verbose=False, conf=self.conf_thres, device=0)[0].boxes
         result = result[result.cls == 0].cpu().numpy()
         result = Detections(
             xyxy=result.xyxy,

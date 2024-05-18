@@ -66,3 +66,4 @@ demo.py
 server
 
 .env
+*.dll

@@ -15,6 +15,8 @@ pyinstaller -c -F --clean --name sidecar --specpath dist --distpath dist example
 # windows
 # --add-data="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.2\bin\*;."
 mv src/juxtapose examples/fastapi-pyinstaller
+pyinstaller -c -F --clean --add-binary="../onnxruntime_providers_cuda.dll;./onnxruntime/capi/" --add-binary="../onnxruntime_providers_tensorrt.dll;./onnxruntime/capi/" --add-binary="../onnxruntime_providers_shared.dll;./onnxruntime/capi/" --hidden-import=cv2 --hidden-import=supervision --hidden-import=addict --hidden-import=chex --hidden-import=lap --hidden-import=optax --hidden-import=einshape --hidden-import=haiku --hidden-import=mediapy --name sidecar-x86_64-pc-windows-msvc --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
+
 pyinstaller -c -F --clean --add-binary="C:\Users\ziqin\anaconda3\envs\rtm\Lib\site-packages\onnxruntime\capi\onnxruntime_providers_cuda.dll;./onnxruntime/capi/" --add-binary="C:\Users\ziqin\anaconda3\envs\rtm\Lib\site-packages\onnxruntime\capi\onnxruntime_providers_tensorrt.dll;./onnxruntime/capi/" --add-binary="C:\Users\ziqin\anaconda3\envs\rtm\Lib\site-packages\onnxruntime\capi\onnxruntime_providers_shared.dll;./onnxruntime/capi/" --hidden-import=cv2 --hidden-import=supervision --hidden-import=addict --hidden-import=chex --hidden-import=lap --hidden-import=optax --hidden-import=einshape --hidden-import=haiku --hidden-import=mediapy --name sidecar-x86_64-pc-windows-msvc --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
 ```
 
