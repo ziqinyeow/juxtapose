@@ -54,11 +54,15 @@ jobs:
           mv src/juxtapose examples/fastapi-pyinstaller
           pyinstaller -c -F --clean --hidden-import=cv2 --hidden-import=supervision --hidden-import=addict --hidden-import=chex --hidden-import=lap --hidden-import=optax --hidden-import=einshape --hidden-import=haiku --hidden-import=mediapy --name sidecar-x86_64-pc-windows-msvc-cpu --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
 
-      - name: Build Windows GPU exe
+      - name: Download ONNX dll
         if: ${{ matrix.platform == 'windows-latest' }}
         run: |
           Invoke-WebRequest https://github.com/microsoft/onnxruntime/releases/download/v1.17.1/onnxruntime-win-x64-gpu-1.17.1.zip -OutFile onnxruntime-win-x64-gpu-1.17.1.zip
           Expand-Archive -Force ./onnxruntime-win-x64-gpu-1.17.1.zip ./
+
+      - name: Build Windows GPU exe
+        if: ${{ matrix.platform == 'windows-latest' }}
+        run: |
           pyinstaller -c -F --clean \
           --add-binary="../onnxruntime-win-x64-gpu-1.17.1/lib/onnxruntime_providers_cuda.dll;./onnxruntime/capi/" \
            --add-binary="../onnxruntime-win-x64-gpu-1.17.1/lib/onnxruntime_providers_tensorrt.dll;./onnxruntime/capi/" \
