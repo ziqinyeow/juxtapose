@@ -9,8 +9,6 @@ import supervision as sv
 from typing import List, Union, Generator, Literal
 import onnxruntime as ort
 
-import torch
-
 from juxtapose.data import load_inference_source
 from juxtapose.detectors import get_detector
 from juxtapose.pose.rtmpose import RTMPose

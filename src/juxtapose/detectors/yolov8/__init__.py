@@ -42,10 +42,14 @@ class YOLOv8:
         self.conf_thres = conf_thres
         self.iou_thres = iou_thres
 
+        providers = {"cpu": "CPUExecutionProvider", "cuda": "CUDAExecutionProvider"}[
+            device
+        ]
+
         # Create an inference session using the ONNX model and specify execution providers
         self.session = ort.InferenceSession(
             f"model/yolov8{type}.onnx",
-            providers=["CUDAExecutionProvider", "CPUExecutionProvider"],
+            providers=[providers],
         )
 
         # Get the model inputs
@@ -56,7 +60,7 @@ class YOLOv8:
         self.input_width = input_shape[2]
         self.input_height = input_shape[3]
 
-        LOGGER.info(f"Loaded yolov8{type} onnx model.")
+        LOGGER.info(f"Loaded yolov8{type} onnx model into {providers}.")
 
     def preprocess(self, img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

@@ -41,7 +41,7 @@ class RTMPose:
         self.mean = (123.675, 116.28, 103.53)
         self.std = (58.395, 57.12, 57.375)
         self.device = device
-        LOGGER.info(f"Loaded rtmpose-{type} onnx model.")
+        LOGGER.info(f"Loaded rtmpose-{type} onnx model into {providers}.")
         # self.conf_thres = conf_thres
 
     def __call__(self, im: np.ndarray, bboxes: list = []):

@@ -45,7 +45,7 @@ class RTMDet:
         self.std = (57.375, 57.12, 58.395)
         self.device = device
         self.conf_thres = conf_thres
-        LOGGER.info(f"Loaded rtmdet-{type} onnx model.")
+        LOGGER.info(f"Loaded rtmdet-{type} onnx model into {providers}.")
 
     def inference(self, im: np.ndarray):
         im = im.transpose(2, 0, 1)
