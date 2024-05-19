@@ -63,12 +63,7 @@ jobs:
       - name: Build Windows GPU exe
         if: ${{ matrix.platform == 'windows-latest' }}
         run: |
-          pyinstaller -c -F --clean \
-          --add-binary="../onnxruntime-win-x64-gpu-1.17.1/lib/onnxruntime_providers_cuda.dll;./onnxruntime/capi/" \
-           --add-binary="../onnxruntime-win-x64-gpu-1.17.1/lib/onnxruntime_providers_tensorrt.dll;./onnxruntime/capi/" \
-            --add-binary="../onnxruntime-win-x64-gpu-1.17.1/lib/onnxruntime_providers_shared.dll;./onnxruntime/capi/" \
-              --hidden-import=cv2 --hidden-import=supervision --hidden-import=addict --hidden-import=chex --hidden-import=lap --hidden-import=optax --hidden-import=einshape --hidden-import=haiku --hidden-import=mediapy \
-                --name sidecar-x86_64-pc-windows-msvc --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
+          pyinstaller -c -F --clean --add-binary="../onnxruntime-win-x64-gpu-1.17.1/lib/onnxruntime_providers_cuda.dll;./onnxruntime/capi/" --add-binary="../onnxruntime-win-x64-gpu-1.17.1/lib/onnxruntime_providers_tensorrt.dll;./onnxruntime/capi/" --add-binary="../onnxruntime-win-x64-gpu-1.17.1/lib/onnxruntime_providers_shared.dll;./onnxruntime/capi/" --hidden-import=cv2 --hidden-import=supervision --hidden-import=addict --hidden-import=chex --hidden-import=lap --hidden-import=optax --hidden-import=einshape --hidden-import=haiku --hidden-import=mediapy --name sidecar-x86_64-pc-windows-msvc --specpath dist --distpath dist examples/fastapi-pyinstaller/server.py
 
       - name: Build Mac exe
         if: ${{ matrix.platform == 'macos-latest' }}
