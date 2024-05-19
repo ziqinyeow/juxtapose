@@ -78,6 +78,7 @@ jobs:
         with:
           files: |
             dist/sidecar-x86_64-pc-windows-msvc.exe
+            dist/sidecar-x86_64-pc-windows-msvc-cpu.exe
 
       - name: Upload Windows EXE
         uses: softprops/action-gh-release@v2
