@@ -12,7 +12,7 @@ import onnxruntime as ort
 from juxtapose.data import load_inference_source
 from juxtapose.detectors import get_detector
 from juxtapose.pose.rtmpose import RTMPose
-from juxtapose.trackers import Tracker, TRACKER_MAP
+from juxtapose.trackers import Tracker, TRACKER_MAP, BOXMOT_TRACKER_MAP
 from juxtapose.types import (
     DETECTOR_TYPES,
     POSE_ESTIMATOR_TYPES,
@@ -75,10 +75,13 @@ class RTM:
         self.rtmpose = RTMPose(pose.split("-")[1], device=device)
         self.annotator = annotator
         self.box_annotator = sv.BoxAnnotator()
-
+        self.device = device
         self.tracker_type = tracker
 
-        if tracker not in TRACKER_MAP.keys():
+        if (
+            tracker not in TRACKER_MAP.keys()
+            and tracker not in BOXMOT_TRACKER_MAP.keys()
+        ):
             self.tracker_type = None
 
         self.dataset = None
@@ -89,12 +92,13 @@ class RTM:
             source=source, imgsz=imgsz, vid_stride=vid_stride
         )
         self.source_type = self.dataset.source_type
-        self.vid_path, self.vid_writer = [None] * self.dataset.bs, [
-            None
-        ] * self.dataset.bs
+        self.vid_path, self.vid_writer = (
+            [None] * self.dataset.bs,
+            [None] * self.dataset.bs,
+        )
 
     def setup_tracker(self) -> None:
-        self.tracker = Tracker(self.tracker_type).tracker
+        self.tracker = Tracker(self.tracker_type, self.device)
 
     def setup_detector(self, det, device, captions):
         return get_detector(det, device=device, captions=captions)
@@ -236,11 +240,7 @@ class RTM:
             # multi object tracking (adjust bounding boxes)
             with profilers[1]:
                 if self.tracker_type:
-                    detections: Detections = self.tracker.update(
-                        bboxes=detections.xyxy,
-                        confidence=detections.confidence,
-                        labels=detections.labels,
-                    )
+                    detections: Detections = self.tracker.update(detections, im)
                     track_id = detections.track_id
                 else:
                     track_id = np.array([""] * len(detections.xyxy))
